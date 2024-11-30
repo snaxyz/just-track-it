@@ -1,11 +1,13 @@
+"use client";
+
 import { ReactNode } from "react";
 import { SessionData } from "@auth0/nextjs-auth0/server";
 import { HeartHandshakeIcon } from "lucide-react";
-import { SidebarCollapseButton } from "./sidebar-collapse-button";
 import { SidebarWorkspaceDropdown } from "./sidebar-workspace-dropdown";
-import { cn } from "@/lib/utils";
 import { Grow } from "./grow";
 import { TopAppbarMenu } from "./top-appbar-menu";
+import { usePathname } from "next/navigation";
+import { useDisclosure } from "@nextui-org/react";
 
 interface Props {
   className?: string;

@@ -4,10 +4,17 @@ import { Button, useDisclosure } from "@nextui-org/react";
 import { MenuIcon, XIcon } from "lucide-react";
 import { RightDrawer } from "./right-drawer";
 import { SidebarNavigation } from "./sidebar-navigation";
-import { CenterContainer } from "./center-container";
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 
 export function TopAppbarMenu() {
+  const pathname = usePathname();
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  useEffect(() => {
+    onClose();
+  }, [pathname]);
+
   return (
     <>
       <Button
