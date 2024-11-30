@@ -1,0 +1,58 @@
+"use client";
+
+import { ChevronDown } from "lucide-react";
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownSection,
+  DropdownTrigger,
+} from "@nextui-org/react";
+import { Grow } from "./grow";
+import { UserAvatar } from "../user-avatar";
+import Link from "next/link";
+
+interface Props {
+  name: string;
+  picture?: string;
+}
+
+export function SidebarWorkspaceDropdown({ name, picture }: Props) {
+  const dropdownTitle = `${name}'s Workspace`;
+
+  return (
+    <Dropdown className="min-w-0 w-fit">
+      <DropdownTrigger>
+        <Button
+          className="w-full px-2"
+          variant="light"
+          title={dropdownTitle}
+          fullWidth
+          radius="sm"
+        >
+          <UserAvatar
+            className="h-[1.5rem] w-[1.5rem] mr-2 shrink-0"
+            name={name}
+            picture={picture ?? ""}
+          />
+          <span className="overflow-hidden text-ellipsis whitespace-nowrap max-w-[8rem]">
+            {dropdownTitle}
+          </span>
+          <Grow />
+          <ChevronDown />
+        </Button>
+      </DropdownTrigger>
+      <DropdownMenu className="bg-zinc-200 dark:bg-zinc-800 rounded-lg">
+        <DropdownSection showDivider>
+          <DropdownItem key="create-new-account">
+            Create new account
+          </DropdownItem>
+        </DropdownSection>
+        <DropdownItem key="logout" as={Link} href="/auth/login">
+          Logout
+        </DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
+  );
+}

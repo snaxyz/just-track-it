@@ -11,9 +11,12 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
+    "@auth0/nextjs-auth0": "4.0.0-alpha.0",
+    "@local/database": "*",
     "@nextui-org/react": "^2.4.8",
     "@tanstack/react-query": "^5.62.0",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "framer-motion": "^11.12.0",
     "lucide-react": "^0.462.0",
     "nanoid": "^5.0.9",

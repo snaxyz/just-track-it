@@ -1,0 +1,35 @@
+"use client";
+
+import { cn } from "@/lib/utils";
+import { getUserSettings } from "@/server/actions/settings";
+import { useQuery } from "@tanstack/react-query";
+import { SlideIn } from "../animations/slide-in";
+import { useUserId } from "@/lib/hooks/use-user";
+
+interface Props {
+  className?: string;
+  children: React.ReactNode;
+}
+
+export function SidebarContainer({ className, children }: Props) {
+  const userId = useUserId();
+  const { data } = useQuery({
+    queryKey: ["settings"],
+    queryFn: () => getUserSettings(userId),
+  });
+
+  const collapsed = data?.sidebarCollapsed;
+
+  return (
+    <SlideIn
+      className={cn(
+        "fixed top-0 left-0 z-100 h-full w-[248px] bg-zinc-100 dark:bg-zinc-900 overflow-auto",
+        className
+      )}
+      visible={!collapsed}
+      offset={250}
+    >
+      {children}
+    </SlideIn>
+  );
+}
