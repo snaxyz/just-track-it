@@ -5,7 +5,7 @@ import { Avatar } from "@nextui-org/react";
 
 interface Props {
   className?: string;
-  name: string;
+  name?: string;
   picture?: string;
 }
 

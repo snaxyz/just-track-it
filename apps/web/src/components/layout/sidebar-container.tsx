@@ -23,11 +23,11 @@ export function SidebarContainer({ className, children }: Props) {
   return (
     <SlideIn
       className={cn(
-        "fixed top-0 left-0 z-100 h-full w-[248px] bg-zinc-100 dark:bg-zinc-900 overflow-auto",
+        "fixed top-0 left-0 z-100 h-full w-[200px] bg-zinc-100 dark:bg-zinc-900 overflow-auto",
         className
       )}
       visible={!collapsed}
-      offset={250}
+      offset={200}
     >
       {children}
     </SlideIn>

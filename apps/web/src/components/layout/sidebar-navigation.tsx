@@ -53,7 +53,7 @@ export function SidebarNavigation({ className }: Props) {
 
   return (
     <div className={className}>
-      <Button
+      {/* <Button
         className="justify-start px-2 py-1 mb-1 text-foreground/60"
         variant="light"
         startContent={<SearchIcon size={20} />}
@@ -62,7 +62,7 @@ export function SidebarNavigation({ className }: Props) {
         size="sm"
       >
         Search
-      </Button>
+      </Button> */}
       {navItems.map((nav) => (
         <Button
           key={nav.title}

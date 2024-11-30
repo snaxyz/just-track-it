@@ -19,28 +19,28 @@ interface Props {
 }
 
 export function SidebarWorkspaceDropdown({ name, picture }: Props) {
-  const dropdownTitle = `${name}'s Workspace`;
+  const dropdownTitle = `${name}'s space`;
 
   return (
     <Dropdown className="min-w-0 w-fit">
       <DropdownTrigger>
         <Button
-          className="w-full px-2"
           variant="light"
           title={dropdownTitle}
-          fullWidth
-          radius="sm"
+          radius="full"
+          isIconOnly
+          size="sm"
         >
           <UserAvatar
-            className="h-[1.5rem] w-[1.5rem] mr-2 shrink-0"
-            name={name}
+            className="h-[1.5rem] w-[1.5rem] shrink-0"
+            // name={name}
             picture={picture ?? ""}
           />
-          <span className="overflow-hidden text-ellipsis whitespace-nowrap max-w-[8rem]">
+          {/* <span className="overflow-hidden text-ellipsis whitespace-nowrap max-w-[8rem]">
             {dropdownTitle}
-          </span>
-          <Grow />
-          <ChevronDown />
+          </span> */}
+          {/* <Grow />
+          <ChevronDown /> */}
         </Button>
       </DropdownTrigger>
       <DropdownMenu className="bg-zinc-200 dark:bg-zinc-800 rounded-lg">

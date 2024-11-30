@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
 import { SidebarCollapseButton } from "./sidebar-collapse-button";
 import { SessionData } from "@auth0/nextjs-auth0/server";
+import { BicepsFlexedIcon, HeartHandshakeIcon } from "lucide-react";
 
 interface Props {
   className?: string;
@@ -28,11 +29,17 @@ export function Sidebar({ className, children, user }: Props) {
         )}
       >
         <div className="flex items-center py-1 px-2">
-          <SidebarWorkspaceDropdown
+          {/* <SidebarWorkspaceDropdown
             name={user.name ?? ""}
             picture={user.picture}
           />
-          <SidebarCollapseButton />
+          <SidebarCollapseButton /> */}
+          <div className="p-4 capitalize flex mb-2 text-secondary items-center justify-center w-full">
+            <span className="mr-2">
+              <HeartHandshakeIcon size={22} />
+            </span>
+            Tracker
+          </div>
         </div>
         <div className="py-1">
           <SidebarNavigation className="py-1 px-2" />
