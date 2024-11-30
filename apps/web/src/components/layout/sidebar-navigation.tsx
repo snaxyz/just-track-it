@@ -39,6 +39,7 @@ const navItems = [
 
 interface Props {
   className?: string;
+  itemClasses?: string;
 }
 
 function isLinkActive(pathname: string, href: string, exact?: boolean) {
@@ -48,7 +49,7 @@ function isLinkActive(pathname: string, href: string, exact?: boolean) {
   return pathname.startsWith(href);
 }
 
-export function SidebarNavigation({ className }: Props) {
+export function SidebarNavigation({ className, itemClasses }: Props) {
   const pathname = usePathname();
 
   return (
@@ -69,7 +70,8 @@ export function SidebarNavigation({ className }: Props) {
           className={cn(
             "justify-start px-2 py-1 mb-1 text-foreground/60",
             isLinkActive(pathname, nav.href, nav.exactMatch) &&
-              "text-foreground"
+              "text-foreground",
+            itemClasses
           )}
           variant="light"
           startContent={<nav.Icon size={20} />}
