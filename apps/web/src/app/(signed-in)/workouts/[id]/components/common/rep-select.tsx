@@ -1,5 +1,4 @@
-import { Select, SelectItem } from "@nextui-org/react";
-import { ChangeEventHandler } from "react";
+import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
 
 interface Props {
   reps: string;
@@ -8,23 +7,23 @@ interface Props {
 }
 
 export function RepSelect({ reps, onChange, maxReps = 100 }: Props) {
-  const handleChange: ChangeEventHandler<HTMLSelectElement> = (event) => {
-    onChange(event.target.value);
-  };
+  const options = Array.from({ length: maxReps }, (_, i) => (i + 1).toString());
 
   return (
-    <Select
+    <Autocomplete
       label="Reps"
       fullWidth
-      selectedKeys={[reps]}
-      onChange={handleChange}
+      selectedKey={reps}
+      onSelectionChange={(key) => key && onChange(key.toString())}
       size="sm"
+      allowsCustomValue={false}
+      isClearable={false}
     >
-      {Array.from({ length: maxReps }, (_, i) => (
-        <SelectItem key={(i + 1).toString()} value={(i + 1).toString()}>
-          {(i + 1).toString()}
-        </SelectItem>
+      {options.map((value) => (
+        <AutocompleteItem key={value} value={value}>
+          {value}
+        </AutocompleteItem>
       ))}
-    </Select>
+    </Autocomplete>
   );
 }

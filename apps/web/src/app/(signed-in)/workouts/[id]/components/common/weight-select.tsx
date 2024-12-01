@@ -1,6 +1,5 @@
+import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
 import { WeightUnit } from "@local/database";
-import { Select, SelectItem } from "@nextui-org/react";
-import { ChangeEventHandler } from "react";
 
 interface Props {
   weight: string;
@@ -16,27 +15,26 @@ export function WeightSelect({
   maxWeight = unit === "lbs" ? 1200 : 600,
 }: Props) {
   const increment = unit === "lbs" ? 2.5 : 1.25;
-
-  const handleChange: ChangeEventHandler<HTMLSelectElement> = (event) => {
-    onChange(event.target.value);
-  };
+  const options = Array.from(
+    { length: Math.ceil(maxWeight / increment) },
+    (_, i) => (i * increment).toFixed(2)
+  );
 
   return (
-    <Select
+    <Autocomplete
       label={`Weight (${unit})`}
       fullWidth
-      selectedKeys={[weight]}
-      onChange={handleChange}
+      selectedKey={parseFloat(weight).toFixed(2)} // Normalize weight
+      onSelectionChange={(key) => key && onChange(key.toString())}
       size="sm"
+      allowsCustomValue={false}
+      isClearable={false}
     >
-      {Array.from(
-        { length: Math.ceil(maxWeight / increment) },
-        (_, i) => i * increment
-      ).map((value) => (
-        <SelectItem key={value} value={value}>
-          {value.toFixed(2)}
-        </SelectItem>
+      {options.map((value) => (
+        <AutocompleteItem key={value} value={value}>
+          {value}
+        </AutocompleteItem>
       ))}
-    </Select>
+    </Autocomplete>
   );
 }

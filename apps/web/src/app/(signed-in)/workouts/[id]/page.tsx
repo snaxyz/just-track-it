@@ -212,7 +212,7 @@ export default function WorkoutPage() {
           <h1 className="text-xl my-3">
             <DateTime iso={today.current.toISOString()} formatType="friendly" />
           </h1>
-          <div>
+          <div className="pb-24">
             {workoutExercises.map((e) => (
               <WorkoutExercise
                 key={e.exerciseId}

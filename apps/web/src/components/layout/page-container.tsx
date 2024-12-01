@@ -18,11 +18,13 @@ export function PageContainer({ children }: Props) {
         initial={{ marginLeft: sidebarCollapsed ? 0 : 248 }}
         animate={{ marginLeft: sidebarCollapsed ? 0 : 248 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className={cn("w-full h-full flex hidden md:block")}
+        className={cn("w-full flex hidden md:block overflow-auto")}
       >
         {children}
       </motion.div>
-      <div className={cn("w-full h-full flex md:hidden mt-12")}>{children}</div>
+      <div className={cn("w-full flex md:hidden mt-12 overflow-auto")}>
+        {children}
+      </div>
     </>
   );
 }
