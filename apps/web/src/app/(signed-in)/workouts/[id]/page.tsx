@@ -8,7 +8,11 @@ import { PlusIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { NewSetModal, NewSetModalProps } from "./components/new-set-modal";
 import { useCallback, useRef, useState } from "react";
-import { ExerciseModel, WorkoutHistoryExercise } from "@local/database";
+import {
+  ExerciseModel,
+  WorkoutHistoryExercise,
+  WorkoutHistoryExerciseSet,
+} from "@local/database";
 import { nanoid } from "nanoid";
 import { currentTimestamp } from "@/lib/timestamp";
 import { useUserId } from "@/lib/hooks/use-user";
@@ -127,7 +131,6 @@ export default function WorkoutPage() {
           exerciseName: exercise.name,
           sets: [
             {
-              set: parseInt(input.set),
               reps: parseInt(input.reps),
               weight: parseFloat(input.weight),
               unit: input.unit,
@@ -144,7 +147,6 @@ export default function WorkoutPage() {
               sets: [
                 ...e.sets,
                 {
-                  set: parseInt(input.set),
                   reps: parseInt(input.reps),
                   weight: parseFloat(input.weight),
                   unit: input.unit,
@@ -170,6 +172,39 @@ export default function WorkoutPage() {
   const handleDeleteExercise = (exerciseId: string) => {
     setWorkoutExercises((e) => e.filter((e) => e.exerciseId !== exerciseId));
   };
+  const handleDeleteExerciseSet = (exerciseId: string, setIndex: number) => {
+    setWorkoutExercises((exercises) =>
+      exercises.map((exercise) => {
+        if (exercise.exerciseId === exerciseId) {
+          return {
+            ...exercise,
+            sets: exercise.sets.filter((_, index) => index !== setIndex),
+          };
+        }
+        return exercise;
+      })
+    );
+  };
+  const handleUpdateExerciseSet = (
+    exerciseId: string,
+    setIndex: number,
+    updates: Partial<WorkoutHistoryExerciseSet>
+  ) => {
+    setWorkoutExercises((exercises) =>
+      exercises.map((exercise) => {
+        if (exercise.exerciseId === exerciseId) {
+          return {
+            ...exercise,
+            sets: exercise.sets.map((set, index) =>
+              index === setIndex ? { ...set, ...updates } : set
+            ),
+          };
+        }
+        return exercise;
+      })
+    );
+  };
+
   return (
     <>
       <PageContainer>
@@ -188,10 +223,12 @@ export default function WorkoutPage() {
                 onAnimationComplete={onAnimationComplete}
                 sets={e.sets}
                 onDelete={handleDeleteExercise}
+                onDeleteSet={handleDeleteExerciseSet}
+                onUpdateSet={handleUpdateExerciseSet}
               >
                 <LastWorkoutExerciseSet
                   exerciseId={e.exerciseId}
-                  set={e.sets[e.sets.length - 1].set}
+                  set={e.sets.length}
                   reps={e.sets[e.sets.length - 1].reps}
                   weight={e.sets[e.sets.length - 1].weight}
                   unit={e.sets[e.sets.length - 1].unit}

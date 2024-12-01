@@ -21,10 +21,10 @@ interface EditWorkoutExerciseModalProps extends Omit<ModalProps, "children"> {
   sets: WorkoutHistoryExerciseSet[];
   onDeleteExercise: () => void;
   onUpdateSet: (
-    set: string,
+    set: number,
     updates: Partial<WorkoutHistoryExerciseSet>
   ) => void;
-  onDeleteSet: (set: string) => void;
+  onDeleteSet: (set: number) => void;
 }
 
 export function EditWorkoutExerciseModal({
@@ -43,20 +43,25 @@ export function EditWorkoutExerciseModal({
   };
 
   const handleUpdateSet = (
-    setId: string,
+    set: number,
     updates: Partial<WorkoutHistoryExerciseSet>
   ) => {
-    onUpdateSet(setId, updates);
+    onUpdateSet(set, updates);
   };
 
-  const handleDeleteSet = (setId: string) => {
-    onDeleteSet(setId);
+  const handleDeleteSet = (set: number) => {
+    onDeleteSet(set);
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isDismissable={false}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      isDismissable={false}
+      scrollBehavior="inside"
+    >
       <ModalContent>
-        <ModalHeader>Edit Exercise: {name}</ModalHeader>
+        <ModalHeader className="capitalize">{name}</ModalHeader>
         <ModalBody>
           {sets.map((set, ind) => (
             <div key={ind} className="mb-2">
@@ -65,7 +70,7 @@ export function EditWorkoutExerciseModal({
                 <RepSelect
                   reps={set.reps.toString()}
                   onChange={(reps) =>
-                    handleUpdateSet(set.set.toString(), {
+                    handleUpdateSet(ind, {
                       reps: parseInt(reps),
                     })
                   }
@@ -75,7 +80,7 @@ export function EditWorkoutExerciseModal({
                     weight={set.weight?.toString()}
                     unit={set.unit}
                     onChange={(weight) =>
-                      handleUpdateSet(set.set.toString(), {
+                      handleUpdateSet(ind, {
                         weight: parseFloat(weight),
                       })
                     }
@@ -84,7 +89,7 @@ export function EditWorkoutExerciseModal({
                 <Grow />
                 <Button
                   size="sm"
-                  onClick={() => handleDeleteSet(set.set.toString())}
+                  onClick={() => handleDeleteSet(ind)}
                   isIconOnly
                   radius="full"
                   variant="bordered"
@@ -95,7 +100,7 @@ export function EditWorkoutExerciseModal({
             </div>
           ))}
         </ModalBody>
-        <ModalFooter className="flex justify-between">
+        <ModalFooter>
           <Button
             color="danger"
             onClick={handleDeleteExercise}

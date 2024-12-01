@@ -22,6 +22,12 @@ interface Props {
   onAnimationComplete: () => void;
   sets: WorkoutHistoryExerciseSet[];
   onDelete: (exerciseId: string) => void;
+  onUpdateSet: (
+    exerciseId: string,
+    set: number,
+    updates: Partial<WorkoutHistoryExerciseSet>
+  ) => void;
+  onDeleteSet: (exerciseId: string, set: number) => void;
 }
 
 export function WorkoutExercise({
@@ -33,6 +39,8 @@ export function WorkoutExercise({
   showUpdateAnimation,
   onAnimationComplete,
   onDelete,
+  onUpdateSet,
+  onDeleteSet,
 }: Props) {
   useEffect(() => {
     let timeout: NodeJS.Timeout;
@@ -52,11 +60,16 @@ export function WorkoutExercise({
     onDelete(exerciseId);
     onClose();
   };
-  const handleUpdateSet = () => {
+  const handleUpdateSet = (
+    set: number,
+    updates: Partial<WorkoutHistoryExerciseSet>
+  ) => {
     console.log("update set");
+    onUpdateSet(exerciseId, set, updates);
   };
-  const handleDeleteSet = () => {
+  const handleDeleteSet = (set: number) => {
     console.log("delete set");
+    onDeleteSet(exerciseId, set);
   };
 
   return (
