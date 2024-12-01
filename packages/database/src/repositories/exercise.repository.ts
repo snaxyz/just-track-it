@@ -13,7 +13,6 @@ export interface ExerciseModel extends Model {
   id: string;
   userId: string;
   name: string;
-  category: string;
 }
 
 export class ExerciseRepository extends Repository {
@@ -30,23 +29,17 @@ export class ExerciseRepository extends Repository {
     [this.lsi2]: `#NAME#${name.toLowerCase()}`,
   });
 
-  private lsi3Key = (category: string) => ({
-    [this.lsi3]: `#CATEGORY#${category.toLowerCase()}`,
-  });
-
-  async create(userId: string, exercise: { name: string; category: string }) {
+  async create(userId: string, exercise: { name: string; keywords: string[] }) {
     const id = nanoid();
     const ts = this.timestamps();
     const item = {
       id,
       userId,
       name: exercise.name,
-      category: exercise.category,
       ...ts,
       ...this.key(userId, id),
       ...this.lsi1Key(ts.created, id),
       ...this.lsi2Key(exercise.name),
-      ...this.lsi3Key(exercise.category),
     };
 
     await this.client.put({

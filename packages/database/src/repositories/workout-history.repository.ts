@@ -9,17 +9,25 @@ import {
 } from "./repository";
 import { QueryResponse } from "../types";
 
+export interface WorkoutHistoryExerciseSet {
+  set: number;
+  reps: number;
+  weight?: number;
+  unit?: "lbs" | "kg";
+}
+
+export interface WorkoutHistoryExercise {
+  exerciseId: string;
+  exerciseName: string;
+  sets: WorkoutHistoryExerciseSet[];
+}
+
 export interface WorkoutHistoryModel extends Model {
   id: string;
   userId: string;
   workoutId: string;
   date: string;
-  exercises: {
-    exerciseId: string;
-    reps: number;
-    sets: number;
-    weight?: number; // Optional weight field
-  }[];
+  exercises: WorkoutHistoryExercise[];
   created: string;
   updated: string;
 }
@@ -34,17 +42,16 @@ export class WorkoutHistoryRepository extends Repository {
     [this.lsi1]: `#DATE#${date}`,
   });
 
+  private lsi2Key = (workoutId: string, date: string) => ({
+    [this.lsi2]: `#WORKOUT#${workoutId}#DATE#${date}`,
+  });
+
   async create(
     userId: string,
     history: {
       workoutId: string;
       date: string;
-      exercises: {
-        exerciseId: string;
-        reps: number;
-        sets: number;
-        weight?: number;
-      }[];
+      exercises: WorkoutHistoryExercise[];
     }
   ) {
     const id = nanoid();
@@ -58,6 +65,7 @@ export class WorkoutHistoryRepository extends Repository {
       ...ts,
       ...this.key(userId, id),
       ...this.lsi1Key(history.date),
+      ...this.lsi2Key(history.workoutId, history.date),
     };
 
     await this.client.put({
