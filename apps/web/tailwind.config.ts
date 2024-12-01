@@ -53,7 +53,7 @@ const config: Config = {
         "outline-pulse": "outline-pulse 1.5s ease-in-out infinite",
         "color-cycle": "color-cycle 3s linear infinite",
         "spin-outline": "spin-outline 1.5s linear infinite",
-        "gradient-outline": "gradient-outline 2s infinite ease-in-out",
+        "gradient-outline": "gradient-outline 2s ease-in forwards",
       },
       colors: {
         caption: "#A8A8A8",

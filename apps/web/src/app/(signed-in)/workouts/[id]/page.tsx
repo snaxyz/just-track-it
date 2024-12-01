@@ -7,7 +7,7 @@ import { Button, useDisclosure } from "@nextui-org/react";
 import { PlusIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { NewSetModal, NewSetModalProps } from "./components/new-set-modal";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { ExerciseModel, WorkoutHistoryExercise } from "@local/database";
 import { nanoid } from "nanoid";
 import { currentTimestamp } from "@/lib/timestamp";
@@ -15,12 +15,7 @@ import { useUserId } from "@/lib/hooks/use-user";
 import {
   LastWorkoutExerciseSet,
   WorkoutExercise,
-  WorkoutExerciseSet,
 } from "./components/workout-exercise";
-
-interface Props {
-  params: Promise<{ id: string }>;
-}
 
 export default function WorkoutPage() {
   const userId = useUserId();
@@ -97,10 +92,11 @@ export default function WorkoutPage() {
     }
   };
 
-  const handleAddNewRep: NewSetModalProps["onAdd"] = (input) => {
+  const handleAddNewSet: NewSetModalProps["onAdd"] = (input) => {
     let exercise: ExerciseModel;
     if (input.selectedExercise) {
       exercise = exercises.find((e) => e.id === input.selectedExercise)!;
+      setLastUpdatedExercise(exercise.id);
     }
     if (input.customExercise) {
       const matchedExercise = exercises.find(
@@ -119,6 +115,7 @@ export default function WorkoutPage() {
         };
         setExercises((e) => [...e, exercise]);
       }
+      setLastUpdatedExercise(exercise.id);
     }
     if (input.set === "1") {
       setWorkoutExercises((e) => [
@@ -165,6 +162,9 @@ export default function WorkoutPage() {
     onOpen();
   };
 
+  const [lastUpdatedExercise, setLastUpdatedExercise] = useState("");
+  const onAnimationComplete = useCallback(() => setLastUpdatedExercise(""), []);
+
   return (
     <>
       <PageContainer>
@@ -177,6 +177,8 @@ export default function WorkoutPage() {
                 className="mb-3 bg-zinc-200 dark:bg-zinc-800"
                 exerciseName={e.exerciseName}
                 exerciseId={e.exerciseId}
+                showUpdateAnimation={e.exerciseId === lastUpdatedExercise}
+                onAnimationComplete={onAnimationComplete}
               >
                 <LastWorkoutExerciseSet
                   exerciseId={e.exerciseId}
@@ -207,7 +209,7 @@ export default function WorkoutPage() {
         isOpen={isOpen}
         onClose={onClose}
         exercises={exercises}
-        onAdd={handleAddNewRep}
+        onAdd={handleAddNewSet}
         selectedExercise={selectedExercise}
         customExercise={customExercise}
         set={set}
