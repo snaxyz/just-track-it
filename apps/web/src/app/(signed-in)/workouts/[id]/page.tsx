@@ -65,7 +65,7 @@ export default function WorkoutPage() {
     setCustomExercise(exercise);
 
     const found = exercises.find(
-      (e) => e.name.toLowerCase() === exercise.toLowerCase()
+      (e) => e.name.toLowerCase() === exercise.trim().toLowerCase()
     );
     if (found) {
       setSelectedExercise(found.id);
@@ -101,7 +101,8 @@ export default function WorkoutPage() {
     }
     if (input.customExercise) {
       const matchedExercise = exercises.find(
-        (e) => e.name.toLowerCase() === input.customExercise?.toLowerCase()
+        (e) =>
+          e.name.toLowerCase() === input.customExercise?.trim().toLowerCase()
       );
       if (matchedExercise) {
         exercise = matchedExercise;
@@ -112,7 +113,7 @@ export default function WorkoutPage() {
           created: ts,
           updated: ts,
           userId,
-          name: input.customExercise,
+          name: input.customExercise.trim(),
         };
         setExercises((e) => [...e, exercise]);
       }
@@ -166,7 +167,9 @@ export default function WorkoutPage() {
   const [lastUpdatedExercise, setLastUpdatedExercise] = useState("");
   const onAnimationComplete = useCallback(() => setLastUpdatedExercise(""), []);
   const today = useRef(new Date());
-
+  const handleDeleteExercise = (exerciseId: string) => {
+    setWorkoutExercises((e) => e.filter((e) => e.exerciseId !== exerciseId));
+  };
   return (
     <>
       <PageContainer>
@@ -183,6 +186,8 @@ export default function WorkoutPage() {
                 exerciseId={e.exerciseId}
                 showUpdateAnimation={e.exerciseId === lastUpdatedExercise}
                 onAnimationComplete={onAnimationComplete}
+                sets={e.sets}
+                onDelete={handleDeleteExercise}
               >
                 <LastWorkoutExerciseSet
                   exerciseId={e.exerciseId}

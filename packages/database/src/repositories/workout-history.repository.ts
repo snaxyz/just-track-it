@@ -9,11 +9,13 @@ import {
 } from "./repository";
 import { QueryResponse } from "../types";
 
+export type WeightUnit = "lbs" | "kg";
+
 export interface WorkoutHistoryExerciseSet {
   set: number;
   reps: number;
   weight?: number;
-  unit?: "lbs" | "kg";
+  unit?: WeightUnit;
 }
 
 export interface WorkoutHistoryExercise {

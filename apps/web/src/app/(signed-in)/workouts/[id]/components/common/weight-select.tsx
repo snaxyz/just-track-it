@@ -1,3 +1,4 @@
+import { WeightUnit } from "@local/database";
 import { Select, SelectItem } from "@nextui-org/react";
 import { ChangeEventHandler } from "react";
 
@@ -5,7 +6,7 @@ interface Props {
   weight: string;
   onChange: (weight: string) => void;
   maxWeight?: number;
-  unit: "lbs" | "kg";
+  unit: WeightUnit;
 }
 
 export function WeightSelect({

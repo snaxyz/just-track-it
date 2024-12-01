@@ -1,4 +1,4 @@
-import { ExerciseModel } from "@local/database";
+import { ExerciseModel, WeightUnit } from "@local/database";
 import {
   Autocomplete,
   AutocompleteItem,
@@ -10,9 +10,7 @@ import {
   ModalHeader,
   ModalProps,
 } from "@nextui-org/react";
-import { SetSelect } from "./set-select";
-import { RepSelect } from "./rep-select";
-import { WeightSelect } from "./weight-select";
+import { SetSelect, RepSelect, WeightSelect } from "../common";
 
 export interface NewSetModalProps extends Omit<ModalProps, "children"> {
   exercises: ExerciseModel[];
@@ -22,14 +20,14 @@ export interface NewSetModalProps extends Omit<ModalProps, "children"> {
     set: string;
     reps: string;
     weight: string;
-    unit: "lbs" | "kg";
+    unit: WeightUnit;
   }) => void;
   selectedExercise?: string;
   customExercise?: string;
   set: string;
   reps: string;
   weight: string;
-  unit: "lbs" | "kg";
+  unit: WeightUnit;
   onSelectedExerciseChange: (exerciseId: string) => void;
   onCustomExerciseChange: (exercise: string) => void;
   onSetChange: (set: string) => void;

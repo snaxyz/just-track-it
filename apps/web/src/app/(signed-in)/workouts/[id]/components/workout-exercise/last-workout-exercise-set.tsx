@@ -1,5 +1,6 @@
 import { Grow } from "@/components/layout/grow";
 import { cn } from "@/lib/utils";
+import { WeightUnit } from "@local/database";
 import { Button, Input } from "@nextui-org/react";
 import { PlusIcon } from "lucide-react";
 
@@ -8,7 +9,7 @@ interface Props {
   set: number;
   reps: number;
   weight?: number;
-  unit?: "lbs" | "kg";
+  unit?: WeightUnit;
   exerciseId: string;
   onClick: (exerciseId: string) => void;
 }
