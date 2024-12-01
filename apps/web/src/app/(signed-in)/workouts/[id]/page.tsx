@@ -7,7 +7,7 @@ import { Button, useDisclosure } from "@nextui-org/react";
 import { PlusIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { NewSetModal, NewSetModalProps } from "./components/new-set-modal";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { ExerciseModel, WorkoutHistoryExercise } from "@local/database";
 import { nanoid } from "nanoid";
 import { currentTimestamp } from "@/lib/timestamp";
@@ -16,6 +16,7 @@ import {
   LastWorkoutExerciseSet,
   WorkoutExercise,
 } from "./components/workout-exercise";
+import { DateTime } from "@/components/date-time";
 
 export default function WorkoutPage() {
   const userId = useUserId();
@@ -26,7 +27,7 @@ export default function WorkoutPage() {
   const [exercises, setExercises] = useState<ExerciseModel[]>([
     {
       id: "bench",
-      name: "bench this is a very long exercise name",
+      name: "bench",
       created: "2020",
       updated: "2020",
       userId,
@@ -35,7 +36,7 @@ export default function WorkoutPage() {
 
   // TODO: use last workout exercise stats
   const [selectedExercise, setSelectedExercise] = useState("bench");
-  const [customExercise, setCustomExercise] = useState("");
+  const [customExercise, setCustomExercise] = useState("bench");
   const [set, setSet] = useState("1");
   const [reps, setReps] = useState("5");
   const [weight, setWeight] = useState("2.5");
@@ -164,17 +165,20 @@ export default function WorkoutPage() {
 
   const [lastUpdatedExercise, setLastUpdatedExercise] = useState("");
   const onAnimationComplete = useCallback(() => setLastUpdatedExercise(""), []);
+  const today = useRef(new Date());
 
   return (
     <>
       <PageContainer>
         <MainContainer className="px-2">
-          <h1 className="text-xl my-3">New Workout {id}</h1>
+          <h1 className="text-xl my-3">
+            <DateTime iso={today.current.toISOString()} formatType="friendly" />
+          </h1>
           <div>
             {workoutExercises.map((e) => (
               <WorkoutExercise
                 key={e.exerciseId}
-                className="mb-3 bg-zinc-200 dark:bg-zinc-800"
+                className="mb-3 bg-zinc-200 dark:bg-zinc-800 z-0"
                 exerciseName={e.exerciseName}
                 exerciseId={e.exerciseId}
                 showUpdateAnimation={e.exerciseId === lastUpdatedExercise}
