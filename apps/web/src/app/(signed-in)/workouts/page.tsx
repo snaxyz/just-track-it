@@ -19,6 +19,7 @@ import {
   PlusIcon,
 } from "lucide-react";
 import { useState } from "react";
+import { EmptyWorkoutsPlaceholder } from "./components/empty-workouts-placeholder";
 
 export default function WorkoutsPage() {
   const { data: workoutsQuery, isLoading } = useQuery<
@@ -30,10 +31,17 @@ export default function WorkoutsPage() {
 
   if (isLoading) return <div>...loading...</div>;
 
+  const noWorkouts = !workoutsQuery || workoutsQuery.records.length === 0;
+
   return (
     <PageContainer>
       <MainContainer className="px-2">
         <div className="text-xl mb-3">Workouts</div>
+        {noWorkouts && (
+          <EmptyWorkoutsPlaceholder
+            onAddClick={() => createWorkoutAndRedirect()}
+          />
+        )}
         {workoutsQuery?.records.map((w) => (
           <div
             key={w.id}
@@ -57,6 +65,8 @@ export default function WorkoutsPage() {
                 fullWidth
                 variant="bordered"
                 startContent={<ActivityIcon size={16} />}
+                size="sm"
+                radius="full"
               >
                 Start workout
               </Button>

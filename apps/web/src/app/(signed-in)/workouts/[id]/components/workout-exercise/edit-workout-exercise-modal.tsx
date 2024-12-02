@@ -62,7 +62,7 @@ export function EditWorkoutExerciseModal({
     >
       <ModalContent>
         <ModalHeader className="capitalize">{name}</ModalHeader>
-        <ModalBody>
+        <ModalBody className="p-2">
           {sets.map((set, ind) => (
             <div key={ind} className="mb-2">
               <div className="text-caption text-xs mb-2">Set {ind + 1}</div>
@@ -100,15 +100,18 @@ export function EditWorkoutExerciseModal({
             </div>
           ))}
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter className="p-2">
           <Button
             color="danger"
             onClick={handleDeleteExercise}
             className="mr-auto"
+            size="sm"
           >
-            Delete Exercise
+            Delete exercise
           </Button>
-          <Button onClick={onClose}>Close</Button>
+          <Button onClick={onClose} size="sm">
+            Close
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

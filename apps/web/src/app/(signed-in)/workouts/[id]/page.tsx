@@ -4,8 +4,8 @@ import { FabContainer } from "@/components/layout/fab-container";
 import { MainContainer } from "@/components/layout/main-container";
 import { PageContainer } from "@/components/layout/page-container";
 import { Button, Input, useDisclosure } from "@nextui-org/react";
-import { PlusIcon } from "lucide-react";
-import { useParams } from "next/navigation";
+import { ListCheckIcon, MoreVerticalIcon, PlusIcon } from "lucide-react";
+import { redirect, useParams } from "next/navigation";
 import { NewSetModal, NewSetModalProps } from "./components/new-set-modal";
 import { useCallback, useRef, useState } from "react";
 import {
@@ -26,6 +26,8 @@ import {
   EnhancedWorkoutHistoryModel,
   getWorkoutHistory,
 } from "@/app/api/history/[id]/get-workout-history";
+import { EmptyExercisesPlaceholder } from "./components/empty-exercises-placeholder";
+import { IconButton } from "@/components/icon-button";
 
 export default function WorkoutPage() {
   const userId = useUserId();
@@ -35,8 +37,6 @@ export default function WorkoutPage() {
     queryKey: ["history", id],
     queryFn: () => getWorkoutHistory(id),
   });
-
-  console.log({ workout });
 
   const { isOpen, onClose, onOpen } = useDisclosure();
 
@@ -218,9 +218,12 @@ export default function WorkoutPage() {
     );
   };
 
-  if (isLoading) return <div>loading...</div>;
+  const handleComplete = () => {
+    redirect("/workouts");
+  };
 
-  console.log({ workout });
+  // TODO: add SSR, prefetch queries, and better loading states
+  if (isLoading) return <div>loading...</div>;
 
   return (
     <>
@@ -228,10 +231,14 @@ export default function WorkoutPage() {
         <MainContainer className="px-2">
           <Input
             className="text-xl my-3"
+            label="Workout"
             value={workout?.workoutName ?? ""}
-            variant="bordered"
+            variant="faded"
           />
           <div className="pb-24">
+            {workoutExercises.length === 0 && (
+              <EmptyExercisesPlaceholder onAddClick={onOpen} />
+            )}
             {workoutExercises.map((e) => (
               <WorkoutExercise
                 key={e.exerciseId}
@@ -255,6 +262,23 @@ export default function WorkoutPage() {
                 />
               </WorkoutExercise>
             ))}
+            <div className="mt-6 flex justify-end gap-2">
+              {workoutExercises.length > 0 && (
+                <Button
+                  size="sm"
+                  radius="full"
+                  color="secondary"
+                  variant="flat"
+                  startContent={<ListCheckIcon size={16} />}
+                  onClick={handleComplete}
+                >
+                  Complete
+                </Button>
+              )}
+              <IconButton variant="bordered">
+                <MoreVerticalIcon size={16} />
+              </IconButton>
+            </div>
           </div>
           <FabContainer>
             <Button
