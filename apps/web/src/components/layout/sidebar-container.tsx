@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { getUserSettings } from "@/server/actions/settings";
+import { getUserSettings } from "@/server/settings";
 import { useQuery } from "@tanstack/react-query";
 import { SlideIn } from "../animations/slide-in";
 import { useUserId } from "@/lib/hooks/use-user";

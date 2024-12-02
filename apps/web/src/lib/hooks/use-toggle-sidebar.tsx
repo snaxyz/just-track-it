@@ -1,4 +1,4 @@
-import { updateUserSettingSidebarCollapsed } from "@/server/actions/settings";
+import { updateUserSettingSidebarCollapsed } from "@/server/settings";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUserId } from "./use-user";
 

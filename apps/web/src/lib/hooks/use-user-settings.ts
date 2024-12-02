@@ -1,4 +1,4 @@
-import { getUserSettings } from "@/server/actions/settings";
+import { getUserSettings } from "@/server/settings";
 import { useQuery } from "@tanstack/react-query";
 import { useUserId } from "./use-user";
 
