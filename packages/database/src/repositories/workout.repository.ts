@@ -24,10 +24,16 @@ export class WorkoutRepository extends Repository {
     sk: `#WORKOUT#${workoutId}`,
   });
 
+  /**
+   * Query by created date
+   */
   private lsi1Key = (created: string, id: string) => ({
     [this.lsi1]: `#CREATED#${created}#${id}`,
   });
 
+  /**
+   * Query by name
+   */
   private lsi2Key = (name: string) => ({
     [this.lsi2]: `#NAME#${name.toLowerCase()}`,
   });
@@ -60,7 +66,7 @@ export class WorkoutRepository extends Repository {
     return item as WorkoutModel;
   }
 
-  async query(
+  async queryByDate(
     userId: string,
     options: QueryOptions = { limit: 100, order: "asc" }
   ): Promise<QueryResponse<WorkoutModel>> {

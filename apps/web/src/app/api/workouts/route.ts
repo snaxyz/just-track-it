@@ -1,3 +1,8 @@
+import { getUserId } from "@/server/user";
+import { db } from "@local/database";
+
 export async function GET() {
-  return Response.json([]);
+  const userId = await getUserId();
+  const workouts = await db.workout.queryByDate(userId);
+  return Response.json(workouts);
 }

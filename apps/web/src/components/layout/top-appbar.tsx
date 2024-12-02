@@ -16,9 +16,9 @@ interface Props {
 export function TopAppbar({ user, children, className }: Props) {
   return (
     <>
-      <div className="capitalize flex text-secondary items-center justify-center">
+      <div className="capitalize flex items-center justify-center text-sm">
         <span className="mr-2">
-          <HeartHandshakeIcon size={22} />
+          <HeartHandshakeIcon size={16} />
         </span>
         Tracker
       </div>

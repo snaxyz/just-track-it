@@ -27,6 +27,7 @@ export interface WorkoutHistoryModel extends Model {
   id: string;
   userId: string;
   workoutId: string;
+  workoutName: string;
   date: string;
   exercises: WorkoutHistoryExercise[];
   created: string;
@@ -39,18 +40,36 @@ export class WorkoutHistoryRepository extends Repository {
     sk: `#HISTORY#${historyId}`,
   });
 
+  /**
+   * Query by most recent workouts
+   */
   private lsi1Key = (date: string) => ({
     [this.lsi1]: `#DATE#${date}`,
   });
 
+  /**
+   * Query by workout id, and most recent
+   */
   private lsi2Key = (workoutId: string, date: string) => ({
     [this.lsi2]: `#WORKOUT#${workoutId}#DATE#${date}`,
   });
+
+  async get(userId: string, historyId: string) {
+    const res = await this.client.get({
+      TableName: this.tableName,
+      Key: this.key(userId, historyId),
+    });
+    if (res.Item) {
+      return res.Item as WorkoutHistoryModel;
+    }
+    return null;
+  }
 
   async create(
     userId: string,
     history: {
       workoutId: string;
+      workoutName: string;
       date: string;
       exercises: WorkoutHistoryExercise[];
     }
@@ -61,6 +80,7 @@ export class WorkoutHistoryRepository extends Repository {
       id,
       userId,
       workoutId: history.workoutId,
+      workoutName: history.workoutName,
       date: history.date,
       exercises: history.exercises,
       ...ts,
@@ -77,7 +97,7 @@ export class WorkoutHistoryRepository extends Repository {
     return item as WorkoutHistoryModel;
   }
 
-  async query(
+  async queryByDate(
     userId: string,
     options: QueryOptions = { limit: 100, order: "asc" }
   ): Promise<QueryResponse<WorkoutHistoryModel>> {
@@ -91,6 +111,34 @@ export class WorkoutHistoryRepository extends Repository {
       ExpressionAttributeValues: {
         ":pk": `#USER#${userId}`,
         ":lsi1": "#DATE#",
+      },
+      Limit: options.limit,
+      ExclusiveStartKey: cursorToKey(options.nextCursor),
+      ScanIndexForward: scanIndexForward(options.order),
+    });
+
+    const cursor = keyToCursor(res.LastEvaluatedKey);
+    return {
+      cursor,
+      records: (res.Items ?? []) as WorkoutHistoryModel[],
+    };
+  }
+
+  async queryByWorkoutDate(
+    userId: string,
+    workoutId: string,
+    options: QueryOptions = { limit: 100, order: "asc" }
+  ): Promise<QueryResponse<WorkoutHistoryModel>> {
+    const res = await this.client.query({
+      TableName: this.tableName,
+      IndexName: this.lsi2,
+      KeyConditionExpression: "pk = :pk and begins_with(#lsi2, :lsi2)",
+      ExpressionAttributeNames: {
+        "#lsi2": this.lsi2,
+      },
+      ExpressionAttributeValues: {
+        ":pk": `#USER#${userId}`,
+        ":lsi2": `#WORKOUT#${workoutId}`,
       },
       Limit: options.limit,
       ExclusiveStartKey: cursorToKey(options.nextCursor),

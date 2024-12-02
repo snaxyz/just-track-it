@@ -3,7 +3,7 @@
 import { FabContainer } from "@/components/layout/fab-container";
 import { MainContainer } from "@/components/layout/main-container";
 import { PageContainer } from "@/components/layout/page-container";
-import { Button, useDisclosure } from "@nextui-org/react";
+import { Button, Input, useDisclosure } from "@nextui-org/react";
 import { PlusIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { NewSetModal, NewSetModalProps } from "./components/new-set-modal";
@@ -21,10 +21,23 @@ import {
   WorkoutExercise,
 } from "./components/workout-exercise";
 import { DateTime } from "@/components/date-time";
+import { useQuery } from "@tanstack/react-query";
+import {
+  EnhancedWorkoutHistoryModel,
+  getWorkoutHistory,
+} from "@/app/api/history/[id]/get-workout-history";
 
 export default function WorkoutPage() {
   const userId = useUserId();
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
+
+  const { data: workout, isLoading } = useQuery<EnhancedWorkoutHistoryModel>({
+    queryKey: ["history", id],
+    queryFn: () => getWorkoutHistory(id),
+  });
+
+  console.log({ workout });
+
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   // TODO: update this to be queried by db
@@ -205,13 +218,19 @@ export default function WorkoutPage() {
     );
   };
 
+  if (isLoading) return <div>loading...</div>;
+
+  console.log({ workout });
+
   return (
     <>
       <PageContainer>
         <MainContainer className="px-2">
-          <h1 className="text-xl my-3">
-            <DateTime iso={today.current.toISOString()} formatType="friendly" />
-          </h1>
+          <Input
+            className="text-xl my-3"
+            value={workout?.workoutName ?? ""}
+            variant="bordered"
+          />
           <div className="pb-24">
             {workoutExercises.map((e) => (
               <WorkoutExercise
