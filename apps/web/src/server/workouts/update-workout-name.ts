@@ -9,3 +9,13 @@ export async function updateWorkoutName(workoutId: string, newName: string) {
     name: newName,
   });
 }
+
+export async function updateWorkoutHistoryName(
+  historyId: string,
+  newName: string
+) {
+  const userId = await getUserId();
+  await db.workoutHistory.update(userId, historyId, {
+    workoutName: newName,
+  });
+}

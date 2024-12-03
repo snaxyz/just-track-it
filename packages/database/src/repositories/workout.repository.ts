@@ -35,8 +35,10 @@ export class WorkoutRepository extends Repository {
    * Query by name
    */
   private lsi2Key = (name: string) => ({
-    [this.lsi2]: `#NAME#${name.toLowerCase()}`,
+    [this.lsi2]: this.lsi2Value(name),
   });
+
+  private lsi2Value = (name: string) => `#NAME#${name.toLowerCase()}`;
 
   async create(
     userId: string,
@@ -110,6 +112,9 @@ export class WorkoutRepository extends Repository {
       updateExpression.push("#name = :name");
       expressionAttributeNames["#name"] = "name";
       expressionAttributeValues[":name"] = updates.name;
+      updateExpression.push("#lsi2 = :lsi2");
+      expressionAttributeNames["#lsi2"] = this.lsi2;
+      expressionAttributeValues[":lsi2"] = this.lsi2Value(updates.name);
     }
 
     if (updates.exercises) {

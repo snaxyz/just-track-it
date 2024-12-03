@@ -21,13 +21,15 @@ import {
   WorkoutExercise,
 } from "./components/workout-exercise";
 import { DateTime } from "@/components/date-time";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   EnhancedWorkoutHistoryModel,
   getWorkoutHistory,
 } from "@/app/api/history/[id]/get-workout-history";
 import { EmptyExercisesPlaceholder } from "./components/empty-exercises-placeholder";
 import { IconButton } from "@/components/icon-button";
+import { updateWorkoutHistoryName, updateWorkoutName } from "@/server/workouts";
+import { useDebouncedCallback } from "@/lib/hooks/use-debounced-callback";
 
 export default function WorkoutPage() {
   const userId = useUserId();
@@ -222,6 +224,29 @@ export default function WorkoutPage() {
     redirect("/workouts");
   };
 
+  const queryClient = useQueryClient();
+
+  const debouncedUpdateWorkoutName = useDebouncedCallback(
+    updateWorkoutName,
+    500
+  );
+  const debouncedUpdateWorkoutHistoryName = useDebouncedCallback(
+    updateWorkoutHistoryName,
+    500
+  );
+
+  const handleNameChange = async (updatedName: string) => {
+    if (!workout?.workoutId) return;
+    queryClient.setQueryData<EnhancedWorkoutHistoryModel>(["history", id], {
+      ...workout,
+      workoutName: updatedName,
+    });
+    await Promise.all([
+      debouncedUpdateWorkoutName(workout.workoutId, updatedName),
+      debouncedUpdateWorkoutHistoryName(workout.id, updatedName),
+    ]);
+  };
+
   // TODO: add SSR, prefetch queries, and better loading states
   if (isLoading) return <div>loading...</div>;
 
@@ -232,8 +257,9 @@ export default function WorkoutPage() {
           <Input
             className="text-xl my-3"
             label="Workout"
-            value={workout?.workoutName ?? ""}
             variant="faded"
+            value={workout?.workoutName ?? ""}
+            onValueChange={handleNameChange}
           />
           <div className="pb-24">
             {workoutExercises.length === 0 && (

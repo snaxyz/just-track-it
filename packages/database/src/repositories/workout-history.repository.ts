@@ -157,6 +157,7 @@ export class WorkoutHistoryRepository extends Repository {
     historyId: string,
     updates: Partial<{
       date: string;
+      workoutName: string;
       exercises: {
         exerciseId: string;
         reps: number;
@@ -174,6 +175,12 @@ export class WorkoutHistoryRepository extends Repository {
       updateExpression.push("#date = :date");
       expressionAttributeNames["#date"] = "date";
       expressionAttributeValues[":date"] = updates.date;
+    }
+
+    if (updates.workoutName) {
+      updateExpression.push("#workoutName = :workoutName");
+      expressionAttributeNames["#workoutName"] = "workoutName";
+      expressionAttributeValues[":workoutName"] = updates.workoutName;
     }
 
     if (updates.exercises) {
