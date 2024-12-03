@@ -241,10 +241,13 @@ export default function WorkoutPage() {
       ...workout,
       workoutName: updatedName,
     });
-    await Promise.all([
-      debouncedUpdateWorkoutName(workout.workoutId, updatedName),
+    const promises = [
       debouncedUpdateWorkoutHistoryName(workout.id, updatedName),
-    ]);
+    ];
+    if (workout.isNew) {
+      debouncedUpdateWorkoutName(workout.workoutId, updatedName);
+    }
+    await Promise.all(promises);
   };
 
   // TODO: add SSR, prefetch queries, and better loading states
