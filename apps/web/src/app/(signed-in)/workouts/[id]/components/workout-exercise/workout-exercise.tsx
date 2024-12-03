@@ -64,11 +64,9 @@ export function WorkoutExercise({
     set: number,
     updates: Partial<WorkoutHistoryExerciseSet>
   ) => {
-    console.log("update set");
     onUpdateSet(exerciseId, set, updates);
   };
   const handleDeleteSet = (set: number) => {
-    console.log("delete set");
     onDeleteSet(exerciseId, set);
   };
 
@@ -108,7 +106,7 @@ export function WorkoutExercise({
             <EditIcon size={16} />
           </Button>
         </CardHeader>
-        <Divider />
+        {sets.length > 0 && <Divider />}
         <CardBody className="p-0">{children}</CardBody>
       </Card>
       <EditWorkoutExerciseModal

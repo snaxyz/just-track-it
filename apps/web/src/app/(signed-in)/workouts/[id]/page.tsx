@@ -297,6 +297,11 @@ export default function WorkoutPage() {
     await Promise.all(promises);
   };
 
+  const handleStartWorkoutExercise = (exerciseId: string) => {
+    setLastUpdatedExercise(exerciseId);
+    onOpen();
+  };
+
   // TODO: add SSR, prefetch queries, and better loading states
   if (isLoading) return <div>loading...</div>;
 
@@ -328,14 +333,30 @@ export default function WorkoutPage() {
                 onDeleteSet={handleDeleteExerciseSet}
                 onUpdateSet={handleUpdateExerciseSet}
               >
-                <LastWorkoutExerciseSet
-                  exerciseId={e.exerciseId}
-                  set={e.sets.length}
-                  reps={e.sets[e.sets.length - 1].reps}
-                  weight={e.sets[e.sets.length - 1].weight}
-                  unit={e.sets[e.sets.length - 1].unit}
-                  onClick={handleWorkoutExerciseClick}
-                />
+                {e.sets.length > 0 ? (
+                  <LastWorkoutExerciseSet
+                    exerciseId={e.exerciseId}
+                    set={e.sets.length}
+                    reps={e.sets[e.sets.length - 1].reps}
+                    weight={e.sets[e.sets.length - 1].weight}
+                    unit={e.sets[e.sets.length - 1].unit}
+                    onClick={handleWorkoutExerciseClick}
+                  />
+                ) : (
+                  <div className="p-2">
+                    <Button
+                      variant="flat"
+                      startContent={<PlusIcon size={16} />}
+                      size="sm"
+                      radius="full"
+                      color="secondary"
+                      fullWidth
+                      onClick={() => handleStartWorkoutExercise(e.exerciseId)}
+                    >
+                      Start workout exercise
+                    </Button>
+                  </div>
+                )}
               </WorkoutExercise>
             ))}
             <div className="mt-6 flex justify-end gap-2">

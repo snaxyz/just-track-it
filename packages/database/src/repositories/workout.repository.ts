@@ -45,6 +45,14 @@ export class WorkoutRepository extends Repository {
 
   private lsi2Value = (name: string) => `#NAME#${name.toLowerCase()}`;
 
+  async get(userId: string, workoutId: string) {
+    const res = await this.client.get({
+      TableName: this.tableName,
+      Key: this.key(userId, workoutId),
+    });
+    return res.Item as WorkoutModel;
+  }
+
   async create(
     userId: string,
     workout: {

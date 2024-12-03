@@ -12,9 +12,10 @@ interface Props {
   id: string;
   name: string;
   children: React.ReactNode;
+  onStartWorkout: (workoutId: string) => void;
 }
 
-export function Workout({ name, children }: Props) {
+export function Workout({ id, name, children, onStartWorkout }: Props) {
   return (
     <div className="rounded-lg bg-zinc-200 dark:bg-zinc-800 mb-3">
       <div className="flex w-full p-2 gap-2">
@@ -39,6 +40,7 @@ export function Workout({ name, children }: Props) {
           size="sm"
           radius="full"
           color="secondary"
+          onClick={() => onStartWorkout(id)}
         >
           Start workout
         </Button>

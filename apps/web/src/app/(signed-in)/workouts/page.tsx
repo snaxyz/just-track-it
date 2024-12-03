@@ -19,6 +19,8 @@ import {
 import { EmptyWorkoutsPlaceholder } from "./components/empty-workouts-placeholder";
 import { Workout } from "./components/workout";
 import { WorkoutExercises } from "./components/workout/workout-exercises";
+import { useCallback } from "react";
+import { startWorkoutAndRedirect } from "@/server/workouts/start-workout";
 
 export default function WorkoutsPage() {
   const { data: workoutsQuery, isLoading } = useQuery<
@@ -27,6 +29,10 @@ export default function WorkoutsPage() {
     queryKey: ["workouts"],
     queryFn: () => getWorkouts(),
   });
+
+  const handleStartWorkout = useCallback(async (workoutId: string) => {
+    await startWorkoutAndRedirect(workoutId);
+  }, []);
 
   if (isLoading) return <div>...loading...</div>;
 
@@ -43,7 +49,12 @@ export default function WorkoutsPage() {
         )}
         <div className="pb-24">
           {workoutsQuery?.records.map((w) => (
-            <Workout key={w.id} id={w.id} name={w.name}>
+            <Workout
+              key={w.id}
+              id={w.id}
+              name={w.name}
+              onStartWorkout={handleStartWorkout}
+            >
               <WorkoutExercises exercises={w.exercises} />
             </Workout>
           ))}
