@@ -12,13 +12,7 @@ export function SidebarCollapseButton({ collapsed }: Props) {
   const collapse = useToggleSidebar({ collapsed });
 
   return (
-    <Button
-      isIconOnly
-      radius="full"
-      size="sm"
-      variant="light"
-      onClick={collapse}
-    >
+    <Button isIconOnly radius="lg" size="sm" variant="light" onClick={collapse}>
       <MenuIcon size={16} />
     </Button>
   );

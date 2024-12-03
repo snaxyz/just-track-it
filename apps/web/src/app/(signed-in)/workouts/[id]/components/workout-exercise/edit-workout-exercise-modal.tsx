@@ -94,7 +94,7 @@ export function EditWorkoutExerciseModal({
                   size="sm"
                   onClick={() => handleDeleteSet(ind)}
                   isIconOnly
-                  radius="full"
+                  radius="lg"
                   variant="bordered"
                 >
                   <TrashIcon size={16} />

@@ -91,7 +91,7 @@ export function WorkoutExercise({
           className="mr-2"
           isIconOnly
           size="sm"
-          radius="full"
+          radius="lg"
           variant="bordered"
         >
           <ChartLineIcon size={16} />
@@ -99,7 +99,7 @@ export function WorkoutExercise({
           <Button
             isIconOnly
             size="sm"
-            radius="full"
+            radius="lg"
             variant="bordered"
             onClick={onOpen}
           >

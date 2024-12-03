@@ -14,6 +14,7 @@ import { Workout } from "./components/workout";
 import { WorkoutExercises } from "./components/workout/workout-exercises";
 import { useCallback } from "react";
 import { startWorkoutAndRedirect } from "@/server/workouts/start-workout";
+import { IconButton } from "@/components/icon-button";
 
 export default function WorkoutsPage() {
   const { data: workoutsQuery, isLoading } = useQuery<
@@ -53,16 +54,13 @@ export default function WorkoutsPage() {
           ))}
         </div>
         <FabContainer>
-          <Button
-            isIconOnly
-            variant="solid"
-            radius="full"
-            size="sm"
+          <IconButton
             color="primary"
+            variant="solid"
             onClick={() => createWorkoutAndRedirect()}
           >
             <ActivityIcon size={16} />
-          </Button>
+          </IconButton>
         </FabContainer>
       </MainContainer>
     </PageContainer>

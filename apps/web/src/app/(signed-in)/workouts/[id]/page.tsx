@@ -341,7 +341,7 @@ export default function WorkoutPage() {
                       variant="flat"
                       startContent={<PlusIcon size={16} />}
                       size="sm"
-                      radius="full"
+                      radius="lg"
                       color="secondary"
                       fullWidth
                       onClick={() => handleStartWorkoutExercise(e.exerciseId)}
@@ -356,7 +356,7 @@ export default function WorkoutPage() {
               {workoutExercises.length > 0 && (
                 <Button
                   size="sm"
-                  radius="full"
+                  radius="lg"
                   color="secondary"
                   variant="flat"
                   startContent={<ListCheckIcon size={16} />}
@@ -374,7 +374,7 @@ export default function WorkoutPage() {
             <Button
               isIconOnly
               variant="solid"
-              radius="full"
+              radius="lg"
               size="sm"
               color="primary"
               onClick={onOpen}

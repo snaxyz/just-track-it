@@ -16,7 +16,7 @@ export function EmptyExercisesPlaceholder({ onAddClick }: Props) {
         startContent={<ActivityIcon size={16} />}
         size="md"
         onClick={onAddClick}
-        radius="full"
+        radius="lg"
         color="primary"
       >
         Create exercise

@@ -17,13 +17,7 @@ export function TopAppbarMenu() {
 
   return (
     <>
-      <Button
-        isIconOnly
-        radius="full"
-        size="sm"
-        variant="light"
-        onClick={onOpen}
-      >
+      <Button isIconOnly radius="lg" size="sm" variant="light" onClick={onOpen}>
         <MenuIcon size={16} />
       </Button>
       <RightDrawer
@@ -34,7 +28,7 @@ export function TopAppbarMenu() {
           <Button
             isIconOnly
             size="sm"
-            radius="full"
+            radius="lg"
             variant="light"
             onClick={onClose}
           >

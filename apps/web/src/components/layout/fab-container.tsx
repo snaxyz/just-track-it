@@ -3,5 +3,5 @@ interface Props {
 }
 
 export function FabContainer({ children }: Props) {
-  return <div className="fixed bottom-4 right-6 z-40">{children}</div>;
+  return <div className="fixed bottom-4 right-6 z-30">{children}</div>;
 }

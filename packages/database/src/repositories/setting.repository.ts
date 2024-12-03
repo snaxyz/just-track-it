@@ -1,16 +1,8 @@
-import { randomUUID } from "crypto";
-import { UpdateCommandInput } from "@aws-sdk/lib-dynamodb";
-import {
-  Model,
-  Repository,
-  QueryOptions,
-  cursorToKey,
-  scanIndexForward,
-  keyToCursor,
-} from "./repository";
+import { Model, Repository } from "./repository";
 
 export interface SettingModel extends Model {
   sidebarCollapsed?: boolean;
+  sampleExercisesLoaded?: boolean;
 }
 
 export class SettingRepository extends Repository {
@@ -37,5 +29,20 @@ export class SettingRepository extends Repository {
       },
     });
     return sidebarCollapsed;
+  }
+
+  async updateSampleExercisesLoaded(
+    userId: string,
+    sampleExercisesLoaded: boolean
+  ) {
+    await this.client.update({
+      TableName: this.tableName,
+      Key: this.key(userId),
+      UpdateExpression: "set sampleExercisesLoaded = :sampleExercisesLoaded",
+      ExpressionAttributeValues: {
+        ":sampleExercisesLoaded": sampleExercisesLoaded,
+      },
+    });
+    return sampleExercisesLoaded;
   }
 }

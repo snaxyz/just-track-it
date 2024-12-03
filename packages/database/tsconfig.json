@@ -6,7 +6,8 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "sourceMap": true,
-    "target": "ES6"
+    "target": "ES6",
+    "resolveJsonModule": true
   },
   "ts-node": {
     "swc": false,

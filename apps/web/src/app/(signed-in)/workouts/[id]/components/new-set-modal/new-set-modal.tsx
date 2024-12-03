@@ -11,6 +11,7 @@ import {
   ModalProps,
 } from "@nextui-org/react";
 import { SetSelect, RepSelect, WeightSelect } from "../common";
+import { PlusIcon } from "lucide-react";
 
 export interface NewSetModalProps extends Omit<ModalProps, "children"> {
   exercises: ExerciseModel[];
@@ -77,7 +78,7 @@ export function NewSetModal({
     <Modal isOpen={isOpen} onClose={onClose} isDismissable={false}>
       <ModalContent>
         <ModalHeader>New Set</ModalHeader>
-        <ModalBody>
+        <ModalBody className="p-2">
           <Autocomplete
             label="Exercise"
             fullWidth
@@ -112,8 +113,15 @@ export function NewSetModal({
           <RepSelect reps={reps} onChange={onRepsChange} />
           <WeightSelect unit={unit} weight={weight} onChange={onWeightChange} />
         </ModalBody>
-        <ModalFooter>
-          <Button onClick={handleAdd} disabled={!isValid}>
+        <ModalFooter className="p-2">
+          <Button
+            onClick={handleAdd}
+            disabled={!isValid}
+            startContent={<PlusIcon size={16} />}
+            radius="lg"
+            variant="flat"
+            size="sm"
+          >
             Add
           </Button>
         </ModalFooter>

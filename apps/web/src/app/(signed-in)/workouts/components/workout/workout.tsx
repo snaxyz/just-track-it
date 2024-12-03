@@ -38,7 +38,7 @@ export function Workout({ id, name, children, onStartWorkout }: Props) {
           variant="flat"
           startContent={<ActivityIcon size={16} />}
           size="sm"
-          radius="full"
+          radius="lg"
           color="secondary"
           onClick={() => onStartWorkout(id)}
         >

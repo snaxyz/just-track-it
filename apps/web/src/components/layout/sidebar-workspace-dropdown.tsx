@@ -27,7 +27,7 @@ export function SidebarWorkspaceDropdown({ name, picture }: Props) {
         <Button
           variant="light"
           title={dropdownTitle}
-          radius="full"
+          radius="lg"
           isIconOnly
           size="sm"
         >
