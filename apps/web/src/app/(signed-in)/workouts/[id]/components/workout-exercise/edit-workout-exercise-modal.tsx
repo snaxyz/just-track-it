@@ -50,6 +50,9 @@ export function EditWorkoutExerciseModal({
   };
 
   const handleDeleteSet = (set: number) => {
+    if (set === 0) {
+      return onDeleteExercise();
+    }
     onDeleteSet(set);
   };
 

@@ -28,13 +28,18 @@ import {
 } from "@/app/api/history/[id]/get-workout-history";
 import { EmptyExercisesPlaceholder } from "./components/empty-exercises-placeholder";
 import { IconButton } from "@/components/icon-button";
-import { updateWorkoutHistoryName, updateWorkoutName } from "@/server/workouts";
+import {
+  updateWorkoutHistoryExercises,
+  updateWorkoutHistoryName,
+  updateWorkoutName,
+} from "@/server/workouts";
 import { useDebouncedCallback } from "@/lib/hooks/use-debounced-callback";
 
 export default function WorkoutPage() {
   const userId = useUserId();
   const { id } = useParams<{ id: string }>();
 
+  const queryClient = useQueryClient();
   const { data: workout, isLoading } = useQuery<EnhancedWorkoutHistoryModel>({
     queryKey: ["history", id],
     queryFn: () => getWorkoutHistory(id),
@@ -60,9 +65,7 @@ export default function WorkoutPage() {
   const [reps, setReps] = useState("5");
   const [weight, setWeight] = useState("2.5");
 
-  const [workoutExercises, setWorkoutExercises] = useState<
-    WorkoutHistoryExercise[]
-  >([]);
+  const workoutExercises = workout?.exercises ?? [];
 
   const handleSelectExercise = (exerciseId: string) => {
     const exercise = workoutExercises.find((e) => e.exerciseId === exerciseId);
@@ -113,7 +116,7 @@ export default function WorkoutPage() {
   };
 
   const handleAddNewSet: NewSetModalProps["onAdd"] = (input) => {
-    let exercise: ExerciseModel;
+    let exercise: ExerciseModel | undefined = undefined;
     if (input.selectedExercise) {
       exercise = exercises.find((e) => e.id === input.selectedExercise)!;
       setLastUpdatedExercise(exercise.id);
@@ -134,13 +137,15 @@ export default function WorkoutPage() {
           userId,
           name: input.customExercise.trim(),
         };
-        setExercises((e) => [...e, exercise]);
+        setExercises((e) => [...e, exercise!]);
       }
       setLastUpdatedExercise(exercise.id);
     }
+    if (!workout || !exercise) return;
+    let updatedWorkoutExercises: WorkoutHistoryExercise[];
     if (input.set === "1") {
-      setWorkoutExercises((e) => [
-        ...e,
+      updatedWorkoutExercises = [
+        ...workoutExercises,
         {
           exerciseId: exercise.id,
           exerciseName: exercise.name,
@@ -152,27 +157,31 @@ export default function WorkoutPage() {
             },
           ],
         },
-      ]);
+      ];
+      updateWorkoutHistoryExercises(workout.id, updatedWorkoutExercises);
     } else {
-      setWorkoutExercises((we) =>
-        we.map((e) => {
-          if (e.exerciseId === exercise.id) {
-            return {
-              ...e,
-              sets: [
-                ...e.sets,
-                {
-                  reps: parseInt(input.reps),
-                  weight: parseFloat(input.weight),
-                  unit: input.unit,
-                },
-              ],
-            };
-          }
-          return e;
-        })
-      );
+      updatedWorkoutExercises = workoutExercises.map((e) => {
+        if (e.exerciseId === exercise.id) {
+          return {
+            ...e,
+            sets: [
+              ...e.sets,
+              {
+                reps: parseInt(input.reps),
+                weight: parseFloat(input.weight),
+                unit: input.unit,
+              },
+            ],
+          };
+        }
+        return e;
+      });
+      updateWorkoutHistoryExercises(workout.id, updatedWorkoutExercises);
     }
+    queryClient.setQueryData(["history", workout.id], {
+      ...workout,
+      exercises: updatedWorkoutExercises,
+    });
     setSet((parseInt(input.set) + 1).toString());
   };
 
@@ -183,48 +192,61 @@ export default function WorkoutPage() {
 
   const [lastUpdatedExercise, setLastUpdatedExercise] = useState("");
   const onAnimationComplete = useCallback(() => setLastUpdatedExercise(""), []);
-  const today = useRef(new Date());
   const handleDeleteExercise = (exerciseId: string) => {
-    setWorkoutExercises((e) => e.filter((e) => e.exerciseId !== exerciseId));
+    if (!workout) return;
+    const updatedWorkoutExercises = workoutExercises.filter(
+      (e) => e.exerciseId !== exerciseId
+    );
+    updateWorkoutHistoryExercises(workout.id, updatedWorkoutExercises);
+    queryClient.setQueryData(["history", workout.id], {
+      ...workout,
+      exercises: updatedWorkoutExercises,
+    });
   };
   const handleDeleteExerciseSet = (exerciseId: string, setIndex: number) => {
-    setWorkoutExercises((exercises) =>
-      exercises.map((exercise) => {
-        if (exercise.exerciseId === exerciseId) {
-          return {
-            ...exercise,
-            sets: exercise.sets.filter((_, index) => index !== setIndex),
-          };
-        }
-        return exercise;
-      })
-    );
+    if (!workout) return;
+    const updatedWorkoutExercises = workoutExercises.map((exercise) => {
+      if (exercise.exerciseId === exerciseId) {
+        return {
+          ...exercise,
+          sets: exercise.sets.filter((_, index) => index !== setIndex),
+        };
+      }
+      return exercise;
+    });
+    updateWorkoutHistoryExercises(workout.id, updatedWorkoutExercises);
+    queryClient.setQueryData(["history", workout.id], {
+      ...workout,
+      exercises: updatedWorkoutExercises,
+    });
   };
   const handleUpdateExerciseSet = (
     exerciseId: string,
     setIndex: number,
     updates: Partial<WorkoutHistoryExerciseSet>
   ) => {
-    setWorkoutExercises((exercises) =>
-      exercises.map((exercise) => {
-        if (exercise.exerciseId === exerciseId) {
-          return {
-            ...exercise,
-            sets: exercise.sets.map((set, index) =>
-              index === setIndex ? { ...set, ...updates } : set
-            ),
-          };
-        }
-        return exercise;
-      })
-    );
+    if (!workout) return;
+    const updatedWorkoutExercises = workoutExercises.map((exercise) => {
+      if (exercise.exerciseId === exerciseId) {
+        return {
+          ...exercise,
+          sets: exercise.sets.map((set, index) =>
+            index === setIndex ? { ...set, ...updates } : set
+          ),
+        };
+      }
+      return exercise;
+    });
+    updateWorkoutHistoryExercises(workout.id, updatedWorkoutExercises);
+    queryClient.setQueryData(["history", workout.id], {
+      ...workout,
+      exercises: updatedWorkoutExercises,
+    });
   };
 
   const handleComplete = () => {
     redirect("/workouts");
   };
-
-  const queryClient = useQueryClient();
 
   const debouncedUpdateWorkoutName = useDebouncedCallback(
     updateWorkoutName,

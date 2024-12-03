@@ -82,7 +82,7 @@ export default function WorkoutsPage() {
             color="primary"
             onClick={() => createWorkoutAndRedirect()}
           >
-            <PlusIcon size={16} />
+            <ActivityIcon size={16} />
           </Button>
         </FabContainer>
       </MainContainer>

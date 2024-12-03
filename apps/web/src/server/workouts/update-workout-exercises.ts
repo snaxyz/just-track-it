@@ -1,6 +1,6 @@
 "use server";
 
-import { db, WorkoutModel } from "@local/database";
+import { db, WorkoutHistoryModel, WorkoutModel } from "@local/database";
 import { getUserId } from "../user";
 
 export async function updateWorkoutExercises(
@@ -8,8 +8,17 @@ export async function updateWorkoutExercises(
   exercises: WorkoutModel["exercises"]
 ) {
   const userId = await getUserId();
-
   await db.workout.update(userId, workoutId, {
+    exercises,
+  });
+}
+
+export async function updateWorkoutHistoryExercises(
+  historyId: string,
+  exercises: WorkoutHistoryModel["exercises"]
+) {
+  const userId = await getUserId();
+  await db.workoutHistory.update(userId, historyId, {
     exercises,
   });
 }

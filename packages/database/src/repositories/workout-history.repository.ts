@@ -158,12 +158,7 @@ export class WorkoutHistoryRepository extends Repository {
     updates: Partial<{
       date: string;
       workoutName: string;
-      exercises: {
-        exerciseId: string;
-        reps: number;
-        sets: number;
-        weight?: number;
-      }[];
+      exercises: WorkoutHistoryExercise[];
     }>
   ) {
     const ts = this.timestamps();
