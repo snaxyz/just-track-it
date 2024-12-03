@@ -7,7 +7,7 @@ import { Button, Input, useDisclosure } from "@nextui-org/react";
 import { ListCheckIcon, MoreVerticalIcon, PlusIcon } from "lucide-react";
 import { redirect, useParams } from "next/navigation";
 import { NewSetModal, NewSetModalProps } from "./components/new-set-modal";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   ExerciseModel,
   QueryResponse,
@@ -15,14 +15,11 @@ import {
   WorkoutHistoryExerciseSet,
   WorkoutModel,
 } from "@local/database";
-import { nanoid } from "nanoid";
-import { currentTimestamp } from "@/lib/timestamp";
 import { useUserId } from "@/lib/hooks/use-user";
 import {
   LastWorkoutExerciseSet,
   WorkoutExercise,
 } from "./components/workout-exercise";
-import { DateTime } from "@/components/date-time";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   EnhancedWorkoutHistoryModel,
@@ -37,36 +34,34 @@ import {
   updateWorkoutName,
 } from "@/server/workouts";
 import { useDebouncedCallback } from "@/lib/hooks/use-debounced-callback";
+import { getExercises } from "@/app/api/exercises/get-exercises";
+import { createExercise } from "@/server/exercises/create-exercise";
 
 export default function WorkoutPage() {
-  const userId = useUserId();
   const { id } = useParams<{ id: string }>();
 
   const queryClient = useQueryClient();
-  const { data: workout, isLoading } = useQuery<EnhancedWorkoutHistoryModel>({
-    queryKey: ["history", id],
-    queryFn: () => getWorkoutHistory(id),
+  const { data: workout, isLoading: isWorkoutLoading } =
+    useQuery<EnhancedWorkoutHistoryModel>({
+      queryKey: ["history", id],
+      queryFn: () => getWorkoutHistory(id),
+    });
+  const { data: exercisesQuery, isLoading: isExercisesLoading } = useQuery<
+    QueryResponse<ExerciseModel>
+  >({
+    queryKey: ["exercises"],
+    queryFn: () => getExercises(),
   });
+  const isLoading = isWorkoutLoading || isExercisesLoading;
 
   const { isOpen, onClose, onOpen } = useDisclosure();
 
-  // TODO: update this to be queried by db
-  const [exercises, setExercises] = useState<ExerciseModel[]>([
-    {
-      id: "bench",
-      name: "bench",
-      created: "2020",
-      updated: "2020",
-      userId,
-    },
-  ]);
-
   // TODO: use last workout exercise stats
-  const [selectedExercise, setSelectedExercise] = useState("bench");
-  const [customExercise, setCustomExercise] = useState("bench");
-  const [set, setSet] = useState("1");
-  const [reps, setReps] = useState("5");
-  const [weight, setWeight] = useState("2.5");
+  const [selectedExercise, setSelectedExercise] = useState("");
+  const [customExercise, setCustomExercise] = useState("");
+  const [set, setSet] = useState("");
+  const [reps, setReps] = useState("");
+  const [weight, setWeight] = useState("");
 
   const workoutExercises = workout?.exercises ?? [];
 
@@ -89,7 +84,7 @@ export default function WorkoutPage() {
   const handleCustomExerciseChange = (exercise: string) => {
     setCustomExercise(exercise);
 
-    const found = exercises.find(
+    const found = exercisesQuery?.records.find(
       (e) => e.name.toLowerCase() === exercise.trim().toLowerCase()
     );
     if (found) {
@@ -118,29 +113,27 @@ export default function WorkoutPage() {
     }
   };
 
-  const handleAddNewSet: NewSetModalProps["onAdd"] = (input) => {
+  const handleAddNewSet: NewSetModalProps["onAdd"] = async (input) => {
     let exercise: ExerciseModel | undefined = undefined;
     if (input.selectedExercise) {
-      exercise = exercises.find((e) => e.id === input.selectedExercise)!;
+      exercise = exercisesQuery?.records.find(
+        (e) => e.id === input.selectedExercise
+      )!;
       setLastUpdatedExercise(exercise.id);
     }
     if (input.customExercise) {
-      const matchedExercise = exercises.find(
+      const matchedExercise = exercisesQuery?.records.find(
         (e) =>
           e.name.toLowerCase() === input.customExercise?.trim().toLowerCase()
       );
       if (matchedExercise) {
         exercise = matchedExercise;
       } else {
-        const ts = currentTimestamp();
-        exercise = {
-          id: nanoid(),
-          created: ts,
-          updated: ts,
-          userId,
-          name: input.customExercise.trim(),
-        };
-        setExercises((e) => [...e, exercise!]);
+        exercise = await createExercise(input.customExercise.trim());
+        queryClient.setQueryData<QueryResponse<ExerciseModel>>(["exercises"], {
+          ...(exercisesQuery ?? { cursor: "" }),
+          records: [...(exercisesQuery?.records ?? []), exercise],
+        });
       }
       setLastUpdatedExercise(exercise.id);
     }
@@ -394,7 +387,7 @@ export default function WorkoutPage() {
       <NewSetModal
         isOpen={isOpen}
         onClose={onClose}
-        exercises={exercises}
+        exercises={exercisesQuery?.records ?? []}
         onAdd={handleAddNewSet}
         selectedExercise={selectedExercise}
         customExercise={customExercise}

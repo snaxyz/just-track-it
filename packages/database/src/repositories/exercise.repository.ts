@@ -17,7 +17,7 @@ export interface ExerciseModel extends Model {
 
 export class ExerciseRepository extends Repository {
   private key = (userId: string, exerciseId: string) => ({
-    pk: `#USER#${userId}`,
+    pk: `#USER#${userId}#EXERCISE#`,
     sk: `#EXERCISE#${exerciseId}`,
   });
 
@@ -50,20 +50,20 @@ export class ExerciseRepository extends Repository {
     return item as ExerciseModel;
   }
 
-  async query(
+  async queryByName(
     userId: string,
     options: QueryOptions = { limit: 100, order: "asc" }
   ): Promise<QueryResponse<ExerciseModel>> {
     const res = await this.client.query({
       TableName: this.tableName,
-      IndexName: this.lsi1,
-      KeyConditionExpression: "pk = :pk and begins_with(#lsi1, :lsi1)",
+      IndexName: this.lsi2,
+      KeyConditionExpression: "pk = :pk and begins_with(#lsi2, :lsi2)",
       ExpressionAttributeNames: {
-        "#lsi1": this.lsi1,
+        "#lsi2": this.lsi2,
       },
       ExpressionAttributeValues: {
-        ":pk": `#USER#${userId}`,
-        ":lsi1": "#CREATED#",
+        ":pk": `#USER#${userId}#EXERCISE#`,
+        ":lsi2": "#NAME#",
       },
       Limit: options.limit,
       ExclusiveStartKey: cursorToKey(options.nextCursor),

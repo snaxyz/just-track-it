@@ -1,21 +1,14 @@
 "use client";
 
-import { IconButton } from "@/components/icon-button";
 import { FabContainer } from "@/components/layout/fab-container";
-import { Grow } from "@/components/layout/grow";
 import { MainContainer } from "@/components/layout/main-container";
 import { PageContainer } from "@/components/layout/page-container";
 import { getWorkouts } from "@/app/api/workouts/get-workouts";
 import { createWorkoutAndRedirect } from "@/server/workouts";
 import { QueryResponse, WorkoutModel } from "@local/database";
-import { Button, Chip } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  ActivityIcon,
-  EditIcon,
-  HistoryIcon,
-  MoreHorizontalIcon,
-} from "lucide-react";
+import { ActivityIcon } from "lucide-react";
 import { EmptyWorkoutsPlaceholder } from "./components/empty-workouts-placeholder";
 import { Workout } from "./components/workout";
 import { WorkoutExercises } from "./components/workout/workout-exercises";

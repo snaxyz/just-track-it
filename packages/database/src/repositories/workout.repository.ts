@@ -25,7 +25,7 @@ export interface WorkoutModel extends Model {
 
 export class WorkoutRepository extends Repository {
   private key = (userId: string, workoutId: string) => ({
-    pk: `#USER#${userId}`,
+    pk: `#USER#${userId}#WORKOUT#`,
     sk: `#WORKOUT#${workoutId}`,
   });
 
@@ -93,7 +93,7 @@ export class WorkoutRepository extends Repository {
         "#lsi1": this.lsi1,
       },
       ExpressionAttributeValues: {
-        ":pk": `#USER#${userId}`,
+        ":pk": `#USER#${userId}#WORKOUT#`,
         ":lsi1": "#CREATED#",
       },
       Limit: options.limit,

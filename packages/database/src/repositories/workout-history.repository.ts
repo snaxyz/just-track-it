@@ -36,7 +36,7 @@ export interface WorkoutHistoryModel extends Model {
 
 export class WorkoutHistoryRepository extends Repository {
   private key = (userId: string, historyId: string) => ({
-    pk: `#USER#${userId}`,
+    pk: `#USER#${userId}#HISTORY#`,
     sk: `#HISTORY#${historyId}`,
   });
 
@@ -109,7 +109,7 @@ export class WorkoutHistoryRepository extends Repository {
         "#lsi1": this.lsi1,
       },
       ExpressionAttributeValues: {
-        ":pk": `#USER#${userId}`,
+        ":pk": `#USER#${userId}#HISTORY#`,
         ":lsi1": "#DATE#",
       },
       Limit: options.limit,
@@ -137,7 +137,7 @@ export class WorkoutHistoryRepository extends Repository {
         "#lsi2": this.lsi2,
       },
       ExpressionAttributeValues: {
-        ":pk": `#USER#${userId}`,
+        ":pk": `#USER#${userId}#HISTORY#`,
         ":lsi2": `#WORKOUT#${workoutId}`,
       },
       Limit: options.limit,
