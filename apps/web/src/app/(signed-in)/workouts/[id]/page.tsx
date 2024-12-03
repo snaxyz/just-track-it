@@ -10,8 +10,10 @@ import { NewSetModal, NewSetModalProps } from "./components/new-set-modal";
 import { useCallback, useRef, useState } from "react";
 import {
   ExerciseModel,
+  QueryResponse,
   WorkoutHistoryExercise,
   WorkoutHistoryExerciseSet,
+  WorkoutModel,
 } from "@local/database";
 import { nanoid } from "nanoid";
 import { currentTimestamp } from "@/lib/timestamp";
@@ -29,6 +31,7 @@ import {
 import { EmptyExercisesPlaceholder } from "./components/empty-exercises-placeholder";
 import { IconButton } from "@/components/icon-button";
 import {
+  updateWorkoutExercises,
   updateWorkoutHistoryExercises,
   updateWorkoutHistoryName,
   updateWorkoutName,
@@ -244,7 +247,29 @@ export default function WorkoutPage() {
     });
   };
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
+    if (!workout) return;
+    if (workout.isNew) {
+      const updatedWorkout = await updateWorkoutExercises(
+        workout.workoutId,
+        workoutExercises.map((e) => ({
+          exerciseId: e.exerciseId,
+          exerciseName: e.exerciseName,
+        }))
+      );
+      const cachedWorkouts = queryClient.getQueryData<
+        QueryResponse<WorkoutModel>
+      >(["workouts"]) ?? {
+        records: [],
+        cursor: "",
+      };
+      const updatedWorkouts: QueryResponse<WorkoutModel> = {
+        ...cachedWorkouts,
+        records: [...cachedWorkouts.records, updatedWorkout],
+      };
+      queryClient.setQueryData(["workouts"], updatedWorkouts);
+    }
+
     redirect("/workouts");
   };
 

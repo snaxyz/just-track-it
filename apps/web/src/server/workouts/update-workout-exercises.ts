@@ -8,7 +8,7 @@ export async function updateWorkoutExercises(
   exercises: WorkoutModel["exercises"]
 ) {
   const userId = await getUserId();
-  await db.workout.update(userId, workoutId, {
+  return await db.workout.update(userId, workoutId, {
     exercises,
   });
 }

@@ -9,11 +9,16 @@ import {
 } from "./repository";
 import { QueryResponse } from "../types";
 
+export interface WorkoutExercise {
+  exerciseId: string;
+  exerciseName: string;
+}
+
 export interface WorkoutModel extends Model {
   id: string;
   userId: string;
   name: string;
-  exercises: { exerciseId: string; reps: number; sets: number }[];
+  exercises: WorkoutExercise[];
   created: string;
   updated: string;
 }
@@ -44,7 +49,7 @@ export class WorkoutRepository extends Repository {
     userId: string,
     workout: {
       name: string;
-      exercises: { exerciseId: string; reps: number; sets: number }[];
+      exercises: WorkoutExercise[];
     }
   ) {
     const id = nanoid();
@@ -100,7 +105,7 @@ export class WorkoutRepository extends Repository {
     workoutId: string,
     updates: Partial<{
       name: string;
-      exercises: { exerciseId: string; reps: number; sets: number }[];
+      exercises: WorkoutExercise[];
     }>
   ) {
     const ts = this.timestamps();
@@ -127,13 +132,16 @@ export class WorkoutRepository extends Repository {
     expressionAttributeNames["#updated"] = "updated";
     expressionAttributeValues[":updated"] = ts.updated;
 
-    await this.client.update({
+    const res = await this.client.update({
       TableName: this.tableName,
       Key: this.key(userId, workoutId),
       UpdateExpression: `SET ${updateExpression.join(", ")}`,
       ExpressionAttributeNames: expressionAttributeNames,
       ExpressionAttributeValues: expressionAttributeValues,
+      ReturnValues: "ALL_NEW",
     });
+
+    return res.Attributes as WorkoutModel;
   }
 
   async delete(userId: string, workoutId: string) {
