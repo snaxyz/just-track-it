@@ -1,8 +1,6 @@
-import { getUserId } from "@/server/user";
-import { db } from "@local/database";
+import { getExercisesServer } from "@/server/exercises/get-exercises";
 
 export async function GET() {
-  const userId = await getUserId();
-  const workouts = await db.exercise.queryByName(userId);
-  return Response.json(workouts);
+  const exercises = await getExercisesServer();
+  return Response.json(exercises);
 }
