@@ -31,6 +31,11 @@ export function HistoryExercise({
           </div>
         </div>
       ))}
+      {sets.length === 0 && (
+        <div className="text-caption-light dark:text-caption text-xs italic">
+          No sets recorded.
+        </div>
+      )}
     </div>
   );
 }
