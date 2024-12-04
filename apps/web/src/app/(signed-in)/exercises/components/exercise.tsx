@@ -40,17 +40,17 @@ export function Exercise({
             <TrashIcon size={16} />
           </IconButton>
         </div>
+        <div className="text-caption text-xs mb-1">
+          {categories.length === 0 ? "No categories" : "Categories"}
+        </div>
         {categories.length > 0 && (
-          <>
-            <div className="text-caption text-xs mb-1">Categories</div>
-            <div className="flex capitalize gap-2 flex-wrap items-center">
-              {categories.map((c) => (
-                <Chip key={c} size="sm">
-                  {c}
-                </Chip>
-              ))}
-            </div>
-          </>
+          <div className="flex capitalize gap-2 flex-wrap items-center justify-end">
+            {categories.map((c) => (
+              <Chip key={c} size="sm" variant="flat">
+                {c}
+              </Chip>
+            ))}
+          </div>
         )}
       </div>
       <EditExerciseModal

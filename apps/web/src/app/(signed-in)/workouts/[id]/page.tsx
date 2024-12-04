@@ -129,7 +129,7 @@ export default function WorkoutPage() {
       if (matchedExercise) {
         exercise = matchedExercise;
       } else {
-        exercise = await createExercise(input.customExercise.trim());
+        exercise = await createExercise(input.customExercise.trim(), []);
         queryClient.setQueryData<QueryResponse<ExerciseModel>>(["exercises"], {
           ...(exercisesQuery ?? { cursor: "" }),
           records: [...(exercisesQuery?.records ?? []), exercise],
@@ -371,16 +371,9 @@ export default function WorkoutPage() {
             </div>
           </div>
           <FabContainer>
-            <Button
-              isIconOnly
-              variant="solid"
-              radius="lg"
-              size="sm"
-              color="primary"
-              onClick={onOpen}
-            >
+            <IconButton variant="solid" color="primary" onClick={onOpen}>
               <PlusIcon size={16} />
-            </Button>
+            </IconButton>
           </FabContainer>
         </MainContainer>
       </PageContainer>
