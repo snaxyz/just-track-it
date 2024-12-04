@@ -15,7 +15,9 @@ export function HistoryExercise({
 }: Props) {
   return (
     <div key={exerciseId} className={className}>
-      <div className="text-caption capitalize">{exerciseName}</div>
+      <div className="text-caption-light dark:text-caption capitalize">
+        {exerciseName}
+      </div>
       {sets.map((set, ind) => (
         <div key={exerciseId + ind}>
           <div className="flex items-center w-full justify-between">

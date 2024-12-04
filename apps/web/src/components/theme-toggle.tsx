@@ -11,7 +11,14 @@ import {
 } from "@nextui-org/react";
 
 export function ThemeToggle() {
-  const { setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
+
+  const handleSetTheme = (newTheme: string) => {
+    if (theme) {
+      document.querySelector("body")?.classList.replace(theme, newTheme);
+    }
+    setTheme(newTheme);
+  };
 
   return (
     <Dropdown className="min-w-0 w-fit">
@@ -23,9 +30,13 @@ export function ThemeToggle() {
         </Button>
       </DropdownTrigger>
       <DropdownMenu className="bg-zinc-200 dark:bg-zinc-800 rounded-lg">
-        <DropdownItem onClick={() => setTheme("light")}>Light</DropdownItem>
-        <DropdownItem onClick={() => setTheme("dark")}>Dark</DropdownItem>
-        <DropdownItem onClick={() => setTheme("system")}>System</DropdownItem>
+        <DropdownItem onClick={() => handleSetTheme("light")}>
+          Light
+        </DropdownItem>
+        <DropdownItem onClick={() => handleSetTheme("dark")}>Dark</DropdownItem>
+        <DropdownItem onClick={() => handleSetTheme("system")}>
+          System
+        </DropdownItem>
       </DropdownMenu>
     </Dropdown>
   );

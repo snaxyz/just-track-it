@@ -302,7 +302,9 @@ export default function WorkoutPage() {
     exerciseId: string,
     exerciseName: string
   ) => {
-    setSelectedExercise(exerciseId);
+    if (exercisesQuery?.records.find((e) => e.id === exerciseId)) {
+      setSelectedExercise(exerciseId);
+    }
     setCustomExercise(exerciseName);
     setSet("1");
     // TODO: set the last rep and weights used

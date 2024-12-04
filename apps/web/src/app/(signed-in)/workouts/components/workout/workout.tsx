@@ -25,12 +25,12 @@ export function Workout({ id, name, children, onStartWorkout }: Props) {
         <IconButton as={Link} href={`/workouts/${id}/history`}>
           <HistoryIcon size={16} />
         </IconButton>
-        <IconButton>
+        {/* <IconButton>
           <EditIcon size={16} />
         </IconButton>
         <IconButton>
           <MoreHorizontalIcon size={16} />
-        </IconButton>
+        </IconButton> */}
       </div>
       {children}
       <div className="w-full p-2">

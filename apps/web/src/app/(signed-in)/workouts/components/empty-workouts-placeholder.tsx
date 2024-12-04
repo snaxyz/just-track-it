@@ -8,7 +8,7 @@ interface Props {
 export function EmptyWorkoutsPlaceholder({ onAddClick }: Props) {
   return (
     <div className="bg-zinc-200 dark:bg-zinc-800 rounded-lg p-2 flex flex-col justify-center items-center min-h-[200px]">
-      <div className="text-caption text-center w-full mb-6">
+      <div className="text-caption-light dark:text-caption text-center w-full mb-6">
         You have no workouts
       </div>
       <Button

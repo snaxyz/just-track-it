@@ -1,12 +1,13 @@
 import { MainContainer } from "@/components/layout/main-container";
 import { PageContainer } from "@/components/layout/page-container";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Title } from "@/components/title";
 
 export default function SettingsPage() {
   return (
     <PageContainer>
-      <MainContainer>
-        <div>Settings</div>
+      <MainContainer className="px-2">
+        <Title>Settings</Title>
         <ThemeToggle />
       </MainContainer>
     </PageContainer>

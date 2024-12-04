@@ -68,7 +68,9 @@ export function EditWorkoutExerciseModal({
         <ModalBody className="p-2">
           {sets.map((set, ind) => (
             <div key={ind} className="mb-2">
-              <div className="text-caption text-xs mb-2">Set {ind + 1}</div>
+              <div className="text-caption-light dark:text-caption text-xs mb-2">
+                Set {ind + 1}
+              </div>
               <div className="flex items-center gap-2">
                 <RepSelect
                   reps={set.reps.toString()}

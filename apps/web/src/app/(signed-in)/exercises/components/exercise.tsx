@@ -40,7 +40,7 @@ export function Exercise({
             <TrashIcon size={16} />
           </IconButton>
         </div>
-        <div className="text-caption text-xs mb-1">
+        <div className="text-caption-light dark:text-caption text-xs mb-1">
           {categories.length === 0 ? "No categories" : "Categories"}
         </div>
         {categories.length > 0 && (

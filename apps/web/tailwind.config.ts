@@ -56,7 +56,10 @@ const config: Config = {
         "gradient-outline": "gradient-outline 2s ease-in forwards",
       },
       colors: {
-        caption: "#A8A8A8",
+        caption: {
+          DEFAULT: "#A8A8A8",
+          light: "#6B6B6B",
+        },
       },
     },
   },
