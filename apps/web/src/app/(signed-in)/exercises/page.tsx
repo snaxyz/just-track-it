@@ -16,6 +16,7 @@ import { createExercise } from "@/server/exercises/create-exercise";
 import { deleteExercise } from "@/server/exercises/delete-exercise";
 import { Exercise } from "./components/exercise";
 import { updateExercise } from "@/server/exercises/update-exercise";
+import { useState } from "react";
 
 export default function ExercisesPage() {
   const queryClient = useQueryClient();
@@ -27,13 +28,22 @@ export default function ExercisesPage() {
   });
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [addError, setAddError] = useState("");
   const handleAddExercise = async (name: string, categories: string[]) => {
-    const newExercise = await createExercise(name, categories);
-    queryClient.setQueryData<QueryResponse<ExerciseModel>>(["exercises"], {
-      ...(exercisesQuery ?? { cursor: "" }),
-      records: [...(exercisesQuery?.records ?? []), newExercise],
-    });
-    onClose();
+    try {
+      const newExercise = await createExercise(name, categories);
+      queryClient.setQueryData<QueryResponse<ExerciseModel>>(["exercises"], {
+        ...(exercisesQuery ?? { cursor: "" }),
+        records: [...(exercisesQuery?.records ?? []), newExercise],
+      });
+      onClose();
+    } catch (e) {
+      if ((e as Error).message === "DUPLICATE_NAME_ERROR") {
+        setAddError(`"${name}" already exists.`);
+      } else {
+        setAddError((e as Error).message);
+      }
+    }
   };
 
   const handleUpdateExercise = async (
@@ -98,6 +108,7 @@ export default function ExercisesPage() {
         isOpen={isOpen}
         onClose={onClose}
         onAdd={handleAddExercise}
+        error={addError}
       />
     </>
   );

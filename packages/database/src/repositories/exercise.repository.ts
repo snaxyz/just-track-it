@@ -9,6 +9,7 @@ import {
 } from "./repository";
 import { QueryResponse } from "../types";
 import sampleExercises from "./sample-data/sample-exercises.json";
+import { ConditionalCheckFailedException } from "@aws-sdk/client-dynamodb";
 
 export interface ExerciseModel extends Model {
   id: string;
@@ -55,7 +56,7 @@ export class ExerciseRepository extends Repository {
     userId: string,
     exercise: { name: string; categories: string[] }
   ) {
-    const id = nanoid();
+    const id = exercise.name.replace(/\s/g, "").toLowerCase();
     const ts = this.timestamps();
     const item = {
       id,
@@ -68,29 +69,40 @@ export class ExerciseRepository extends Repository {
       ...this.lsi2Key(exercise.name),
     };
 
-    const batchWrites = exercise.categories.map((category) => ({
-      PutRequest: {
-        Item: {
-          ...item,
-          ...this.categoryKey(userId, category),
-          ...this.lsi3Key(category, exercise.name),
-        },
-      },
-    }));
-
-    batchWrites.push({
-      PutRequest: {
+    // check if exercise already exists
+    try {
+      await this.client.put({
+        TableName: this.tableName,
         Item: item,
-      },
-    });
+        ConditionExpression:
+          "attribute_not_exists(pk) AND attribute_not_exists(sk)",
+      });
+    } catch (error) {
+      if (error instanceof ConditionalCheckFailedException) {
+        throw new Error("DUPLICATE_NAME_ERROR");
+      }
+      throw error;
+    }
 
-    const params = {
-      RequestItems: {
-        [this.tableName]: batchWrites,
-      },
-    };
+    if (exercise.categories.length > 0) {
+      const batchWrites = exercise.categories.map((category) => ({
+        PutRequest: {
+          Item: {
+            ...item,
+            ...this.categoryKey(userId, category),
+            ...this.lsi3Key(category, exercise.name),
+          },
+        },
+      }));
 
-    await this.client.batchWrite(params);
+      const params = {
+        RequestItems: {
+          [this.tableName]: batchWrites,
+        },
+      };
+
+      await this.client.batchWrite(params);
+    }
 
     return item as ExerciseModel;
   }

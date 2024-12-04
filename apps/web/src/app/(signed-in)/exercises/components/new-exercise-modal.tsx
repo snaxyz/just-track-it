@@ -15,12 +15,14 @@ import { ExerciseCategorySelect } from "./exercise-category-select";
 
 export interface NewExerciseModalProps extends Omit<ModalProps, "children"> {
   onAdd: (name: string, categories: string[]) => void;
+  error?: string;
 }
 
 export function NewExerciseModal({
   isOpen,
   onClose,
   onAdd,
+  error,
 }: NewExerciseModalProps) {
   const [name, setName] = useState("");
   const [categories, setCategories] = useState<Selection>(new Set([]));
@@ -44,6 +46,8 @@ export function NewExerciseModal({
             label="Exercise"
             value={name}
             onValueChange={setName}
+            isInvalid={Boolean(error)}
+            errorMessage={error}
           />
           <ExerciseCategorySelect
             selectedCategories={categories}
