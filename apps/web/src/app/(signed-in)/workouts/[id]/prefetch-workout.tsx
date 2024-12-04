@@ -1,5 +1,4 @@
 import { getHistoryServer } from "@/server/workouts/get-history";
-import { getWorkoutsServer } from "@/server/workouts/get-workouts";
 import {
   dehydrate,
   HydrationBoundary,

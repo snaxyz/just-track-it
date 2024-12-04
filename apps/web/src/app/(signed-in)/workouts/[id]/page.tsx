@@ -8,7 +8,7 @@ interface Props {
   params: Promise<{ id: string }>;
 }
 
-export async function WorkoutPage({ params }: Props) {
+export default async function WorkoutPage({ params }: Props) {
   const { id } = await params;
   return (
     <PageContainer>
