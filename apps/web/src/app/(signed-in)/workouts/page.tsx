@@ -15,6 +15,7 @@ import { WorkoutExercises } from "./components/workout/workout-exercises";
 import { useCallback } from "react";
 import { startWorkoutAndRedirect } from "@/server/workouts/start-workout";
 import { IconButton } from "@/components/icon-button";
+import { Title } from "@/components/title";
 
 export default function WorkoutsPage() {
   const { data: workoutsQuery, isLoading } = useQuery<
@@ -35,7 +36,7 @@ export default function WorkoutsPage() {
   return (
     <PageContainer>
       <MainContainer className="px-2">
-        <div className="text-xl mb-3">Workouts</div>
+        <Title>Workouts</Title>
         {noWorkouts && (
           <EmptyWorkoutsPlaceholder
             onAddClick={() => createWorkoutAndRedirect()}

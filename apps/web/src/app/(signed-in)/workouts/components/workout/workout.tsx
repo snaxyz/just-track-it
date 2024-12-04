@@ -7,6 +7,7 @@ import {
   HistoryIcon,
   MoreHorizontalIcon,
 } from "lucide-react";
+import Link from "next/link";
 
 interface Props {
   id: string;
@@ -21,7 +22,7 @@ export function Workout({ id, name, children, onStartWorkout }: Props) {
       <div className="flex w-full p-2 gap-2">
         <div>{name}</div>
         <Grow />
-        <IconButton>
+        <IconButton as={Link} href={`/workouts/${id}/history`}>
           <HistoryIcon size={16} />
         </IconButton>
         <IconButton>

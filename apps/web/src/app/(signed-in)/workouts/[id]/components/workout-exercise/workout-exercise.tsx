@@ -96,15 +96,17 @@ export function WorkoutExercise({
         >
           <ChartLineIcon size={16} />
         </Button> */}
-          <Button
-            isIconOnly
-            size="sm"
-            radius="lg"
-            variant="bordered"
-            onClick={onOpen}
-          >
-            <EditIcon size={16} />
-          </Button>
+          {sets.length > 0 && (
+            <Button
+              isIconOnly
+              size="sm"
+              radius="lg"
+              variant="bordered"
+              onClick={onOpen}
+            >
+              <EditIcon size={16} />
+            </Button>
+          )}
         </CardHeader>
         {sets.length > 0 && <Divider />}
         <CardBody className="p-0">{children}</CardBody>

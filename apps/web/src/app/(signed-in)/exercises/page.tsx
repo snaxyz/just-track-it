@@ -17,6 +17,7 @@ import { deleteExercise } from "@/server/exercises/delete-exercise";
 import { Exercise } from "./components/exercise";
 import { updateExercise } from "@/server/exercises/update-exercise";
 import { useState } from "react";
+import { Title } from "@/components/title";
 
 export default function ExercisesPage() {
   const queryClient = useQueryClient();
@@ -36,6 +37,7 @@ export default function ExercisesPage() {
         ...(exercisesQuery ?? { cursor: "" }),
         records: [...(exercisesQuery?.records ?? []), newExercise],
       });
+      setAddError("");
       onClose();
     } catch (e) {
       if ((e as Error).message === "DUPLICATE_NAME_ERROR") {
@@ -84,7 +86,7 @@ export default function ExercisesPage() {
     <>
       <PageContainer>
         <MainContainer className="px-2">
-          <div className="text-xl mb-3">Exercises</div>
+          <Title>Exercises</Title>
           {noExercises && <EmptyExercisesPlaceholder onAddClick={onOpen} />}
           <div className="pb-24">
             {exercisesQuery?.records.map((e) => (

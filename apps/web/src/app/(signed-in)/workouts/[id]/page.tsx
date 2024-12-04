@@ -23,8 +23,8 @@ import {
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   EnhancedWorkoutHistoryModel,
-  getWorkoutHistory,
-} from "@/app/api/history/[id]/get-workout-history";
+  getHistory,
+} from "@/app/api/history/[id]/get-history";
 import { EmptyExercisesPlaceholder } from "./components/empty-exercises-placeholder";
 import { IconButton } from "@/components/icon-button";
 import {
@@ -44,7 +44,7 @@ export default function WorkoutPage() {
   const { data: workout, isLoading: isWorkoutLoading } =
     useQuery<EnhancedWorkoutHistoryModel>({
       queryKey: ["history", id],
-      queryFn: () => getWorkoutHistory(id),
+      queryFn: () => getHistory(id),
     });
   const { data: exercisesQuery, isLoading: isExercisesLoading } = useQuery<
     QueryResponse<ExerciseModel>
@@ -139,7 +139,10 @@ export default function WorkoutPage() {
     }
     if (!workout || !exercise) return;
     let updatedWorkoutExercises: WorkoutHistoryExercise[];
-    if (input.set === "1") {
+    if (
+      input.set === "1" &&
+      !workoutExercises.find((e) => e.exerciseId === exercise.id)
+    ) {
       updatedWorkoutExercises = [
         ...workoutExercises,
         {
@@ -242,26 +245,31 @@ export default function WorkoutPage() {
 
   const handleComplete = async () => {
     if (!workout) return;
-    if (workout.isNew) {
-      const updatedWorkout = await updateWorkoutExercises(
-        workout.workoutId,
-        workoutExercises.map((e) => ({
-          exerciseId: e.exerciseId,
-          exerciseName: e.exerciseName,
-        }))
-      );
-      const cachedWorkouts = queryClient.getQueryData<
-        QueryResponse<WorkoutModel>
-      >(["workouts"]) ?? {
-        records: [],
-        cursor: "",
-      };
-      const updatedWorkouts: QueryResponse<WorkoutModel> = {
-        ...cachedWorkouts,
-        records: [...cachedWorkouts.records, updatedWorkout],
-      };
-      queryClient.setQueryData(["workouts"], updatedWorkouts);
-    }
+    const updatedWorkout = await updateWorkoutExercises(
+      workout.workoutId,
+      workoutExercises.map((e) => ({
+        exerciseId: e.exerciseId,
+        exerciseName: e.exerciseName,
+      }))
+    );
+    const cachedWorkouts = queryClient.getQueryData<
+      QueryResponse<WorkoutModel>
+    >(["workouts"]) ?? {
+      records: [],
+      cursor: "",
+    };
+    const updatedWorkouts: QueryResponse<WorkoutModel> = workout.isNew
+      ? {
+          ...cachedWorkouts,
+          records: [...cachedWorkouts.records, updatedWorkout],
+        }
+      : {
+          ...cachedWorkouts,
+          records: cachedWorkouts.records.map((w) =>
+            w.id === workout.workoutId ? updatedWorkout : w
+          ),
+        };
+    queryClient.setQueryData(["workouts"], updatedWorkouts);
 
     redirect("/workouts");
   };
@@ -290,8 +298,16 @@ export default function WorkoutPage() {
     await Promise.all(promises);
   };
 
-  const handleStartWorkoutExercise = (exerciseId: string) => {
-    setLastUpdatedExercise(exerciseId);
+  const handleStartWorkoutExercise = (
+    exerciseId: string,
+    exerciseName: string
+  ) => {
+    setSelectedExercise(exerciseId);
+    setCustomExercise(exerciseName);
+    setSet("1");
+    // TODO: set the last rep and weights used
+    setReps("5");
+    setWeight("2.5");
     onOpen();
   };
 
@@ -344,7 +360,9 @@ export default function WorkoutPage() {
                       radius="lg"
                       color="secondary"
                       fullWidth
-                      onClick={() => handleStartWorkoutExercise(e.exerciseId)}
+                      onClick={() =>
+                        handleStartWorkoutExercise(e.exerciseId, e.exerciseName)
+                      }
                     >
                       Start workout exercise
                     </Button>
@@ -352,22 +370,25 @@ export default function WorkoutPage() {
                 )}
               </WorkoutExercise>
             ))}
-            <div className="mt-6 flex justify-end gap-2">
+            <div className="mt-6">
               {workoutExercises.length > 0 && (
-                <Button
-                  size="sm"
-                  radius="lg"
-                  color="secondary"
-                  variant="flat"
-                  startContent={<ListCheckIcon size={16} />}
-                  onClick={handleComplete}
-                >
-                  Complete
-                </Button>
+                <div className="p-2">
+                  <Button
+                    size="md"
+                    radius="lg"
+                    color="secondary"
+                    variant="flat"
+                    fullWidth
+                    startContent={<ListCheckIcon size={16} />}
+                    onClick={handleComplete}
+                  >
+                    Complete &amp; save workout
+                  </Button>
+                </div>
               )}
-              <IconButton variant="bordered">
+              {/* <IconButton variant="bordered">
                 <MoreVerticalIcon size={16} />
-              </IconButton>
+              </IconButton> */}
             </div>
           </div>
           <FabContainer>

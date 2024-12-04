@@ -8,13 +8,13 @@ export interface EnhancedWorkoutHistoryModel extends WorkoutHistoryModel {
   isNew: boolean;
 }
 
-export async function getWorkoutHistory(
+export async function getHistory(
   historyId: string
 ): Promise<EnhancedWorkoutHistoryModel> {
   const response = await fetch(`/api/history/${historyId}`);
 
   if (!response.ok) {
-    throw new Error("Failed to fetch workout history");
+    throw new Error("Failed to fetch history");
   }
 
   return await response.json();
