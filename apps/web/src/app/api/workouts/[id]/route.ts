@@ -1,4 +1,5 @@
 import { getUserId } from "@/server/user";
+import { getWorkoutHistoryServer } from "@/server/workouts/get-workout-history";
 import { db, QueryResponse, WorkoutHistoryModel } from "@local/database";
 
 export interface EnhancedWorkoutHistory
@@ -11,19 +12,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const workoutId = (await params).id;
-  const userId = await getUserId();
-  const workout = await db.workout.get(userId, workoutId);
-  const workoutHistory = await db.workoutHistory.queryByWorkoutDate(
-    userId,
-    workoutId,
-    {
-      limit: 100,
-      order: "desc",
-    }
-  );
+  const workoutHistory = await getWorkoutHistoryServer(workoutId);
 
-  return Response.json({
-    ...workoutHistory,
-    workoutName: workout.name,
-  });
+  return Response.json(workoutHistory);
 }

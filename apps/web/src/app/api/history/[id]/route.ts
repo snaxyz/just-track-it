@@ -1,20 +1,11 @@
-import { getUserId } from "@/server/user";
-import { db } from "@local/database";
+import { getHistoryServer } from "@/server/workouts/get-history";
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const historyId = (await params).id;
-  const userId = await getUserId();
-  const workoutHistory = await db.workoutHistory.get(userId, historyId);
-  const { records } = await db.workoutHistory.queryByWorkoutDate(
-    userId,
-    workoutHistory.workoutId
-  );
+  const history = await getHistoryServer(historyId);
 
-  return Response.json({
-    ...workoutHistory,
-    isNew: records.length === 1,
-  });
+  return Response.json(history);
 }
