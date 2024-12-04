@@ -24,7 +24,7 @@ export function WorkoutExercises({ exercises }: Props) {
       </div>
       <div className="flex w-full gap-2 flex-wrap">
         {exercises.map((e) => (
-          <Chip key={e.exerciseId} className="capitalize" variant="flat">
+          <Chip key={e.exerciseId} className="capitalize">
             {e.exerciseName}
           </Chip>
         ))}

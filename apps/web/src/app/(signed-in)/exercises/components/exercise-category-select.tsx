@@ -55,7 +55,9 @@ export function ExerciseCategorySelect({
         return (
           <div className="flex flex-wrap gap-2">
             {items.map((item) => (
-              <Chip key={item.key}>{item.data?.name}</Chip>
+              <Chip key={item.key} size="sm" variant="flat">
+                {item.data?.name}
+              </Chip>
             ))}
           </div>
         );
