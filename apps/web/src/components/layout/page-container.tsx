@@ -15,8 +15,8 @@ export function PageContainer({ children }: Props) {
   return (
     <>
       <motion.div
-        initial={{ marginLeft: sidebarCollapsed ? 0 : 248 }}
-        animate={{ marginLeft: sidebarCollapsed ? 0 : 248 }}
+        initial={{ marginLeft: sidebarCollapsed ? 0 : 200 }}
+        animate={{ marginLeft: sidebarCollapsed ? 0 : 200 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         className={cn("w-full flex hidden md:block overflow-auto")}
       >

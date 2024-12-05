@@ -6,7 +6,7 @@ import { PrefetchWorkouts } from "./prefetch-workouts";
 export default async function WorkoutsPage() {
   return (
     <PageContainer>
-      <MainContainer className="px-2">
+      <MainContainer className="px-2 md:px-3 md:py-4">
         <PrefetchWorkouts>
           <Workouts />
         </PrefetchWorkouts>

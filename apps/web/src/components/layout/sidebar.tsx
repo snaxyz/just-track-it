@@ -34,7 +34,7 @@ export function Sidebar({ className, children, user }: Props) {
             picture={user.picture}
           />
           <SidebarCollapseButton /> */}
-          <div className="p-4 capitalize flex mb-2 text-secondary items-center justify-center w-full">
+          <div className="p-4 capitalize flex mb-2 items-center justify-center w-full">
             <span className="mr-2">
               <HeartHandshakeIcon size={22} />
             </span>

@@ -78,6 +78,7 @@ export function WorkoutExercise({
           className
         )}
         fullWidth
+        shadow="none"
       >
         <CardHeader className="capitalize">
           <span

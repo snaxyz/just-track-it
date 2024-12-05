@@ -12,7 +12,7 @@ export default async function WorkoutPage({ params }: Props) {
   const { id } = await params;
   return (
     <PageContainer>
-      <MainContainer className="px-2">
+      <MainContainer className="px-2 md:px-3 md:py-4">
         <PrefetchExercises>
           <PrefetchWorkoutHistory historyId={id}>
             <Workout />

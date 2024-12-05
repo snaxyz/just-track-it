@@ -15,7 +15,7 @@ export default async function Layout({ children }: Props) {
     <div className="flex h-dvh w-full text-foreground bg-zinc-100 dark:bg-zinc-900 overflow-hidden">
       {children}
       <TopAppbarContainer className="flex py-1 px-2 md:hidden">
-        <TopAppbar user={user} />
+        <TopAppbar user={user}></TopAppbar>
       </TopAppbarContainer>
       <SidebarContainer className="border-r border-divider hidden md:block">
         <Sidebar user={user}></Sidebar>
