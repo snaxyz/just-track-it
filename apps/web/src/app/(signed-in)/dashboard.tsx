@@ -19,6 +19,7 @@ import {
 import Link from "next/link";
 import { useCallback } from "react";
 import { getWorkoutSessions } from "../api/workout-sessions/get-workout-sessions";
+import { DateTime } from "@/components/date-time";
 
 export function Dashboard() {
   const { data: workoutSessionsQuery, isLoading } = useQuery<
@@ -99,7 +100,7 @@ export function Dashboard() {
                 </CardHeader>
                 <CardBody>
                   <div className="text-caption-light dark:text-caption text-xs mb-2">
-                    Completed on {w.date}
+                    Completed on <DateTime iso={w.date} />
                   </div>
                   <Button
                     fullWidth

@@ -34,7 +34,7 @@ export function LastWorkoutExerciseSet({
       onClick={() => onClick(exerciseId)}
     >
       <div>Last set</div>
-      <div className="flex items-center w-full justify-between">
+      <div className="flex items-center w-full justify-between mb-2">
         <div>Set {set}</div>
         <div>{reps} reps</div>
         {weight && (
@@ -42,6 +42,9 @@ export function LastWorkoutExerciseSet({
             {weight} {unit}
           </div>
         )}
+      </div>
+      <div className="text-caption-light dark:text-caption text-xs italic text-center">
+        Add another set
       </div>
     </Button>
   );

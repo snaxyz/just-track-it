@@ -19,7 +19,7 @@ export function EmptyExercisesPlaceholder({ onAddClick }: Props) {
         radius="lg"
         color="primary"
       >
-        Start workout exercise
+        Add exercise set
       </Button>
     </div>
   );
