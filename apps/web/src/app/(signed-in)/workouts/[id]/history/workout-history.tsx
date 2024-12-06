@@ -5,8 +5,10 @@ import { EnhancedWorkoutHistory } from "@/app/api/workouts/[id]/route";
 import { Title } from "@/components/title";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { WorkoutSessionCard } from "./components/workout-session-card";
-import { WorkoutSessionCardExercise } from "./components/workout-session-card-exercise";
+import {
+  WorkoutSessionCard,
+  WorkoutSessionCardExercise,
+} from "@/components/sessions";
 
 export function WorkoutHistory() {
   const { id } = useParams<{ id: string }>();

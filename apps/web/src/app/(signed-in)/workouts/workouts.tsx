@@ -6,13 +6,15 @@ import { createWorkoutSessionAndRedirect } from "@/server/workouts";
 import { QueryResponse, WorkoutModel } from "@local/database";
 import { useQuery } from "@tanstack/react-query";
 import { ActivityIcon } from "lucide-react";
-import { EmptyWorkoutsPlaceholder } from "./components/empty-workouts-placeholder";
-import { WorkoutCard } from "./components/workout";
-import { WorkoutCardExercises } from "./components/workout/workout-card-exercises";
-import { useCallback } from "react";
-import { startWorkoutSessionAndRedirect } from "@/server/workout-sessions/start-workout";
+import {
+  EmptyWorkoutsPlaceholder,
+  WorkoutCard,
+  WorkoutCardExercises,
+} from "@/components/workouts";
 import { IconButton } from "@/components/icon-button";
 import { Title } from "@/components/title";
+import { useCallback } from "react";
+import { startWorkoutSessionAndRedirect } from "@/server/workout-sessions/start-workout";
 
 export function Workouts() {
   const { data: workoutsQuery, isLoading } = useQuery<
