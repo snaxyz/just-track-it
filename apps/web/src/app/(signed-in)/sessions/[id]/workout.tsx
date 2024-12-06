@@ -19,15 +19,15 @@ import {
 } from "./components/workout-exercise";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  EnhancedWorkoutHistoryModel,
+  EnhancedWorkoutSessionModel,
   getHistory,
 } from "@/app/api/history/[id]/get-history";
 import { EmptyExercisesPlaceholder } from "./components/empty-exercises-placeholder";
 import { IconButton } from "@/components/icon-button";
 import {
   updateWorkoutExercises,
-  updateWorkoutHistoryExercises,
-  updateWorkoutHistoryName,
+  updateWorkoutSessionExercises,
+  updateWorkoutSessionName,
   updateWorkoutName,
 } from "@/server/workouts";
 import { useDebouncedCallback } from "@/lib/hooks/use-debounced-callback";
@@ -39,7 +39,7 @@ export function Workout() {
 
   const queryClient = useQueryClient();
   const { data: workout, isLoading: isWorkoutLoading } =
-    useQuery<EnhancedWorkoutHistoryModel>({
+    useQuery<EnhancedWorkoutSessionModel>({
       queryKey: ["history", id],
       queryFn: () => getHistory(id),
     });
@@ -154,7 +154,7 @@ export function Workout() {
           ],
         },
       ];
-      updateWorkoutHistoryExercises(workout.id, updatedWorkoutExercises);
+      updateWorkoutSessionExercises(workout.id, updatedWorkoutExercises);
     } else {
       updatedWorkoutExercises = workoutExercises.map((e) => {
         if (e.exerciseId === exercise.id) {
@@ -172,7 +172,7 @@ export function Workout() {
         }
         return e;
       });
-      updateWorkoutHistoryExercises(workout.id, updatedWorkoutExercises);
+      updateWorkoutSessionExercises(workout.id, updatedWorkoutExercises);
     }
     queryClient.setQueryData(["history", workout.id], {
       ...workout,
@@ -193,7 +193,7 @@ export function Workout() {
     const updatedWorkoutExercises = workoutExercises.filter(
       (e) => e.exerciseId !== exerciseId
     );
-    updateWorkoutHistoryExercises(workout.id, updatedWorkoutExercises);
+    updateWorkoutSessionExercises(workout.id, updatedWorkoutExercises);
     queryClient.setQueryData(["history", workout.id], {
       ...workout,
       exercises: updatedWorkoutExercises,
@@ -210,7 +210,7 @@ export function Workout() {
       }
       return exercise;
     });
-    updateWorkoutHistoryExercises(workout.id, updatedWorkoutExercises);
+    updateWorkoutSessionExercises(workout.id, updatedWorkoutExercises);
     queryClient.setQueryData(["history", workout.id], {
       ...workout,
       exercises: updatedWorkoutExercises,
@@ -233,7 +233,7 @@ export function Workout() {
       }
       return exercise;
     });
-    updateWorkoutHistoryExercises(workout.id, updatedWorkoutExercises);
+    updateWorkoutSessionExercises(workout.id, updatedWorkoutExercises);
     queryClient.setQueryData(["history", workout.id], {
       ...workout,
       exercises: updatedWorkoutExercises,
@@ -276,16 +276,17 @@ export function Workout() {
     500
   );
   const debouncedUpdateWorkoutHistoryName = useDebouncedCallback(
-    updateWorkoutHistoryName,
+    updateWorkoutSessionName,
     500
   );
 
   const handleNameChange = async (updatedName: string) => {
     if (!workout?.workoutId) return;
-    queryClient.setQueryData<EnhancedWorkoutHistoryModel>(["history", id], {
+    queryClient.setQueryData<EnhancedWorkoutSessionModel>(["history", id], {
       ...workout,
       workoutName: updatedName,
     });
+    if (!updatedName) return; // don't save empty name
     const promises = [
       debouncedUpdateWorkoutHistoryName(workout.id, updatedName),
     ];

@@ -10,7 +10,7 @@ interface RequestOptions {
 
 export async function getWorkoutSessionsServer(options?: RequestOptions) {
   const userId = await getUserId();
-  const workoutHistory = await db.workoutHistory.queryByDate(userId, {
+  const workoutHistory = await db.workoutSession.queryByDate(userId, {
     limit: options?.limit ?? 10,
     nextCursor: options?.cursor ?? "",
     order: "desc",

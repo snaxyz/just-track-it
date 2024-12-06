@@ -27,8 +27,8 @@ export function Workout({ id, name, children, onStartWorkout }: Props) {
         </IconButton>
         {/* <IconButton>
           <EditIcon size={16} />
-        </IconButton>
-        <IconButton>
+        </IconButton> */}
+        {/* <IconButton>
           <MoreHorizontalIcon size={16} />
         </IconButton> */}
       </div>

@@ -1,6 +1,6 @@
-import { WorkoutHistoryModel } from "@local/database";
+import { WorkoutSessionModel } from "@local/database";
 
-export interface EnhancedWorkoutHistoryModel extends WorkoutHistoryModel {
+export interface EnhancedWorkoutSessionModel extends WorkoutSessionModel {
   /**
    * Used to determine if workout is a new one, then all exercises, name changes,
    * etc update the related workout
@@ -10,7 +10,7 @@ export interface EnhancedWorkoutHistoryModel extends WorkoutHistoryModel {
 
 export async function getHistory(
   historyId: string
-): Promise<EnhancedWorkoutHistoryModel> {
+): Promise<EnhancedWorkoutSessionModel> {
   const response = await fetch(`/api/history/${historyId}`);
 
   if (!response.ok) {

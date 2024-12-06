@@ -11,33 +11,33 @@ import { QueryResponse } from "../types";
 
 export type WeightUnit = "lbs" | "kg";
 
-export interface WorkoutHistoryExerciseSet {
+export interface WorkoutSessionExerciseSet {
   reps: number;
   weight?: number;
   unit?: WeightUnit;
 }
 
-export interface WorkoutHistoryExercise {
+export interface WorkoutSessionExercise {
   exerciseId: string;
   exerciseName: string;
-  sets: WorkoutHistoryExerciseSet[];
+  sets: WorkoutSessionExerciseSet[];
 }
 
-export interface WorkoutHistoryModel extends Model {
+export interface WorkoutSessionModel extends Model {
   id: string;
   userId: string;
   workoutId: string;
   workoutName: string;
   date: string;
-  exercises: WorkoutHistoryExercise[];
+  exercises: WorkoutSessionExercise[];
   created: string;
   updated: string;
 }
 
-export class WorkoutHistoryRepository extends Repository {
-  private key = (userId: string, historyId: string) => ({
-    pk: `#USER#${userId}#HISTORY#`,
-    sk: `#HISTORY#${historyId}`,
+export class WorkoutSessionRepository extends Repository {
+  private key = (userId: string, sessionId: string) => ({
+    pk: `#USER#${userId}#SESSION#`,
+    sk: `#SESSION#${sessionId}`,
   });
 
   /**
@@ -54,24 +54,24 @@ export class WorkoutHistoryRepository extends Repository {
     [this.lsi2]: `#WORKOUT#${workoutId}#DATE#${date}`,
   });
 
-  async get(userId: string, historyId: string) {
+  async get(userId: string, sessionId: string) {
     const res = await this.client.get({
       TableName: this.tableName,
-      Key: this.key(userId, historyId),
+      Key: this.key(userId, sessionId),
     });
     if (res.Item) {
-      return res.Item as WorkoutHistoryModel;
+      return res.Item as WorkoutSessionModel;
     }
     return null;
   }
 
   async create(
     userId: string,
-    history: {
+    session: {
       workoutId: string;
       workoutName: string;
       date: string;
-      exercises: WorkoutHistoryExercise[];
+      exercises: WorkoutSessionExercise[];
     }
   ) {
     const id = nanoid();
@@ -79,14 +79,14 @@ export class WorkoutHistoryRepository extends Repository {
     const item = {
       id,
       userId,
-      workoutId: history.workoutId,
-      workoutName: history.workoutName,
-      date: history.date,
-      exercises: history.exercises,
+      workoutId: session.workoutId,
+      workoutName: session.workoutName,
+      date: session.date,
+      exercises: session.exercises,
       ...ts,
       ...this.key(userId, id),
-      ...this.lsi1Key(history.date),
-      ...this.lsi2Key(history.workoutId, history.date),
+      ...this.lsi1Key(session.date),
+      ...this.lsi2Key(session.workoutId, session.date),
     };
 
     await this.client.put({
@@ -94,13 +94,13 @@ export class WorkoutHistoryRepository extends Repository {
       Item: item,
     });
 
-    return item as WorkoutHistoryModel;
+    return item as WorkoutSessionModel;
   }
 
   async queryByDate(
     userId: string,
     options: QueryOptions = { limit: 100, order: "asc" }
-  ): Promise<QueryResponse<WorkoutHistoryModel>> {
+  ): Promise<QueryResponse<WorkoutSessionModel>> {
     const res = await this.client.query({
       TableName: this.tableName,
       IndexName: this.lsi1,
@@ -109,7 +109,7 @@ export class WorkoutHistoryRepository extends Repository {
         "#lsi1": this.lsi1,
       },
       ExpressionAttributeValues: {
-        ":pk": `#USER#${userId}#HISTORY#`,
+        ":pk": `#USER#${userId}#SESSION#`,
         ":lsi1": "#DATE#",
       },
       Limit: options.limit,
@@ -120,15 +120,15 @@ export class WorkoutHistoryRepository extends Repository {
     const cursor = keyToCursor(res.LastEvaluatedKey);
     return {
       cursor,
-      records: (res.Items ?? []) as WorkoutHistoryModel[],
+      records: (res.Items ?? []) as WorkoutSessionModel[],
     };
   }
 
-  async queryByWorkoutDate(
+  async queryByWorkoutSessionDate(
     userId: string,
     workoutId: string,
     options: QueryOptions = { limit: 100, order: "asc" }
-  ): Promise<QueryResponse<WorkoutHistoryModel>> {
+  ): Promise<QueryResponse<WorkoutSessionModel>> {
     const res = await this.client.query({
       TableName: this.tableName,
       IndexName: this.lsi2,
@@ -137,7 +137,7 @@ export class WorkoutHistoryRepository extends Repository {
         "#lsi2": this.lsi2,
       },
       ExpressionAttributeValues: {
-        ":pk": `#USER#${userId}#HISTORY#`,
+        ":pk": `#USER#${userId}#SESSION#`,
         ":lsi2": `#WORKOUT#${workoutId}`,
       },
       Limit: options.limit,
@@ -148,17 +148,17 @@ export class WorkoutHistoryRepository extends Repository {
     const cursor = keyToCursor(res.LastEvaluatedKey);
     return {
       cursor,
-      records: (res.Items ?? []) as WorkoutHistoryModel[],
+      records: (res.Items ?? []) as WorkoutSessionModel[],
     };
   }
 
   async update(
     userId: string,
-    historyId: string,
+    sessionId: string,
     updates: Partial<{
       date: string;
       workoutName: string;
-      exercises: WorkoutHistoryExercise[];
+      exercises: WorkoutSessionExercise[];
     }>
   ) {
     const ts = this.timestamps();
@@ -190,17 +190,17 @@ export class WorkoutHistoryRepository extends Repository {
 
     await this.client.update({
       TableName: this.tableName,
-      Key: this.key(userId, historyId),
+      Key: this.key(userId, sessionId),
       UpdateExpression: `SET ${updateExpression.join(", ")}`,
       ExpressionAttributeNames: expressionAttributeNames,
       ExpressionAttributeValues: expressionAttributeValues,
     });
   }
 
-  async delete(userId: string, historyId: string) {
+  async delete(userId: string, sessionId: string) {
     await this.client.delete({
       TableName: this.tableName,
-      Key: this.key(userId, historyId),
+      Key: this.key(userId, sessionId),
     });
   }
 }

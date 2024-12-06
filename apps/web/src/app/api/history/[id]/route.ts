@@ -1,11 +1,11 @@
-import { getHistoryServer } from "@/server/workouts/get-history";
+import { getWorkoutSessionServer } from "@/server/workout-sessions/get-workout-session";
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const historyId = (await params).id;
-  const history = await getHistoryServer(historyId);
+  const history = await getWorkoutSessionServer(historyId);
 
   return Response.json(history);
 }

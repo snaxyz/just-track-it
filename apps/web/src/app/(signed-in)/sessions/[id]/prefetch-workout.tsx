@@ -1,4 +1,4 @@
-import { getHistoryServer } from "@/server/workouts/get-history";
+import { getWorkoutSessionServer } from "@/server/workout-sessions/get-workout-session";
 import {
   dehydrate,
   HydrationBoundary,
@@ -14,7 +14,7 @@ export async function PrefetchWorkoutHistory({ historyId, children }: Props) {
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
     queryKey: ["history", historyId],
-    queryFn: () => getHistoryServer(historyId),
+    queryFn: () => getWorkoutSessionServer(historyId),
   });
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

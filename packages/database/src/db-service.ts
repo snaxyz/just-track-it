@@ -4,14 +4,14 @@ import {
   ExerciseRepository,
   WorkoutRepository,
   SettingRepository,
-  WorkoutHistoryRepository,
+  WorkoutSessionRepository,
 } from "./repositories";
 
 export class DatabaseService {
   exercise: ExerciseRepository;
   setting: SettingRepository;
   workout: WorkoutRepository;
-  workoutHistory: WorkoutHistoryRepository;
+  workoutSession: WorkoutSessionRepository;
 
   constructor() {
     const dynamoClient = new DynamoDBClient({
@@ -33,6 +33,6 @@ export class DatabaseService {
     this.exercise = new ExerciseRepository(client, tableName);
     this.setting = new SettingRepository(client, tableName);
     this.workout = new WorkoutRepository(client, tableName);
-    this.workoutHistory = new WorkoutHistoryRepository(client, tableName);
+    this.workoutSession = new WorkoutSessionRepository(client, tableName);
   }
 }

@@ -4,9 +4,9 @@ import { IconButton } from "@/components/icon-button";
 import { FabContainer } from "@/components/layout/fab-container";
 import { Grow } from "@/components/layout/grow";
 import { Title } from "@/components/title";
-import { createWorkoutAndRedirect } from "@/server/workouts";
-import { startWorkoutAndRedirect } from "@/server/workouts/start-workout";
-import { QueryResponse, WorkoutHistoryModel } from "@local/database";
+import { createWorkoutSessionAndRedirect } from "@/server/workouts";
+import { startWorkoutSessionAndRedirect } from "@/server/workout-sessions/start-workout";
+import { QueryResponse, WorkoutSessionModel } from "@local/database";
 import {
   Button,
   Card,
@@ -27,7 +27,7 @@ export function Dashboard() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useInfiniteQuery<QueryResponse<WorkoutHistoryModel>>({
+  } = useInfiniteQuery<QueryResponse<WorkoutSessionModel>>({
     queryKey: ["workout-sessions"],
     queryFn: getWorkoutSessions,
     initialPageParam: undefined,
@@ -35,7 +35,7 @@ export function Dashboard() {
   });
 
   const handleStartWorkout = useCallback(async (workoutId: string) => {
-    await startWorkoutAndRedirect(workoutId);
+    await startWorkoutSessionAndRedirect(workoutId);
   }, []);
 
   return (
@@ -121,7 +121,7 @@ export function Dashboard() {
         <IconButton
           color="primary"
           variant="solid"
-          onClick={() => createWorkoutAndRedirect()}
+          onClick={() => createWorkoutSessionAndRedirect()}
         >
           <ActivityIcon size={16} />
         </IconButton>

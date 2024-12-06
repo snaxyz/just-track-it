@@ -6,7 +6,7 @@ import { getUserId } from "../user";
 import { currentTimestamp } from "@/lib/timestamp";
 import { redirect } from "next/navigation";
 
-export async function createWorkoutAndRedirect() {
+export async function createWorkoutSessionAndRedirect() {
   const userId = await getUserId();
   const date = format(new Date(), "yyyy-MM-dd");
   const name = `New workout ${date}`;
@@ -14,12 +14,12 @@ export async function createWorkoutAndRedirect() {
     name: `New workout ${date}`,
     exercises: [],
   });
-  const { id: historyId } = await db.workoutHistory.create(userId, {
+  const { id: sessionId } = await db.workoutSession.create(userId, {
     workoutId: id,
     workoutName: name,
     date: currentTimestamp(),
     exercises: [],
   });
 
-  redirect(`/workouts/${historyId}`);
+  redirect(`/sessions/${sessionId}`);
 }

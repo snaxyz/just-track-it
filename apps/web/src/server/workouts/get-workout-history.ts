@@ -6,7 +6,7 @@ import { getUserId } from "../user";
 export async function getWorkoutHistoryServer(workoutId: string) {
   const userId = await getUserId();
   const workout = await db.workout.get(userId, workoutId);
-  const workoutHistory = await db.workoutHistory.queryByWorkoutDate(
+  const workoutSession = await db.workoutSession.queryByWorkoutSessionDate(
     userId,
     workoutId,
     {
@@ -15,7 +15,7 @@ export async function getWorkoutHistoryServer(workoutId: string) {
     }
   );
   return {
-    ...workoutHistory,
+    ...workoutSession,
     workoutName: workout.name,
   };
 }

@@ -1,9 +1,9 @@
 import { getUserId } from "@/server/user";
 import { getWorkoutHistoryServer } from "@/server/workouts/get-workout-history";
-import { db, QueryResponse, WorkoutHistoryModel } from "@local/database";
+import { db, QueryResponse, WorkoutSessionModel } from "@local/database";
 
 export interface EnhancedWorkoutHistory
-  extends QueryResponse<WorkoutHistoryModel> {
+  extends QueryResponse<WorkoutSessionModel> {
   workoutName: string;
 }
 
