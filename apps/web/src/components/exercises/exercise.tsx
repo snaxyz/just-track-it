@@ -13,7 +13,7 @@ interface Props {
   onDelete: (id: string) => void;
 }
 
-export function Exercise({
+export function ExerciseCard({
   className,
   id,
   name,

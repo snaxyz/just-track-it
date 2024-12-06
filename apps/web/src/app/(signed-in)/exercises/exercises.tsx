@@ -3,15 +3,17 @@
 import { getExercises } from "@/app/api/exercises/get-exercises";
 import { ExerciseModel, QueryResponse } from "@local/database";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { EmptyExercisesPlaceholder } from "./components/empty-workouts-placeholder";
 import { IconButton } from "@/components/icon-button";
 import { PlusIcon } from "lucide-react";
 import { FabContainer } from "@/components/layout/fab-container";
-import { NewExerciseModal } from "./components/new-exercise-modal";
+import {
+  NewExerciseModal,
+  ExerciseCard,
+  EmptyExercisesPlaceholder,
+} from "@/components/exercises";
 import { useDisclosure } from "@nextui-org/react";
 import { createExercise } from "@/server/exercises/create-exercise";
 import { deleteExercise } from "@/server/exercises/delete-exercise";
-import { Exercise } from "./components/exercise";
 import { updateExercise } from "@/server/exercises/update-exercise";
 import { useState } from "react";
 import { Title } from "@/components/title";
@@ -85,7 +87,7 @@ export function Exercises() {
       {noExercises && <EmptyExercisesPlaceholder onAddClick={onOpen} />}
       <div className="pb-24">
         {exercisesQuery?.records.map((e) => (
-          <Exercise
+          <ExerciseCard
             key={e.id}
             className="p-2 rounded-lg bg-zinc-200 dark:bg-zinc-800 mb-3"
             {...e}
