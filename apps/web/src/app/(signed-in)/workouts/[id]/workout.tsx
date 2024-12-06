@@ -350,6 +350,9 @@ export function Workout() {
               />
             ) : (
               <div className="p-2">
+                <div className="text-caption-light dark:text-caption text-xs mb-2 italic">
+                  No sets yet. Add one to start tracking.
+                </div>
                 <Button
                   variant="flat"
                   startContent={<PlusIcon size={16} />}
@@ -361,7 +364,7 @@ export function Workout() {
                     handleStartWorkoutExercise(e.exerciseId, e.exerciseName)
                   }
                 >
-                  Start workout exercise
+                  Add set
                 </Button>
               </div>
             )}
