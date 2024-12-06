@@ -11,9 +11,10 @@ interface Props {
 
 export async function PrefetchRecentWorkouts({ children }: Props) {
   const queryClient = new QueryClient();
-  await queryClient.prefetchQuery({
+  await queryClient.prefetchInfiniteQuery({
     queryKey: ["workout-sessions"],
     queryFn: () => getWorkoutSessionsServer(),
+    initialPageParam: null,
   });
 
   return (

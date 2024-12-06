@@ -268,7 +268,7 @@ export function Workout() {
         };
     queryClient.setQueryData(["workouts"], updatedWorkouts);
 
-    redirect("/workouts");
+    redirect("/");
   };
 
   const debouncedUpdateWorkoutName = useDebouncedCallback(

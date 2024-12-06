@@ -3,10 +3,16 @@
 import { db } from "@local/database";
 import { getUserId } from "../user";
 
-export async function getWorkoutSessionsServer() {
+interface RequestOptions {
+  limit?: number;
+  cursor?: string;
+}
+
+export async function getWorkoutSessionsServer(options?: RequestOptions) {
   const userId = await getUserId();
   const workoutHistory = await db.workoutHistory.queryByDate(userId, {
-    limit: 3,
+    limit: options?.limit ?? 10,
+    nextCursor: options?.cursor ?? "",
     order: "desc",
   });
   return workoutHistory;
