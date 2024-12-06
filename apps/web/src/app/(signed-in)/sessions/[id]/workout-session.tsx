@@ -4,7 +4,13 @@ import { FabContainer } from "@/components/layout/fab-container";
 import { Button, Input, useDisclosure } from "@nextui-org/react";
 import { ListCheckIcon, PlusIcon } from "lucide-react";
 import { redirect, useParams } from "next/navigation";
-import { NewSetModal, NewSetModalProps } from "./components/new-set-modal";
+import {
+  NewSetModal,
+  NewSetModalProps,
+  EmptyExercisesPlaceholder,
+  LastWorkoutExerciseSet,
+  WorkoutExercise,
+} from "@/components/sessions";
 import { useCallback, useState } from "react";
 import {
   ExerciseModel,
@@ -13,16 +19,11 @@ import {
   WorkoutSessionExerciseSet,
   WorkoutModel,
 } from "@local/database";
-import {
-  LastWorkoutExerciseSet,
-  WorkoutExercise,
-} from "./components/workout-exercise";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   EnhancedWorkoutSessionModel,
   getHistory,
 } from "@/app/api/history/[id]/get-history";
-import { EmptyExercisesPlaceholder } from "./components/empty-exercises-placeholder";
 import { IconButton } from "@/components/icon-button";
 import {
   updateWorkoutExercises,
