@@ -8,8 +8,8 @@ import {
   ModalProps,
 } from "@nextui-org/react";
 import {
-  WorkoutHistoryExercise,
-  WorkoutHistoryExerciseSet,
+  WorkoutSessionExercise,
+  WorkoutSessionExerciseSet,
 } from "@local/database";
 import { SetSelect, RepSelect, WeightSelect } from "../common";
 import { Grow } from "@/components/layout/grow";
@@ -18,11 +18,11 @@ import { DeleteIcon, TrashIcon } from "lucide-react";
 interface EditWorkoutExerciseModalProps extends Omit<ModalProps, "children"> {
   id: string;
   name: string;
-  sets: WorkoutHistoryExerciseSet[];
+  sets: WorkoutSessionExerciseSet[];
   onDeleteExercise: () => void;
   onUpdateSet: (
     set: number,
-    updates: Partial<WorkoutHistoryExerciseSet>
+    updates: Partial<WorkoutSessionExerciseSet>
   ) => void;
   onDeleteSet: (set: number) => void;
 }
@@ -44,7 +44,7 @@ export function EditWorkoutExerciseModal({
 
   const handleUpdateSet = (
     set: number,
-    updates: Partial<WorkoutHistoryExerciseSet>
+    updates: Partial<WorkoutSessionExerciseSet>
   ) => {
     onUpdateSet(set, updates);
   };

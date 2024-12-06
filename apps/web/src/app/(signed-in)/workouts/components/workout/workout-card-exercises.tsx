@@ -5,7 +5,7 @@ interface Props {
   exercises: WorkoutExercise[];
 }
 
-export function WorkoutExercises({ exercises }: Props) {
+export function WorkoutCardExercises({ exercises }: Props) {
   if (exercises.length === 0) {
     return (
       <div className="p-2">

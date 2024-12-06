@@ -10,7 +10,7 @@ interface Props {
   historyId: string;
 }
 
-export async function PrefetchWorkoutHistory({ historyId, children }: Props) {
+export async function PrefetchWorkoutSession({ historyId, children }: Props) {
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
     queryKey: ["history", historyId],

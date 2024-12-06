@@ -5,17 +5,15 @@ import { Button } from "@nextui-org/react";
 import {
   DumbbellIcon,
   HomeIcon,
-  SearchIcon,
   SettingsIcon,
   SquareLibraryIcon,
-  WorkflowIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navItems = [
   {
-    title: "Dashboard",
+    title: "Home",
     Icon: HomeIcon,
     href: "/",
     exactMatch: true,

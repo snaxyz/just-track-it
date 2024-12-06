@@ -12,7 +12,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-export function History({ className, date, children }: Props) {
+export function WorkoutSessionCard({ className, date, children }: Props) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (

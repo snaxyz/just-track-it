@@ -7,8 +7,8 @@ import { QueryResponse, WorkoutModel } from "@local/database";
 import { useQuery } from "@tanstack/react-query";
 import { ActivityIcon } from "lucide-react";
 import { EmptyWorkoutsPlaceholder } from "./components/empty-workouts-placeholder";
-import { Workout } from "./components/workout";
-import { WorkoutExercises } from "./components/workout/workout-exercises";
+import { WorkoutCard } from "./components/workout";
+import { WorkoutCardExercises } from "./components/workout/workout-card-exercises";
 import { useCallback } from "react";
 import { startWorkoutSessionAndRedirect } from "@/server/workout-sessions/start-workout";
 import { IconButton } from "@/components/icon-button";
@@ -40,14 +40,14 @@ export function Workouts() {
       )}
       <div className="pb-24">
         {workoutsQuery?.records.map((w) => (
-          <Workout
+          <WorkoutCard
             key={w.id}
             id={w.id}
             name={w.name}
             onStartWorkout={handleStartWorkout}
           >
-            <WorkoutExercises exercises={w.exercises} />
-          </Workout>
+            <WorkoutCardExercises exercises={w.exercises} />
+          </WorkoutCard>
         ))}
       </div>
       <FabContainer>

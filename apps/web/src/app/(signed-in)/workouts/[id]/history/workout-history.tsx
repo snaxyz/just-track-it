@@ -5,10 +5,10 @@ import { EnhancedWorkoutHistory } from "@/app/api/workouts/[id]/route";
 import { Title } from "@/components/title";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { History } from "./components/history";
-import { HistoryExercise } from "./components/history-exercise";
+import { WorkoutSessionCard } from "./components/workout-session-card";
+import { WorkoutSessionCardExercise } from "./components/workout-session-card-exercise";
 
-export function WorkoutHistoryList() {
+export function WorkoutHistory() {
   const { id } = useParams<{ id: string }>();
   const { data: historyQuery, isLoading: isHistoryLoading } =
     useQuery<EnhancedWorkoutHistory>({
@@ -22,15 +22,19 @@ export function WorkoutHistoryList() {
     <div className="pb-24">
       <Title>{historyQuery?.workoutName}</Title>
       {historyQuery?.records.map((h) => (
-        <History
+        <WorkoutSessionCard
           key={h.id}
           className="rounded-lg bg-zinc-200 dark:bg-zinc-800 p-2 mb-3"
           date={h.date}
         >
           {h.exercises.map((e) => (
-            <HistoryExercise key={e.exerciseId} className="mb-2" {...e} />
+            <WorkoutSessionCardExercise
+              key={e.exerciseId}
+              className="mb-2"
+              {...e}
+            />
           ))}
-        </History>
+        </WorkoutSessionCard>
       ))}
     </div>
   );

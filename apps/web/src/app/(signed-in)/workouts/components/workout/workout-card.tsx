@@ -16,7 +16,7 @@ interface Props {
   onStartWorkout: (workoutId: string) => void;
 }
 
-export function Workout({ id, name, children, onStartWorkout }: Props) {
+export function WorkoutCard({ id, name, children, onStartWorkout }: Props) {
   return (
     <div className="rounded-lg bg-zinc-200 dark:bg-zinc-800 mb-3">
       <div className="flex w-full p-2 gap-2">

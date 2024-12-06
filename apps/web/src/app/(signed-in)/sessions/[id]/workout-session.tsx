@@ -9,8 +9,8 @@ import { useCallback, useState } from "react";
 import {
   ExerciseModel,
   QueryResponse,
-  WorkoutHistoryExercise,
-  WorkoutHistoryExerciseSet,
+  WorkoutSessionExercise,
+  WorkoutSessionExerciseSet,
   WorkoutModel,
 } from "@local/database";
 import {
@@ -34,7 +34,7 @@ import { useDebouncedCallback } from "@/lib/hooks/use-debounced-callback";
 import { getExercises } from "@/app/api/exercises/get-exercises";
 import { createExercise } from "@/server/exercises/create-exercise";
 
-export function Workout() {
+export function WorkoutSession() {
   const { id } = useParams<{ id: string }>();
 
   const queryClient = useQueryClient();
@@ -135,7 +135,7 @@ export function Workout() {
       setLastUpdatedExercise(exercise.id);
     }
     if (!workout || !exercise) return;
-    let updatedWorkoutExercises: WorkoutHistoryExercise[];
+    let updatedWorkoutExercises: WorkoutSessionExercise[];
     if (
       input.set === "1" &&
       !workoutExercises.find((e) => e.exerciseId === exercise.id)
@@ -219,7 +219,7 @@ export function Workout() {
   const handleUpdateExerciseSet = (
     exerciseId: string,
     setIndex: number,
-    updates: Partial<WorkoutHistoryExerciseSet>
+    updates: Partial<WorkoutSessionExerciseSet>
   ) => {
     if (!workout) return;
     const updatedWorkoutExercises = workoutExercises.map((exercise) => {
