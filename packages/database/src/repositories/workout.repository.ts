@@ -18,6 +18,7 @@ export interface WorkoutModel extends Model {
   id: string;
   userId: string;
   name: string;
+  description: string;
   exercises: WorkoutExercise[];
   created: string;
   updated: string;
@@ -57,6 +58,7 @@ export class WorkoutRepository extends Repository {
     userId: string,
     workout: {
       name: string;
+      description: string;
       exercises: WorkoutExercise[];
     }
   ) {
@@ -66,6 +68,7 @@ export class WorkoutRepository extends Repository {
       id,
       userId,
       name: workout.name,
+      description: workout.description,
       exercises: workout.exercises,
       ...ts,
       ...this.key(userId, id),

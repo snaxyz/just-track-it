@@ -5,8 +5,9 @@ import { getWorkouts } from "@/app/api/workouts/get-workouts";
 import { createWorkoutSessionAndRedirect } from "@/server/workouts";
 import { QueryResponse, WorkoutModel } from "@local/database";
 import { useQuery } from "@tanstack/react-query";
-import { ActivityIcon } from "lucide-react";
+import { ActivityIcon, PlusIcon } from "lucide-react";
 import {
+  CreateWorkoutModal,
   EmptyWorkoutsPlaceholder,
   WorkoutCard,
   WorkoutCardExercises,
@@ -15,6 +16,7 @@ import { IconButton } from "@/components/icon-button";
 import { Title } from "@/components/title";
 import { useCallback } from "react";
 import { startWorkoutSessionAndRedirect } from "@/server/workout-sessions/start-workout";
+import { Button, useDisclosure } from "@nextui-org/react";
 
 export function Workouts() {
   const { data: workoutsQuery, isLoading } = useQuery<
@@ -27,6 +29,8 @@ export function Workouts() {
   const handleStartWorkout = useCallback(async (workoutId: string) => {
     await startWorkoutSessionAndRedirect(workoutId);
   }, []);
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   if (isLoading) return <div>...loading...</div>;
 
@@ -51,6 +55,19 @@ export function Workouts() {
             <WorkoutCardExercises exercises={w.exercises} />
           </WorkoutCard>
         ))}
+        <div className="p-2">
+          <Button
+            variant="solid"
+            startContent={<PlusIcon size={16} />}
+            size="sm"
+            onClick={onOpen}
+            radius="lg"
+            color="primary"
+            fullWidth
+          >
+            Create new workout
+          </Button>
+        </div>
       </div>
       <FabContainer>
         <IconButton
@@ -61,6 +78,12 @@ export function Workouts() {
           <ActivityIcon size={16} />
         </IconButton>
       </FabContainer>
+      <CreateWorkoutModal
+        isOpen={isOpen}
+        onClose={onClose}
+        exercises={[]}
+        onCreate={() => {}}
+      />
     </>
   );
 }
