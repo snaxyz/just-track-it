@@ -1,7 +1,5 @@
 import { ExerciseModel, WeightUnit } from "@local/database";
 import {
-  Autocomplete,
-  AutocompleteItem,
   Button,
   Modal,
   ModalBody,
@@ -12,6 +10,7 @@ import {
 } from "@nextui-org/react";
 import { SetSelect, RepSelect, WeightSelect } from "../common";
 import { PlusIcon } from "lucide-react";
+import { ExerciseAutocomplete } from "@/components/exercises";
 
 export interface NewSetModalProps extends Omit<ModalProps, "children"> {
   exercises: ExerciseModel[];
@@ -79,43 +78,20 @@ export function NewSetModal({
       <ModalContent>
         <ModalHeader>New Set</ModalHeader>
         <ModalBody className="p-2">
-          <Autocomplete
-            label="Exercise"
-            fullWidth
-            defaultItems={exercises}
-            selectedKey={selectedExercise ?? ""}
-            onSelectionChange={(key) => {
-              if (key) {
-                onSelectedExerciseChange(key.toString());
-                onCustomExerciseChange(
-                  exercises.find((e) => e.id === key.toString())!.name
-                );
-              }
-            }}
-            allowsCustomValue
-            inputValue={customExercise}
-            onValueChange={onCustomExerciseChange}
-            size="sm"
-            inputProps={autocompleteInputProps}
-            isClearable={false}
-          >
-            {exercises.map((exercise) => (
-              <AutocompleteItem
-                key={exercise.id}
-                value={exercise.id}
-                className="capitalize"
-              >
-                {exercise.name}
-              </AutocompleteItem>
-            ))}
-          </Autocomplete>
+          <ExerciseAutocomplete
+            exercises={exercises}
+            selectedExercise={selectedExercise}
+            customExercise={customExercise}
+            onSelectedExerciseChange={onSelectedExerciseChange}
+            onCustomExerciseChange={onCustomExerciseChange}
+          />
           <SetSelect set={set} onChange={onSetChange} disabled />
           <RepSelect reps={reps} onChange={onRepsChange} />
           <WeightSelect unit={unit} weight={weight} onChange={onWeightChange} />
         </ModalBody>
         <ModalFooter className="p-2">
           <Button
-            onClick={handleAdd}
+            onPress={handleAdd}
             disabled={!isValid}
             startContent={<PlusIcon size={16} />}
             radius="lg"

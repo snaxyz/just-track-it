@@ -97,7 +97,7 @@ export function Exercises() {
         ))}
       </div>
       <FabContainer>
-        <IconButton color="primary" variant="solid" onClick={onOpen}>
+        <IconButton color="primary" variant="solid" onPress={onOpen}>
           <PlusIcon size={16} />
         </IconButton>
       </FabContainer>

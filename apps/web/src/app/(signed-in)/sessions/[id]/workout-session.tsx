@@ -348,7 +348,7 @@ export function WorkoutSession() {
                 reps={e.sets[e.sets.length - 1].reps}
                 weight={e.sets[e.sets.length - 1].weight}
                 unit={e.sets[e.sets.length - 1].unit}
-                onClick={handleWorkoutExerciseClick}
+                onPress={handleWorkoutExerciseClick}
               />
             ) : (
               <div className="p-2">
@@ -362,7 +362,7 @@ export function WorkoutSession() {
                   radius="lg"
                   color="secondary"
                   fullWidth
-                  onClick={() =>
+                  onPress={() =>
                     handleStartWorkoutExercise(e.exerciseId, e.exerciseName)
                   }
                 >
@@ -382,7 +382,7 @@ export function WorkoutSession() {
                 variant="flat"
                 fullWidth
                 startContent={<ListCheckIcon size={16} />}
-                onClick={handleComplete}
+                onPress={handleComplete}
               >
                 Complete &amp; save workout
               </Button>
@@ -394,7 +394,7 @@ export function WorkoutSession() {
         </div>
       </div>
       <FabContainer>
-        <IconButton variant="solid" color="primary" onClick={onOpen}>
+        <IconButton variant="solid" color="primary" onPress={onOpen}>
           <PlusIcon size={16} />
         </IconButton>
       </FabContainer>

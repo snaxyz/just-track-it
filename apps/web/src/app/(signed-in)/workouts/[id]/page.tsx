@@ -1,6 +1,7 @@
 import { MainContainer } from "@/components/layout/main-container";
 import { PageContainer } from "@/components/layout/page-container";
 import { Workout } from "./workout";
+import { PrefetchExercises } from "../../exercises/prefetch-exercises";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -14,7 +15,9 @@ export default async function WorkoutPage({ params }: Props) {
         {/* <PrefetchWorkoutHistory workoutId={id}>
           <WorkoutHistory />
         </PrefetchWorkoutHistory> */}
-        <Workout id={id} />
+        <PrefetchExercises>
+          <Workout id={id} />
+        </PrefetchExercises>
       </MainContainer>
     </PageContainer>
   );

@@ -65,7 +65,7 @@ export function ExerciseCategorySelect({
       selectedKeys={selectedCategories}
       onSelectionChange={onCategoriesChange}
     >
-      {(category) => (
+      {(category: Category) => (
         <SelectItem key={category.id} textValue={category.name}>
           {category.name}
         </SelectItem>

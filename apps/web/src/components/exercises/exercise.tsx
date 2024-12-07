@@ -33,10 +33,10 @@ export function ExerciseCard({
         <div className="flex items-center gap-1 mb-2">
           <span className="capitalize">{name}</span>
           <Grow />
-          <IconButton onClick={onOpen}>
+          <IconButton onPress={onOpen}>
             <PencilIcon size={16} />
           </IconButton>
-          <IconButton onClick={() => onDelete(id)}>
+          <IconButton onPress={() => onDelete(id)}>
             <TrashIcon size={16} />
           </IconButton>
         </div>

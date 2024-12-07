@@ -1,3 +1,4 @@
+import { ExerciseAutocomplete, ExerciseSelect } from "@/components/exercises";
 import { ExerciseModel } from "@local/database";
 import {
   Autocomplete,
@@ -11,24 +12,20 @@ import {
   ModalProps,
   Input,
   Textarea,
+  Chip,
+  Selection,
 } from "@nextui-org/react";
 import { PlusIcon } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export interface CreateWorkoutModalProps extends Omit<ModalProps, "children"> {
   exercises: ExerciseModel[];
   onCreate: (input: {
     name: string;
     description: string;
-    selectedExercises: string[];
+    selectedExercises: ExerciseModel[];
   }) => void;
 }
-
-const autocompleteInputProps = {
-  classNames: {
-    input: "capitalize",
-  },
-};
 
 export function CreateWorkoutModal({
   isOpen,
@@ -38,76 +35,71 @@ export function CreateWorkoutModal({
 }: CreateWorkoutModalProps) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [selectedExercises, setSelectedExercises] = useState<string[]>([]);
+  const [selectedExercises, setSelectedExercises] = useState<Selection>(
+    new Set([])
+  );
 
   const handleCreate = () => {
+    const selectedIds = Array.from(selectedExercises) as string[];
     onCreate({
       name,
       description,
-      selectedExercises,
+      selectedExercises: exercises.filter((e) => selectedIds.includes(e.id)),
     });
 
     onClose?.();
     setName("");
     setDescription("");
-    setSelectedExercises([]);
+    setSelectedExercises(new Set([]));
   };
 
-  const isValid = name && selectedExercises.length > 0;
+  const isValid = name && Array.from(selectedExercises).length > 0;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isDismissable={false}>
       <ModalContent>
-        <ModalHeader>Create Workout</ModalHeader>
+        <ModalHeader className="px-2">Create Workout</ModalHeader>
         <ModalBody className="p-2">
           <Input
             label="Name"
             fullWidth
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onValueChange={setName}
             size="sm"
-            variant="bordered"
+            radius="lg"
           />
           <Textarea
             label="Description"
             fullWidth
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onValueChange={setDescription}
             size="sm"
-            variant="bordered"
+            minRows={1}
+            radius="lg"
           />
-          <Autocomplete
-            label="Add Exercises"
+          <ExerciseSelect
+            exercises={exercises}
+            selectedExercises={selectedExercises}
+            onExercisesChange={setSelectedExercises}
             fullWidth
-            defaultItems={exercises}
-            selectedKeys={selectedExercises}
-            onSelectionChange={(keys) =>
-              setSelectedExercises(Array.from(keys) as string[])
-            }
-            allowsMultipleSelection
-            inputProps={autocompleteInputProps}
-            isClearable={false}
-            variant="bordered"
-          >
-            {exercises.map((exercise) => (
-              <AutocompleteItem
-                key={exercise.id}
-                value={exercise.id}
-                className="capitalize"
-              >
-                {exercise.name}
-              </AutocompleteItem>
-            ))}
-          </Autocomplete>
+          />
         </ModalBody>
-        <ModalFooter className="p-2">
+        <ModalFooter className="p-2 justify-between">
           <Button
-            onClick={handleCreate}
+            variant="light"
+            startContent={<PlusIcon size={16} />}
+            size="sm"
+            color="secondary"
+          >
+            New exercise
+          </Button>
+          <Button
+            onPress={handleCreate}
             disabled={!isValid}
             startContent={<PlusIcon size={16} />}
             radius="lg"
-            variant="flat"
             size="sm"
+            color="primary"
           >
             Create
           </Button>

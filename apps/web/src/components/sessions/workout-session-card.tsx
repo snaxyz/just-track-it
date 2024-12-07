@@ -20,7 +20,7 @@ export function WorkoutSessionCard({ className, date, children }: Props) {
       <div className="flex items-center mb-2">
         <DateTime iso={date} />
         <Grow />
-        <IconButton variant="bordered" onClick={() => setIsExpanded((e) => !e)}>
+        <IconButton variant="bordered" onPress={() => setIsExpanded((e) => !e)}>
           {isExpanded ? (
             <ChevronUpIcon size={16} />
           ) : (

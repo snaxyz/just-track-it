@@ -78,7 +78,7 @@ export function Dashboard() {
                       size="sm"
                       radius="lg"
                       color="secondary"
-                      onClick={() => handleStartWorkout(w.workoutId)}
+                      onPress={() => handleStartWorkout(w.workoutId)}
                     >
                       Start workout
                     </Button>
@@ -109,7 +109,7 @@ export function Dashboard() {
                 color="secondary"
                 fullWidth
                 isDisabled={isFetchingNextPage}
-                onClick={() => fetchNextPage()}
+                onPress={() => fetchNextPage()}
               >
                 View more
               </Button>
@@ -121,7 +121,7 @@ export function Dashboard() {
         <IconButton
           color="primary"
           variant="solid"
-          onClick={() => createWorkoutSessionAndRedirect()}
+          onPress={() => createWorkoutSessionAndRedirect()}
         >
           <ActivityIcon size={16} />
         </IconButton>

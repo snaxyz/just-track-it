@@ -30,11 +30,11 @@ export function ThemeToggle() {
         </Button>
       </DropdownTrigger>
       <DropdownMenu className="bg-zinc-200 dark:bg-zinc-800 rounded-lg">
-        <DropdownItem onClick={() => handleSetTheme("light")}>
+        <DropdownItem onPress={() => handleSetTheme("light")}>
           Light
         </DropdownItem>
-        <DropdownItem onClick={() => handleSetTheme("dark")}>Dark</DropdownItem>
-        <DropdownItem onClick={() => handleSetTheme("system")}>
+        <DropdownItem onPress={() => handleSetTheme("dark")}>Dark</DropdownItem>
+        <DropdownItem onPress={() => handleSetTheme("system")}>
           System
         </DropdownItem>
       </DropdownMenu>

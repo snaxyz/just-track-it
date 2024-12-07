@@ -17,7 +17,7 @@ export function TopAppbarMenu() {
 
   return (
     <>
-      <Button isIconOnly radius="lg" size="sm" variant="light" onClick={onOpen}>
+      <Button isIconOnly radius="lg" size="sm" variant="light" onPress={onOpen}>
         <MenuIcon size={16} />
       </Button>
       <RightDrawer
@@ -30,7 +30,7 @@ export function TopAppbarMenu() {
             size="sm"
             radius="lg"
             variant="light"
-            onClick={onClose}
+            onPress={onClose}
           >
             <XIcon size={16} />
           </Button>

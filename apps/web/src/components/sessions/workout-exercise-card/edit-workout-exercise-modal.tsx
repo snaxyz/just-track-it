@@ -94,7 +94,7 @@ export function EditWorkoutExerciseModal({
                 <Grow />
                 <Button
                   size="sm"
-                  onClick={() => handleDeleteSet(ind)}
+                  onPress={() => handleDeleteSet(ind)}
                   isIconOnly
                   radius="lg"
                   variant="bordered"
@@ -108,13 +108,13 @@ export function EditWorkoutExerciseModal({
         <ModalFooter className="p-2">
           <Button
             color="danger"
-            onClick={handleDeleteExercise}
+            onPress={handleDeleteExercise}
             className="mr-auto"
             size="sm"
           >
             Delete exercise
           </Button>
-          <Button onClick={onClose} size="sm">
+          <Button onPress={onClose} size="sm">
             Close
           </Button>
         </ModalFooter>

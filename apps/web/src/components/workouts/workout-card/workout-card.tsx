@@ -41,7 +41,7 @@ export function WorkoutCard({ id, name, children, onStartWorkout }: Props) {
           size="sm"
           radius="lg"
           color="secondary"
-          onClick={() => onStartWorkout(id)}
+          onPress={() => onStartWorkout(id)}
         >
           Start workout
         </Button>

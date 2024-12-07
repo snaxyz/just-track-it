@@ -103,7 +103,7 @@ export function WorkoutExercise({
               size="sm"
               radius="lg"
               variant="bordered"
-              onClick={onOpen}
+              onPress={onOpen}
             >
               <EditIcon size={16} />
             </Button>

@@ -15,7 +15,7 @@ export function EmptyWorkoutsPlaceholder({ onAddClick }: Props) {
         variant="solid"
         startContent={<ActivityIcon size={16} />}
         size="md"
-        onClick={onAddClick}
+        onPress={onAddClick}
         radius="lg"
         color="primary"
       >

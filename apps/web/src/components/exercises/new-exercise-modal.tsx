@@ -61,7 +61,7 @@ export function NewExerciseModal({
             radius="lg"
             startContent={<PlusIcon size={16} />}
             disabled={!name}
-            onClick={() => onAdd(name, Array.from(categories) as string[])}
+            onPress={() => onAdd(name, Array.from(categories) as string[])}
           >
             Add exercise
           </Button>

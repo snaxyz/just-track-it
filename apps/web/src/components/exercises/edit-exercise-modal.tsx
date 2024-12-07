@@ -59,7 +59,7 @@ export function EditExerciseModal({
             radius="lg"
             startContent={<PlusIcon size={16} />}
             disabled={!name}
-            onClick={handleSave}
+            onPress={handleSave}
           >
             Save
           </Button>

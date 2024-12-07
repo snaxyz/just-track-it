@@ -3,7 +3,7 @@
 import { FabContainer } from "@/components/layout/fab-container";
 import { getWorkouts } from "@/app/api/workouts/get-workouts";
 import { createWorkoutSessionAndRedirect } from "@/server/workouts";
-import { QueryResponse, WorkoutModel } from "@local/database";
+import { ExerciseModel, QueryResponse, WorkoutModel } from "@local/database";
 import { useQuery } from "@tanstack/react-query";
 import { ActivityIcon, PlusIcon } from "lucide-react";
 import {
@@ -17,6 +17,7 @@ import { Title } from "@/components/title";
 import { useCallback } from "react";
 import { startWorkoutSessionAndRedirect } from "@/server/workout-sessions/start-workout";
 import { Button, useDisclosure } from "@nextui-org/react";
+import { getExercises } from "@/app/api/exercises/get-exercises";
 
 export function Workouts() {
   const { data: workoutsQuery, isLoading } = useQuery<
@@ -24,6 +25,13 @@ export function Workouts() {
   >({
     queryKey: ["workouts"],
     queryFn: () => getWorkouts(),
+  });
+
+  const { data: exercisesQuery, isLoading: exercisesLoading } = useQuery<
+    QueryResponse<ExerciseModel>
+  >({
+    queryKey: ["exercises"],
+    queryFn: () => getExercises(),
   });
 
   const handleStartWorkout = useCallback(async (workoutId: string) => {
@@ -60,7 +68,7 @@ export function Workouts() {
             variant="solid"
             startContent={<PlusIcon size={16} />}
             size="sm"
-            onClick={onOpen}
+            onPress={onOpen}
             radius="lg"
             color="primary"
             fullWidth
@@ -73,7 +81,7 @@ export function Workouts() {
         <IconButton
           color="primary"
           variant="solid"
-          onClick={() => createWorkoutSessionAndRedirect()}
+          onPress={() => createWorkoutSessionAndRedirect()}
         >
           <ActivityIcon size={16} />
         </IconButton>
@@ -81,7 +89,7 @@ export function Workouts() {
       <CreateWorkoutModal
         isOpen={isOpen}
         onClose={onClose}
-        exercises={[]}
+        exercises={exercisesQuery?.records ?? []}
         onCreate={() => {}}
       />
     </>

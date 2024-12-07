@@ -11,7 +11,7 @@ interface Props {
   weight?: number;
   unit?: WeightUnit;
   exerciseId: string;
-  onClick: (exerciseId: string) => void;
+  onPress: (exerciseId: string) => void;
 }
 
 export function LastWorkoutExerciseSet({
@@ -21,7 +21,7 @@ export function LastWorkoutExerciseSet({
   weight,
   unit,
   exerciseId,
-  onClick,
+  onPress,
 }: Props) {
   return (
     <Button
@@ -31,7 +31,7 @@ export function LastWorkoutExerciseSet({
         className
       )}
       fullWidth
-      onClick={() => onClick(exerciseId)}
+      onPress={() => onPress(exerciseId)}
     >
       <div>Last set</div>
       <div className="flex items-center w-full justify-between mb-2">

@@ -15,7 +15,7 @@ export function EmptyExercisesPlaceholder({ onAddClick }: Props) {
         variant="solid"
         startContent={<PlusIcon size={16} />}
         size="md"
-        onClick={onAddClick}
+        onPress={onAddClick}
         radius="lg"
         color="primary"
       >
