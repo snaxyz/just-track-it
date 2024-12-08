@@ -12,11 +12,18 @@ import Link from "next/link";
 interface Props {
   id: string;
   name: string;
+  description: string;
   children: React.ReactNode;
   onStartWorkout: (workoutId: string) => void;
 }
 
-export function WorkoutCard({ id, name, children, onStartWorkout }: Props) {
+export function WorkoutCard({
+  id,
+  name,
+  description,
+  children,
+  onStartWorkout,
+}: Props) {
   return (
     <div className="rounded-lg bg-zinc-200 dark:bg-zinc-800 mb-3">
       <div className="flex w-full p-2 gap-2">
@@ -25,13 +32,14 @@ export function WorkoutCard({ id, name, children, onStartWorkout }: Props) {
         <IconButton as={Link} href={`/workouts/${id}/history`}>
           <HistoryIcon size={16} />
         </IconButton>
-        {/* <IconButton>
+        <IconButton as={Link} href={`/workouts/${id}`}>
           <EditIcon size={16} />
-        </IconButton> */}
+        </IconButton>
         {/* <IconButton>
           <MoreHorizontalIcon size={16} />
         </IconButton> */}
       </div>
+      {description && <div className="p-2">{description}</div>}
       {children}
       <div className="w-full p-2">
         <Button

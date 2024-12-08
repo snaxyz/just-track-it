@@ -2,24 +2,31 @@
 
 import { FabContainer } from "@/components/layout/fab-container";
 import { getWorkouts } from "@/app/api/workouts/get-workouts";
-import { createWorkoutSessionAndRedirect } from "@/server/workouts";
+import {
+  createWorkout,
+  createWorkoutAndSessionAndRedirect,
+} from "@/server/workouts";
 import { ExerciseModel, QueryResponse, WorkoutModel } from "@local/database";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ActivityIcon, PlusIcon } from "lucide-react";
 import {
   CreateWorkoutModal,
+  CreateWorkoutModalProps,
   EmptyWorkoutsPlaceholder,
   WorkoutCard,
   WorkoutCardExercises,
+  WorkoutCardSkeleton,
 } from "@/components/workouts";
 import { IconButton } from "@/components/icon-button";
 import { Title } from "@/components/title";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { startWorkoutSessionAndRedirect } from "@/server/workout-sessions/start-workout";
 import { Button, useDisclosure } from "@nextui-org/react";
 import { getExercises } from "@/app/api/exercises/get-exercises";
+import { redirect } from "next/navigation";
 
 export function Workouts() {
+  const queryClient = useQueryClient();
   const { data: workoutsQuery, isLoading } = useQuery<
     QueryResponse<WorkoutModel>
   >({
@@ -39,6 +46,23 @@ export function Workouts() {
   }, []);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isCreating, setIsCreating] = useState(false);
+
+  const handleCreateWorkout: CreateWorkoutModalProps["onCreate"] = async (
+    input
+  ) => {
+    setIsCreating(true);
+    const workout = await createWorkout(
+      input.name,
+      input.description,
+      input.selectedExercises
+    );
+    setIsCreating(false);
+    queryClient.setQueryData<QueryResponse<WorkoutModel>>(["workouts"], {
+      ...(workoutsQuery ?? { cursor: "" }),
+      records: [...(workoutsQuery?.records ?? []), workout],
+    });
+  };
 
   if (isLoading) return <div>...loading...</div>;
 
@@ -49,7 +73,7 @@ export function Workouts() {
       <Title>Workouts</Title>
       {noWorkouts && (
         <EmptyWorkoutsPlaceholder
-          onAddClick={() => createWorkoutSessionAndRedirect()}
+          onAddClick={() => createWorkoutAndSessionAndRedirect()}
         />
       )}
       <div className="pb-24">
@@ -58,11 +82,13 @@ export function Workouts() {
             key={w.id}
             id={w.id}
             name={w.name}
+            description={w.description}
             onStartWorkout={handleStartWorkout}
           >
             <WorkoutCardExercises exercises={w.exercises} />
           </WorkoutCard>
         ))}
+        {isCreating && <WorkoutCardSkeleton />}
         <div className="p-2">
           <Button
             variant="solid"
@@ -81,7 +107,7 @@ export function Workouts() {
         <IconButton
           color="primary"
           variant="solid"
-          onPress={() => createWorkoutSessionAndRedirect()}
+          onPress={() => createWorkoutAndSessionAndRedirect()}
         >
           <ActivityIcon size={16} />
         </IconButton>
@@ -90,7 +116,7 @@ export function Workouts() {
         isOpen={isOpen}
         onClose={onClose}
         exercises={exercisesQuery?.records ?? []}
-        onCreate={() => {}}
+        onCreate={handleCreateWorkout}
       />
     </>
   );

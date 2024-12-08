@@ -4,7 +4,7 @@ import { IconButton } from "@/components/icon-button";
 import { FabContainer } from "@/components/layout/fab-container";
 import { Grow } from "@/components/layout/grow";
 import { Title } from "@/components/title";
-import { createWorkoutSessionAndRedirect } from "@/server/workouts";
+import { createWorkoutAndSessionAndRedirect } from "@/server/workouts";
 import { startWorkoutSessionAndRedirect } from "@/server/workout-sessions/start-workout";
 import { QueryResponse, WorkoutSessionModel } from "@local/database";
 import {
@@ -121,7 +121,7 @@ export function Dashboard() {
         <IconButton
           color="primary"
           variant="solid"
-          onPress={() => createWorkoutSessionAndRedirect()}
+          onPress={() => createWorkoutAndSessionAndRedirect()}
         >
           <ActivityIcon size={16} />
         </IconButton>

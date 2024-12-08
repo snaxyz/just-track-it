@@ -9,7 +9,7 @@ import {
 } from "@nextui-org/react";
 
 interface Props {
-  exercises: ExerciseModel[];
+  exercises: Partial<ExerciseModel>[];
   selectedExercises: Selection;
   onExercisesChange: (keys: SharedSelection) => void;
   fullWidth?: boolean;
@@ -23,9 +23,6 @@ export function ExerciseSelect({
 }: Props) {
   return (
     <Select
-      classNames={{
-        trigger: "min-h-12 py-2",
-      }}
       fullWidth={fullWidth}
       size="sm"
       items={exercises}
@@ -34,7 +31,7 @@ export function ExerciseSelect({
       selectionMode="multiple"
       placeholder="Select exercises"
       radius="lg"
-      renderValue={(items: SelectedItems<ExerciseModel>) => {
+      renderValue={(items: SelectedItems<Partial<ExerciseModel>>) => {
         return (
           <div className="flex flex-wrap gap-2">
             {items.map((item) => (

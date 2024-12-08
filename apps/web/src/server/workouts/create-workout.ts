@@ -1,25 +1,27 @@
 "use server";
 
-import { format } from "date-fns";
-import { db } from "@local/database";
+import { db, ExerciseModel } from "@local/database";
 import { getUserId } from "../user";
-import { currentTimestamp } from "@/lib/timestamp";
-import { redirect } from "next/navigation";
 
-export async function createWorkoutSessionAndRedirect() {
+export async function createWorkout(
+  name: string,
+  description: string,
+  exercises: (Pick<ExerciseModel, "id" | "name"> & { isDraft?: boolean })[]
+) {
   const userId = await getUserId();
-  const date = format(new Date(), "yyyy-MM-dd");
-  const name = `New workout ${date}`;
-  const { id } = await db.workout.create(userId, {
-    name: `New workout ${date}`,
-    exercises: [],
+  const draftExercises = exercises.filter((e) => e.isDraft);
+  const existingExercises = exercises.filter((e) => !e.isDraft);
+  const createdExercises = await Promise.all(
+    draftExercises.map(async (e) => {
+      return await db.exercise.create(userId, { name: e.name, categories: [] });
+    })
+  );
+  return await db.workout.create(userId, {
+    name,
+    description,
+    exercises: existingExercises.concat(createdExercises).map((e) => ({
+      exerciseId: e.id,
+      exerciseName: e.name,
+    })),
   });
-  const { id: sessionId } = await db.workoutSession.create(userId, {
-    workoutId: id,
-    workoutName: name,
-    date: currentTimestamp(),
-    exercises: [],
-  });
-
-  redirect(`/sessions/${sessionId}`);
 }
