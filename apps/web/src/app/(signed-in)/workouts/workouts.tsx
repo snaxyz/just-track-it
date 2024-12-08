@@ -23,7 +23,11 @@ import { useCallback, useState } from "react";
 import { startWorkoutSessionAndRedirect } from "@/server/workout-sessions/start-workout";
 import { Button, useDisclosure } from "@nextui-org/react";
 import { getExercises } from "@/app/api/exercises/get-exercises";
-import { redirect } from "next/navigation";
+import {
+  EditWorkoutModal,
+  EditWorkoutModalProps,
+} from "@/components/workouts/edit-workout-modal";
+import { updateWorkout } from "@/server/workouts";
 
 export function Workouts() {
   const queryClient = useQueryClient();
@@ -64,6 +68,34 @@ export function Workouts() {
     });
   };
 
+  const [selectedWorkout, setSelectedWorkout] =
+    useState<Pick<WorkoutModel, "id" | "name" | "description" | "exercises">>();
+
+  const handleEditWorkout = (id: string) => {
+    setSelectedWorkout(workoutsQuery?.records?.find((w) => w.id === id));
+  };
+  const closeEditWorkoutModal = () => setSelectedWorkout(undefined);
+
+  const handleSaveWorkout: EditWorkoutModalProps["onSave"] = async (input) => {
+    const workoutId = selectedWorkout?.id ?? "";
+    console.log(workoutId, input);
+    const workout = await updateWorkout(
+      workoutId,
+      input.name,
+      input.description,
+      input.selectedExercises
+    );
+    console.log({ updated: workout });
+    queryClient.setQueryData(["workouts"], {
+      ...(workoutsQuery ?? { cursor: "" }),
+      records: workoutsQuery?.records.map((w) =>
+        w.id === workoutId ? workout : w
+      ),
+    });
+
+    closeEditWorkoutModal();
+  };
+
   if (isLoading) return <div>...loading...</div>;
 
   const noWorkouts = !workoutsQuery || workoutsQuery.records.length === 0;
@@ -84,6 +116,7 @@ export function Workouts() {
             name={w.name}
             description={w.description}
             onStartWorkout={handleStartWorkout}
+            onEditClick={handleEditWorkout}
           >
             <WorkoutCardExercises exercises={w.exercises} />
           </WorkoutCard>
@@ -117,6 +150,13 @@ export function Workouts() {
         onClose={onClose}
         exercises={exercisesQuery?.records ?? []}
         onCreate={handleCreateWorkout}
+      />
+      <EditWorkoutModal
+        isOpen={Boolean(selectedWorkout)}
+        onClose={closeEditWorkoutModal}
+        workout={selectedWorkout}
+        exercises={exercisesQuery?.records ?? []}
+        onSave={handleSaveWorkout}
       />
     </>
   );

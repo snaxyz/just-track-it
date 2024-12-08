@@ -1,6 +1,6 @@
 import { IconButton } from "@/components/icon-button";
 import { Grow } from "@/components/layout/grow";
-import { Button } from "@nextui-org/react";
+import { Button, useDisclosure } from "@nextui-org/react";
 import {
   ActivityIcon,
   EditIcon,
@@ -8,6 +8,7 @@ import {
   MoreHorizontalIcon,
 } from "lucide-react";
 import Link from "next/link";
+import { EditWorkoutModal } from "../edit-workout-modal";
 
 interface Props {
   id: string;
@@ -15,6 +16,7 @@ interface Props {
   description: string;
   children: React.ReactNode;
   onStartWorkout: (workoutId: string) => void;
+  onEditClick: (id: string) => void;
 }
 
 export function WorkoutCard({
@@ -23,6 +25,7 @@ export function WorkoutCard({
   description,
   children,
   onStartWorkout,
+  onEditClick,
 }: Props) {
   return (
     <div className="rounded-lg bg-zinc-200 dark:bg-zinc-800 mb-3">
@@ -32,7 +35,7 @@ export function WorkoutCard({
         <IconButton as={Link} href={`/workouts/${id}/history`}>
           <HistoryIcon size={16} />
         </IconButton>
-        <IconButton as={Link} href={`/workouts/${id}`}>
+        <IconButton onPress={() => onEditClick(id)}>
           <EditIcon size={16} />
         </IconButton>
         {/* <IconButton>

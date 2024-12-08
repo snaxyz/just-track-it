@@ -1,8 +1,6 @@
-import { ExerciseAutocomplete, ExerciseSelect } from "@/components/exercises";
-import { ExerciseModel } from "@local/database";
+import { ExerciseSelect } from "@/components/exercises";
+import { ExerciseModel, WorkoutModel } from "@local/database";
 import {
-  Autocomplete,
-  AutocompleteItem,
   Button,
   Modal,
   ModalBody,
@@ -12,52 +10,64 @@ import {
   ModalProps,
   Input,
   Textarea,
-  Chip,
   Selection,
 } from "@nextui-org/react";
-import { PlusIcon } from "lucide-react";
-import { KeyboardEventHandler, useCallback, useState } from "react";
+import { SaveIcon } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 
 interface SelectedExercise extends Pick<ExerciseModel, "id" | "name"> {
   isDraft?: boolean;
 }
 
-export interface CreateWorkoutModalProps extends Omit<ModalProps, "children"> {
+export interface EditWorkoutModalProps extends Omit<ModalProps, "children"> {
+  workout?: Pick<WorkoutModel, "name" | "description" | "exercises">;
   exercises: SelectedExercise[];
-  onCreate: (input: {
+  onSave: (input: {
     name: string;
     description: string;
     selectedExercises: SelectedExercise[];
   }) => void;
 }
 
-export function CreateWorkoutModal({
+export function EditWorkoutModal({
   isOpen,
   onClose,
+  workout,
   exercises,
-  onCreate,
-}: CreateWorkoutModalProps) {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+  onSave,
+}: EditWorkoutModalProps) {
+  const [name, setName] = useState(workout?.name ?? "");
+  const [description, setDescription] = useState(workout?.description ?? "");
   const [selectedExercises, setSelectedExercises] = useState<Selection>(
-    new Set([])
+    new Set(workout?.exercises.map((e) => e.exerciseId) ?? [])
   );
+
+  useEffect(() => {
+    setName(workout?.name ?? "");
+    setDescription(workout?.description ?? "");
+    setSelectedExercises(
+      new Set(workout?.exercises.map((e) => e.exerciseId) ?? [])
+    );
+  }, [workout?.name, workout?.description, workout?.exercises]);
+
   const [newExercise, setNewExercise] = useState("");
   const [draftExercises, setDraftExercises] = useState<SelectedExercise[]>([]);
+
   const handleCreateDraftExercise = useCallback((name: string) => {
     const exercise = {
       id: name.replace(/\s/g, "").toLowerCase(),
       name,
-      categories: [],
+      isDraft: true,
     };
     setDraftExercises((e) => [...e, exercise]);
     setSelectedExercises((e) => new Set([...e, exercise.id]));
   }, []);
+
   const selectableExercises = exercises.concat(...draftExercises);
 
-  const handleCreate = () => {
+  const handleSave = () => {
     const selectedIds = Array.from(selectedExercises) as string[];
-    onCreate({
+    onSave({
       name,
       description,
       selectedExercises: selectableExercises.filter((e) =>
@@ -66,15 +76,12 @@ export function CreateWorkoutModal({
     });
 
     onClose?.();
-    setName("");
-    setDescription("");
-    setSelectedExercises(new Set([]));
     setDraftExercises([]);
     setNewExercise("");
   };
 
-  const handleNewExerciseKeyDown: KeyboardEventHandler<HTMLInputElement> = (
-    e
+  const handleNewExerciseKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>
   ) => {
     const exerciseName = newExercise.trim();
     if (!exerciseName) return;
@@ -88,7 +95,7 @@ export function CreateWorkoutModal({
           return handleCreateDraftExercise(exerciseName);
         }
         const alreadySelected = Array.from(selectedExercises).includes(
-          exerciseName.toLowerCase()
+          existingExercise.id
         );
         if (!alreadySelected) {
           setSelectedExercises((e) => new Set([...e, existingExercise.id]));
@@ -102,13 +109,13 @@ export function CreateWorkoutModal({
 
   return (
     <Modal
-      isOpen={isOpen}
+      isOpen={isOpen && Boolean(workout)}
       onClose={onClose}
       isDismissable={false}
       scrollBehavior="inside"
     >
       <ModalContent>
-        <ModalHeader className="px-2">Create Workout</ModalHeader>
+        <ModalHeader className="px-2">Edit Workout</ModalHeader>
         <ModalBody className="p-2">
           <Input
             label="Name"
@@ -149,14 +156,14 @@ export function CreateWorkoutModal({
         </ModalBody>
         <ModalFooter className="p-2">
           <Button
-            onPress={handleCreate}
+            onPress={handleSave}
             disabled={!isValid}
-            startContent={<PlusIcon size={16} />}
+            startContent={<SaveIcon size={16} />}
             radius="lg"
             size="sm"
             color="primary"
           >
-            Create
+            Save
           </Button>
         </ModalFooter>
       </ModalContent>

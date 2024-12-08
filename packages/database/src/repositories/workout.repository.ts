@@ -116,6 +116,7 @@ export class WorkoutRepository extends Repository {
     workoutId: string,
     updates: Partial<{
       name: string;
+      description: string;
       exercises: WorkoutExercise[];
     }>
   ) {
@@ -131,6 +132,12 @@ export class WorkoutRepository extends Repository {
       updateExpression.push("#lsi2 = :lsi2");
       expressionAttributeNames["#lsi2"] = this.lsi2;
       expressionAttributeValues[":lsi2"] = this.lsi2Value(updates.name);
+    }
+
+    if (updates.description) {
+      updateExpression.push("#description = :description");
+      expressionAttributeNames["#description"] = "description";
+      expressionAttributeValues[":description"] = updates.description;
     }
 
     if (updates.exercises) {
