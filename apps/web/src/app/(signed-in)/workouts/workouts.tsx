@@ -78,14 +78,12 @@ export function Workouts() {
 
   const handleSaveWorkout: EditWorkoutModalProps["onSave"] = async (input) => {
     const workoutId = selectedWorkout?.id ?? "";
-    console.log(workoutId, input);
     const workout = await updateWorkout(
       workoutId,
       input.name,
       input.description,
       input.selectedExercises
     );
-    console.log({ updated: workout });
     queryClient.setQueryData(["workouts"], {
       ...(workoutsQuery ?? { cursor: "" }),
       records: workoutsQuery?.records.map((w) =>
@@ -124,7 +122,7 @@ export function Workouts() {
         {isCreating && <WorkoutCardSkeleton />}
         <div className="p-2">
           <Button
-            variant="solid"
+            variant="flat"
             startContent={<PlusIcon size={16} />}
             size="sm"
             onPress={onOpen}

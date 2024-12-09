@@ -44,8 +44,10 @@ export class WorkoutSessionRepository extends Repository {
    * Query by most recent workouts
    */
   private lsi1Key = (date: string) => ({
-    [this.lsi1]: `#DATE#${date}`,
+    [this.lsi1]: this.lsi1Value(date),
   });
+
+  private lsi1Value = (date: string) => `#DATE#${date}`;
 
   /**
    * Query by workout id, and most recent
@@ -170,6 +172,9 @@ export class WorkoutSessionRepository extends Repository {
       updateExpression.push("#date = :date");
       expressionAttributeNames["#date"] = "date";
       expressionAttributeValues[":date"] = updates.date;
+      updateExpression.push("#lsi1 = :lsi1");
+      expressionAttributeNames["#lsi1"] = this.lsi1;
+      expressionAttributeValues[":lsi1"] = this.lsi1Value(updates.date);
     }
 
     if (updates.workoutName) {

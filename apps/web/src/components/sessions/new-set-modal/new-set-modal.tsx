@@ -84,6 +84,7 @@ export function NewSetModal({
             customExercise={customExercise}
             onSelectedExerciseChange={onSelectedExerciseChange}
             onCustomExerciseChange={onCustomExerciseChange}
+            placeholder="Select or type exercise"
           />
           <SetSelect set={set} onChange={onSetChange} disabled />
           <RepSelect reps={reps} onChange={onRepsChange} />

@@ -17,6 +17,7 @@ interface Props {
   onCustomExerciseChange: (exercise: string) => void;
   disableCustomValue?: boolean;
   inputProps?: Partial<InputProps>;
+  placeholder?: string;
 }
 
 const autocompleteInputProps = {
@@ -34,6 +35,7 @@ export function ExerciseAutocomplete({
   onCustomExerciseChange,
   disableCustomValue,
   inputProps: customInputProps,
+  placeholder,
 }: Props) {
   const handleSelectionChange = (key: React.Key | null) => {
     if (key) {
@@ -65,6 +67,7 @@ export function ExerciseAutocomplete({
       size="sm"
       inputProps={inputProps}
       isClearable={false}
+      placeholder={placeholder}
     >
       {exercises.map((exercise) => (
         <AutocompleteItem

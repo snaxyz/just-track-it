@@ -6,7 +6,9 @@ export function WorkoutCardSkeleton() {
       <div className="flex w-full p-2 gap-2">
         <Skeleton className="h-6 rounded-lg grow bg-zinc-300 dark:bg-zinc-700"></Skeleton>
       </div>
-      <Skeleton className="h-12 rounded-lg grow bg-zinc-300 dark:bg-zinc-700" />
+      <div className="p-2">
+        <Skeleton className="h-12 rounded-lg grow bg-zinc-300 dark:bg-zinc-700" />
+      </div>
     </div>
   );
 }

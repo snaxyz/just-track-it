@@ -20,6 +20,9 @@ import Link from "next/link";
 import { useCallback } from "react";
 import { getWorkoutSessions } from "../api/workout-sessions/get-workout-sessions";
 import { DateTime } from "@/components/date-time";
+import workoutsSrc from "./workouts.jpg";
+import startTrainingSrc from "./start-training-2.jpg";
+import Image from "next/image";
 
 export function Dashboard() {
   const {
@@ -38,9 +41,45 @@ export function Dashboard() {
     await startWorkoutSessionAndRedirect(workoutId);
   }, []);
 
+  const handleStartTraining = () => {
+    createWorkoutAndSessionAndRedirect();
+  };
+
   return (
     <>
       <div className="pb-24">
+        <section className="mb-6 flex items-center gap-2">
+          <Card
+            className="z-0 basis-1/3 h-[150px]"
+            shadow="none"
+            as={Link}
+            href="/workouts"
+          >
+            <CardHeader className="absolute z-10 top-1">Workouts</CardHeader>
+            <Image
+              removeWrapper
+              alt="Goto workouts"
+              className="z-0 w-full h-full object-cover"
+              src={workoutsSrc}
+            />
+          </Card>
+          <Card
+            className="z-0 basis-2/3 h-[150px]"
+            shadow="none"
+            fullWidth
+            isPressable
+            onPress={handleStartTraining}
+          >
+            <CardHeader className="absolute z-10 top-1">
+              Start training
+            </CardHeader>
+            <Image
+              alt="Star training"
+              className="z-0 w-full h-full object-cover"
+              src={startTrainingSrc}
+            />
+          </Card>
+        </section>
         <section className="mb-6">
           <Title className="text-lg">Recent workouts</Title>
           <div className="space-y-3">
