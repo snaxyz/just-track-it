@@ -32,25 +32,24 @@ const defaultCategories = [
 interface Props {
   selectedCategories: Selection;
   onCategoriesChange: (keys: SharedSelection) => void;
+  fullWidth?: boolean;
 }
 
 export function ExerciseCategorySelect({
   selectedCategories,
   onCategoriesChange,
+  fullWidth,
 }: Props) {
   return (
     <Select
-      classNames={{
-        base: "max-w-xs",
-        trigger: "min-h-12 py-2",
-      }}
       size="sm"
       items={defaultCategories}
       label="Categories"
-      variant="bordered"
+      variant="flat"
       isMultiline={true}
       selectionMode="multiple"
       placeholder="Select categories"
+      fullWidth={fullWidth}
       renderValue={(items: SelectedItems<Category>) => {
         return (
           <div className="flex flex-wrap gap-2">

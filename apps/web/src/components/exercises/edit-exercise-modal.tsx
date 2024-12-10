@@ -42,7 +42,7 @@ export function EditExerciseModal({
           <Input
             size="sm"
             fullWidth
-            variant="bordered"
+            variant="flat"
             label="Exercise"
             value={name}
             onValueChange={setName}
@@ -50,6 +50,7 @@ export function EditExerciseModal({
           <ExerciseCategorySelect
             selectedCategories={categories}
             onCategoriesChange={setCategories}
+            fullWidth
           />
         </ModalBody>
         <ModalFooter className="p-2">
@@ -57,6 +58,7 @@ export function EditExerciseModal({
             size="sm"
             variant="flat"
             radius="lg"
+            color="primary"
             startContent={<PlusIcon size={16} />}
             disabled={!name}
             onPress={handleSave}
