@@ -9,12 +9,15 @@ import {
   ModalProps,
   Selection,
 } from "@nextui-org/react";
-import { PlusIcon } from "lucide-react";
+import { DeleteIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { ExerciseCategorySelect } from "./exercise-category-select";
 import { useState } from "react";
+import { IconButton } from "../icon-button";
+import { Grow } from "../layout/grow";
 
 export interface EditExerciseModalProps extends Omit<ModalProps, "children"> {
   onSave: (name: string, categories: string[]) => void;
+  onDelete: () => void;
   name: string;
   categories: string[];
 }
@@ -23,6 +26,7 @@ export function EditExerciseModal({
   isOpen,
   onClose,
   onSave,
+  onDelete,
   name: initialName,
   categories: initialCategories,
 }: EditExerciseModalProps) {
@@ -37,7 +41,7 @@ export function EditExerciseModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose} isDismissable={false}>
       <ModalContent>
-        <ModalHeader>Edit Exercise</ModalHeader>
+        <ModalHeader className="pt-3 px-2">Edit Exercise</ModalHeader>
         <ModalBody className="p-2">
           <Input
             size="sm"
@@ -54,6 +58,10 @@ export function EditExerciseModal({
           />
         </ModalBody>
         <ModalFooter className="p-2">
+          <IconButton variant="flat" onPress={onDelete}>
+            <TrashIcon size={16} />
+          </IconButton>
+          <Grow />
           <Button
             size="sm"
             variant="flat"

@@ -115,7 +115,7 @@ export function EditWorkoutModal({
       scrollBehavior="inside"
     >
       <ModalContent>
-        <ModalHeader className="px-2">Edit Workout</ModalHeader>
+        <ModalHeader className="pt-3 px-2">Edit Workout</ModalHeader>
         <ModalBody className="p-2">
           <Input
             label="Name"

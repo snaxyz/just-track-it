@@ -64,7 +64,7 @@ export function EditWorkoutExerciseModal({
       scrollBehavior="inside"
     >
       <ModalContent>
-        <ModalHeader className="capitalize">{name}</ModalHeader>
+        <ModalHeader className="capitalize pt-3 px-2">{name}</ModalHeader>
         <ModalBody className="p-2">
           {sets.map((set, ind) => (
             <div key={ind} className="mb-2">

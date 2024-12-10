@@ -26,6 +26,10 @@ export function ExerciseCard({
     onUpdate(id, updatedName, updatedCategories);
     onClose();
   };
+  const handleDelete = () => {
+    onDelete(id);
+    onClose();
+  };
 
   return (
     <>
@@ -36,15 +40,16 @@ export function ExerciseCard({
           <IconButton onPress={onOpen}>
             <PencilIcon size={16} />
           </IconButton>
-          <IconButton onPress={() => onDelete(id)}>
+          {/* TODO: move this to edit workout modal */}
+          {/* <IconButton onPress={() => onDelete(id)}>
             <TrashIcon size={16} />
-          </IconButton>
+          </IconButton> */}
         </div>
-        <div className="text-caption-light dark:text-caption text-xs mb-1">
+        <div className="text-caption-light dark:text-caption text-xs mb-2">
           {categories.length === 0 ? "No categories" : "Categories"}
         </div>
         {categories.length > 0 && (
-          <div className="flex capitalize gap-2 flex-wrap items-center justify-end">
+          <div className="flex capitalize gap-2 flex-wrap items-center">
             {categories.map((c) => (
               <Chip key={c} size="sm">
                 {c}
@@ -60,6 +65,7 @@ export function ExerciseCard({
         name={name}
         categories={categories}
         onSave={handleSave}
+        onDelete={handleDelete}
       />
     </>
   );

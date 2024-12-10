@@ -44,12 +44,12 @@ export function SidebarWorkspaceDropdown({ name, picture }: Props) {
         </Button>
       </DropdownTrigger>
       <DropdownMenu className="bg-zinc-200 dark:bg-zinc-800 rounded-lg">
-        <DropdownSection showDivider>
+        {/* <DropdownSection showDivider>
           <DropdownItem key="create-new-account">
             Create new account
           </DropdownItem>
-        </DropdownSection>
-        <DropdownItem key="logout" as={Link} href="/auth/login">
+        </DropdownSection> */}
+        <DropdownItem key="logout" href="/auth/login">
           Logout
         </DropdownItem>
       </DropdownMenu>

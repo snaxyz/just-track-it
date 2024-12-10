@@ -76,7 +76,7 @@ export function NewSetModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose} isDismissable={false}>
       <ModalContent>
-        <ModalHeader>New Set</ModalHeader>
+        <ModalHeader className="pt-3 px-2">New Set</ModalHeader>
         <ModalBody className="p-2">
           <ExerciseAutocomplete
             exercises={exercises}

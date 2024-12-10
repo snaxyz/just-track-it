@@ -37,7 +37,7 @@ export function NewExerciseModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose} isDismissable={false}>
       <ModalContent>
-        <ModalHeader>New Exercise</ModalHeader>
+        <ModalHeader className="pt-3 px-2">New Exercise</ModalHeader>
         <ModalBody className="p-2">
           <Input
             size="sm"
