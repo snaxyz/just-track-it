@@ -78,6 +78,22 @@ export function Workouts() {
 
   const handleSaveWorkout: EditWorkoutModalProps["onSave"] = async (input) => {
     const workoutId = selectedWorkout?.id ?? "";
+    queryClient.setQueryData(["workouts"], {
+      ...(workoutsQuery ?? { cursor: "" }),
+      records: workoutsQuery?.records.map((w) =>
+        w.id === workoutId
+          ? {
+              ...w,
+              name: input.name,
+              description: input.description,
+              exercises: input.selectedExercises.map((e) => ({
+                exerciseId: e.id,
+                exerciseName: e.name,
+              })),
+            }
+          : w
+      ),
+    });
     const workout = await updateWorkout(
       workoutId,
       input.name,
@@ -122,7 +138,7 @@ export function Workouts() {
         {isCreating && <WorkoutCardSkeleton />}
         <div className="p-2">
           <Button
-            variant="flat"
+            variant="solid"
             startContent={<PlusIcon size={16} />}
             size="sm"
             onPress={onOpen}
@@ -135,12 +151,8 @@ export function Workouts() {
         </div>
       </div>
       <FabContainer>
-        <IconButton
-          color="primary"
-          variant="solid"
-          onPress={() => createWorkoutAndSessionAndRedirect()}
-        >
-          <ActivityIcon size={16} />
+        <IconButton color="primary" variant="solid" onPress={onOpen}>
+          <PlusIcon size={16} />
         </IconButton>
       </FabContainer>
       <CreateWorkoutModal

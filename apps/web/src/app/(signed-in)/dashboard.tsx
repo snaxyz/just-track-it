@@ -49,15 +49,11 @@ export function Dashboard() {
     <>
       <div className="pb-24">
         <section className="mb-6 flex items-center gap-2">
-          <Card
-            className="z-0 basis-1/3 h-[150px]"
-            shadow="none"
-            as={Link}
-            href="/workouts"
-          >
-            <CardHeader className="absolute z-10 top-1">Workouts</CardHeader>
+          <Card className="z-0 basis-1/3 h-[150px]" as={Link} href="/workouts">
+            <CardHeader className="absolute z-10 top-1 text-white">
+              Workouts
+            </CardHeader>
             <Image
-              removeWrapper
               alt="Goto workouts"
               className="z-0 w-full h-full object-cover"
               src={workoutsSrc}
@@ -65,12 +61,11 @@ export function Dashboard() {
           </Card>
           <Card
             className="z-0 basis-2/3 h-[150px]"
-            shadow="none"
             fullWidth
             isPressable
             onPress={handleStartTraining}
           >
-            <CardHeader className="absolute z-10 top-1">
+            <CardHeader className="absolute z-10 top-1 text-white">
               Start training
             </CardHeader>
             <Image

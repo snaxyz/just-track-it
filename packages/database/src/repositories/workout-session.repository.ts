@@ -15,6 +15,10 @@ export interface WorkoutSessionExerciseSet {
   reps: number;
   weight?: number;
   unit?: WeightUnit;
+  /**
+   * seconds
+   */
+  duration?: number;
 }
 
 export interface WorkoutSessionExercise {
