@@ -1,17 +1,13 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
 import {
   Button,
   Dropdown,
   DropdownItem,
   DropdownMenu,
-  DropdownSection,
   DropdownTrigger,
 } from "@nextui-org/react";
-import { Grow } from "./grow";
 import { UserAvatar } from "../user-avatar";
-import Link from "next/link";
 
 interface Props {
   name: string;
