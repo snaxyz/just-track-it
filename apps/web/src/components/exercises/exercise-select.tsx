@@ -45,7 +45,7 @@ export function ExerciseSelect({
       selectedKeys={selectedExercises}
       onSelectionChange={onExercisesChange}
     >
-      {(exercise: ExerciseModel) => (
+      {(exercise: Partial<ExerciseModel>) => (
         <SelectItem key={exercise.id} textValue={exercise.name}>
           {exercise.name}
         </SelectItem>
