@@ -4,4 +4,4 @@ import * as schema from "./schema";
 import { config } from "./config";
 
 const client = postgres(config.database.url);
-export const db = drizzle(client, { schema });
+export const drizzleClient = drizzle(client, { schema });

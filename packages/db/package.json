@@ -13,17 +13,18 @@
     "dev": "tsup --watch",
     "lint": "eslint src/",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
-    "generate": "drizzle-kit generate:pg",
-    "push": "drizzle-kit push:pg",
+    "generate": "drizzle-kit generate",
+    "push": "drizzle-kit push",
     "studio": "drizzle-kit studio"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
     "drizzle-kit": "^0.30.0",
-    "drizzle-orm": "^0.38.0",
+    "drizzle-orm": "^0.38.1",
     "postgres": "^3.4.5"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.2.15",
     "@types/node": "^20.11.24",
     "tsup": "^8.2.4",
     "typescript": "^5.6.3"

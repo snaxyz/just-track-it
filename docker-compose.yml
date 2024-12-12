@@ -1,0 +1,52 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: workout-postgres
+    networks:
+      - workout
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: workout
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  migrate:
+    image: node:20
+    networks:
+      - workout
+    depends_on:
+      postgres:
+        condition: service_healthy
+    working_dir: /app
+    volumes:
+      - ./packages/db:/app
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/workout
+    command: >
+      bash -c "yarn install && yarn push"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    networks:
+      - workout
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+
+networks:
+  workout:
