@@ -14,12 +14,16 @@ import {
 
 export class WorkoutSessionRepository extends BaseRepository {
   async create(
-    data: Omit<WorkoutSessionInsertModel, "id" | "createdAt" | "updatedAt">
+    data: Omit<
+      WorkoutSessionInsertModel,
+      "id" | "startedAt" | "createdAt" | "updatedAt"
+    >
   ) {
     const [result] = await this.db
       .insert(workoutSession)
       .values({
         ...data,
+        startedAt: new Date(),
         createdAt: new Date(),
         updatedAt: new Date(),
       })
@@ -32,13 +36,23 @@ export class WorkoutSessionRepository extends BaseRepository {
       where: and(eq(workoutSession.id, id), eq(workoutSession.userId, userId)),
       with: {
         workout: true,
-        sets: {
+        exercises: {
           with: {
-            exercise: true,
+            sets: true,
           },
         },
       },
     });
+  }
+
+  async count(userId: string, workoutId: string) {
+    return await this.db.$count(
+      workoutSession,
+      and(
+        eq(workoutSession.userId, userId),
+        eq(workoutSession.workoutId, workoutId)
+      )
+    );
   }
 
   async query(
@@ -52,6 +66,40 @@ export class WorkoutSessionRepository extends BaseRepository {
     const sessions = await this.db.query.workoutSession.findMany({
       where: and(
         eq(workoutSession.userId, userId),
+        cursorData
+          ? gt(workoutSession.createdAt, cursorData.createdAt)
+          : undefined
+      ),
+      orderBy:
+        options.order === "asc"
+          ? workoutSession.createdAt
+          : desc(workoutSession.createdAt),
+      limit: options.limit + 1,
+    });
+
+    const hasMore = sessions.length > options.limit;
+    const records = hasMore ? sessions.slice(0, -1) : sessions;
+    const lastRecord = records[records.length - 1];
+
+    return {
+      records,
+      cursor: hasMore ? keyToCursor({ createdAt: lastRecord.createdAt }) : "",
+    };
+  }
+
+  async queryByWorkoutId(
+    userId: string,
+    workoutId: string,
+    options: QueryOptions = { limit: 20, order: "asc" }
+  ): Promise<QueryResponse<WorkoutSessionModel>> {
+    const cursorData = options.nextCursor
+      ? cursorToKey<{ createdAt: Date }>(options.nextCursor)
+      : undefined;
+
+    const sessions = await this.db.query.workoutSession.findMany({
+      where: and(
+        eq(workoutSession.userId, userId),
+        eq(workoutSession.workoutId, workoutId),
         cursorData
           ? gt(workoutSession.createdAt, cursorData.createdAt)
           : undefined

@@ -14,6 +14,7 @@ export const weightUnitEnum = pgEnum("weight_unit", ["kg", "lbs"]);
 
 export const workoutSet = pgTable("workout_set", {
   id: uuid("id").primaryKey().defaultRandom(),
+  userId: text("user_id").notNull(),
   workoutSessionId: uuid("workout_session_id")
     .notNull()
     .references(() => workoutSession.id, { onDelete: "cascade" }),
@@ -33,10 +34,6 @@ export const workoutSetRelations = relations(workoutSet, ({ one }) => ({
   session: one(workoutSession, {
     fields: [workoutSet.workoutSessionId],
     references: [workoutSession.id],
-  }),
-  exercise: one(exercise, {
-    fields: [workoutSet.exerciseId],
-    references: [exercise.id],
   }),
 }));
 

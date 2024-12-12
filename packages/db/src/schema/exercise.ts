@@ -1,4 +1,11 @@
-import { index, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  index,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 
 export const exercise = pgTable(
   "exercise",
@@ -11,6 +18,10 @@ export const exercise = pgTable(
     keywords: text("keywords").array().$type<string[]>(),
     createdAt: timestamp("created_at").notNull(),
     updatedAt: timestamp("updated_at").notNull(),
+    hasSets: boolean("has_sets").notNull().default(true),
+    hasReps: boolean("has_reps").notNull().default(true),
+    hasWeight: boolean("has_weight").notNull().default(true),
+    hasDuration: boolean("has_duration").notNull().default(false),
   },
   (table) => [
     // Index for querying by userId + createdAt (for cursor pagination)

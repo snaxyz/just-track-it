@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@local/database";
+import { db } from "@local/db";
 
 export async function updateUserSettingSidebarCollapsed(
   userId: string,

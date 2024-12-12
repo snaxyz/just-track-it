@@ -15,6 +15,27 @@
       "when": 1733968139583,
       "tag": "0001_omniscient_chameleon",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1733968699697,
+      "tag": "0002_faithful_baron_zemo",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1733969756949,
+      "tag": "0003_boring_next_avengers",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1733971299346,
+      "tag": "0004_nostalgic_white_queen",
+      "breakpoints": true
     }
   ]
 }

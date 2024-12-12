@@ -1,24 +1,28 @@
 "use server";
 
-import { db, WorkoutSessionModel, WorkoutModel } from "@local/database";
+import { db } from "@local/db";
 import { getUserId } from "../user";
 
 export async function updateWorkoutExercises(
   workoutId: string,
-  exercises: WorkoutModel["exercises"]
+  exerciseIds: string[]
 ) {
   const userId = await getUserId();
-  return await db.workout.update(userId, workoutId, {
-    exercises,
-  });
+  return await db.workoutExercise.updateWorkoutExercises(
+    userId,
+    workoutId,
+    exerciseIds
+  );
 }
 
 export async function updateWorkoutSessionExercises(
-  historyId: string,
-  exercises: WorkoutSessionModel["exercises"]
+  sessionId: string,
+  exercisesIds: string[]
 ) {
   const userId = await getUserId();
-  await db.workoutSession.update(userId, historyId, {
-    exercises,
-  });
+  await db.workoutSessionExercise.updateSessionExercises(
+    userId,
+    sessionId,
+    exercisesIds
+  );
 }

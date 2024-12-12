@@ -1,6 +1,11 @@
 import { and, eq, gt, desc } from "drizzle-orm";
 import { BaseRepository } from "./base.repository";
-import { workout, WorkoutModel, WorkoutInsertModel } from "../schema";
+import {
+  workout,
+  WorkoutModel,
+  WorkoutInsertModel,
+  workoutExercise,
+} from "../schema";
 import {
   QueryResponse,
   keyToCursor,
@@ -21,6 +26,33 @@ export class WorkoutRepository extends BaseRepository {
       })
       .returning();
     return result;
+  }
+
+  async createWithExercises(
+    data: Omit<WorkoutInsertModel, "id" | "createdAt" | "updatedAt">,
+    exerciseIds: string[]
+  ) {
+    const [createdWorkout] = await this.db
+      .insert(workout)
+      .values({
+        ...data,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .returning();
+
+    await this.db
+      .insert(workoutExercise)
+      .values(
+        exerciseIds.map((exerciseId) => ({
+          userId: data.userId,
+          workoutId: createdWorkout.id,
+          exerciseId,
+        }))
+      )
+      .returning();
+
+    return createdWorkout;
   }
 
   async get(userId: string, id: string) {

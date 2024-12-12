@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm";
 import { index, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
-import { exercise } from "./exercise";
 import { workoutSession } from "./workout-session";
+import { workoutExercise } from "./workout-exercise";
 
 export const workout = pgTable(
   "workout",
@@ -25,7 +25,7 @@ export const workout = pgTable(
 );
 
 export const workoutRelations = relations(workout, ({ many }) => ({
-  exercises: many(exercise),
+  exercises: many(workoutExercise),
   sessions: many(workoutSession),
 }));
 

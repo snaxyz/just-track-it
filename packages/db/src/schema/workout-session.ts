@@ -1,7 +1,7 @@
 import { pgTable, text, timestamp, uuid, index } from "drizzle-orm/pg-core";
 import { workout } from "./workout";
 import { relations } from "drizzle-orm";
-import { workoutSet } from "./workout-set";
+import { workoutSessionExercise } from "./workout-session-exercise";
 
 export const workoutSession = pgTable(
   "workout_session",
@@ -30,7 +30,7 @@ export const workoutSessionRelations = relations(
       fields: [workoutSession.workoutId],
       references: [workout.id],
     }),
-    sets: many(workoutSet),
+    exercises: many(workoutSessionExercise),
   })
 );
 

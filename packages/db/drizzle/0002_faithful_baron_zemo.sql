@@ -1,0 +1,1 @@
+ALTER TABLE "setting" ADD COLUMN "ui" json DEFAULT '{}'::json;

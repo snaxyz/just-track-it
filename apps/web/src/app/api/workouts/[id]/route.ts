@@ -1,5 +1,5 @@
 import { getUserId } from "@/server/user";
-import { getWorkoutHistoryServer } from "@/server/workouts/get-workout-history";
+import { getWorkoutSessionsByIdServer } from "@/server/workouts/get-workout-sessions-by-id";
 import { db, QueryResponse, WorkoutSessionModel } from "@local/database";
 
 export interface EnhancedWorkoutHistory
@@ -12,7 +12,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const workoutId = (await params).id;
-  const workoutHistory = await getWorkoutHistoryServer(workoutId);
+  const workoutHistory = await getWorkoutSessionsByIdServer(workoutId);
 
   return Response.json(workoutHistory);
 }

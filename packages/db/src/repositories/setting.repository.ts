@@ -1,12 +1,31 @@
 import { and, eq } from "drizzle-orm";
 import { BaseRepository } from "./base.repository";
-import { setting, SettingModel, SettingInsertModel } from "../schema";
+import { setting } from "../schema";
 
 export class SettingRepository extends BaseRepository {
-  async findByUserId(userId: string) {
+  async get(userId: string) {
     return await this.db.query.setting.findFirst({
       where: eq(setting.userId, userId),
     });
+  }
+
+  async getSidebarCollapse(userId: string) {
+    return await this.db.query.setting.findFirst({
+      where: and(
+        eq(setting.userId, userId),
+        eq(setting.key, "sidebarCollapsed")
+      ),
+    });
+  }
+
+  async updateSidebarCollapse(userId: string, collapsed: boolean) {
+    return await this.db
+      .update(setting)
+      .set({
+        key: "sidebarCollapsed",
+        value: collapsed.toString(),
+      })
+      .where(eq(setting.userId, userId));
   }
 
   // async upsert(userId: string, data: Partial<SettingInsertModel>) {

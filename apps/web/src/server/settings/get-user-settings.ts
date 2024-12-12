@@ -1,10 +1,10 @@
 "use server";
 
-import { db } from "@local/database";
+import { db } from "@local/db";
 
 export async function getUserSettings(userId: string) {
-  const settings = await db.setting.get(userId);
+  const sidebarCollapsed = await db.setting.getSidebarCollapse(userId);
   return {
-    sidebarCollapsed: Boolean(settings?.sidebarCollapsed),
+    sidebarCollapsed: Boolean(sidebarCollapsed?.value),
   };
 }

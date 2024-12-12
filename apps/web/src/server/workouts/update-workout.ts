@@ -1,32 +1,36 @@
 "use server";
 
-import { db, ExerciseModel } from "@local/database";
+import { db } from "@local/db";
 import { getUserId } from "../user";
+import slugify from "slugify";
 
 export async function updateWorkout(
   workoutId: string,
   name: string,
   description: string,
-  exercises: (Pick<ExerciseModel, "id" | "name"> & { isDraft?: boolean })[]
+  exercises: { id: string; name: string; isDraft?: boolean }[]
 ) {
   const userId = await getUserId();
-  const draftExercises = exercises.filter((e) => e.isDraft);
-  const existingExercises = exercises.filter((e) => !e.isDraft);
 
-  const createdExercises = await Promise.all(
-    draftExercises.map(async (e) => {
-      return await db.exercise.create(userId, { name: e.name, categories: [] });
-    })
+  const draftExercises = await Promise.all(
+    exercises
+      .filter((e) => e.isDraft)
+      .map((e) =>
+        db.exercise.create({
+          userId,
+          name: e.name,
+          slug: slugify(e.name),
+          keywords: [],
+        })
+      )
   );
 
-  const updatedWorkout = await db.workout.update(userId, workoutId, {
-    name,
-    description,
-    exercises: existingExercises.concat(createdExercises).map((e) => ({
-      exerciseId: e.id,
-      exerciseName: e.name,
-    })),
-  });
+  const existingExercises = exercises.filter((e) => !e.isDraft);
+  const allExercises = [...existingExercises, ...draftExercises];
 
-  return updatedWorkout;
+  return await db.workout.update(userId, workoutId, {
+    name,
+    slug: slugify(name),
+    description,
+  });
 }
