@@ -91,7 +91,7 @@ export class WorkoutSessionRepository extends BaseRepository {
     userId: string,
     workoutId: string,
     options: QueryOptions = { limit: 20, order: "asc" }
-  ): Promise<QueryResponse<WorkoutSessionModel>> {
+  ) {
     const cursorData = options.nextCursor
       ? cursorToKey<{ createdAt: Date }>(options.nextCursor)
       : undefined;
@@ -109,6 +109,14 @@ export class WorkoutSessionRepository extends BaseRepository {
           ? workoutSession.createdAt
           : desc(workoutSession.createdAt),
       limit: options.limit + 1,
+      with: {
+        workout: true,
+        exercises: {
+          with: {
+            sets: true,
+          },
+        },
+      },
     });
 
     const hasMore = sessions.length > options.limit;

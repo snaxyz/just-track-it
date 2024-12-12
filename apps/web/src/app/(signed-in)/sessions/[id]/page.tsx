@@ -14,7 +14,7 @@ export default async function WorkoutPage({ params }: Props) {
     <PageContainer>
       <MainContainer className="px-2 md:px-3 md:py-4">
         <PrefetchExercises>
-          <PrefetchWorkoutSession historyId={id}>
+          <PrefetchWorkoutSession sessionId={id}>
             <WorkoutSession />
           </PrefetchWorkoutSession>
         </PrefetchExercises>

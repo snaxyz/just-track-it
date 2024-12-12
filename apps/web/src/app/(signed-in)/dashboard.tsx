@@ -6,7 +6,11 @@ import { Grow } from "@/components/layout/grow";
 import { Title } from "@/components/title";
 import { createWorkoutAndSessionAndRedirect } from "@/server/workouts";
 import { startWorkoutSessionAndRedirect } from "@/server/workout-sessions/start-workout";
-import { QueryResponse, WorkoutSessionModel } from "@local/database";
+import {
+  QueryResponse,
+  WorkoutSessionModel,
+  WorkoutSessionWithRelations,
+} from "@local/db";
 import {
   Button,
   Card,
@@ -30,7 +34,7 @@ export function Dashboard() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useInfiniteQuery<QueryResponse<WorkoutSessionModel>>({
+  } = useInfiniteQuery<QueryResponse<WorkoutSessionWithRelations>>({
     queryKey: ["workout-sessions"],
     queryFn: getWorkoutSessions,
     initialPageParam: undefined,
@@ -89,9 +93,9 @@ export function Dashboard() {
                   <CardHeader className="capitalize pb-0">
                     <span
                       className="text-nowrap text-ellipsis overflow-hidden mr-2"
-                      title={w.workoutName}
+                      title={w.workout.name}
                     >
-                      {w.workoutName}
+                      {w.workout.name}
                     </span>
                     <Grow />
                     <IconButton
@@ -103,7 +107,8 @@ export function Dashboard() {
                   </CardHeader>
                   <CardBody>
                     <div className="text-caption-light dark:text-caption text-xs mb-2">
-                      Completed on <DateTime iso={w.date} />
+                      Completed on{" "}
+                      <DateTime iso={w.completedAt?.toISOString()} />
                     </div>
                     <Button
                       fullWidth
@@ -112,7 +117,7 @@ export function Dashboard() {
                       size="sm"
                       radius="lg"
                       color="secondary"
-                      onPress={() => handleStartWorkout(w.workoutId)}
+                      onPress={() => handleStartWorkout(w.workoutId!)}
                     >
                       Start workout
                     </Button>

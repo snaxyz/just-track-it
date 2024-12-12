@@ -1,7 +1,7 @@
 "use client";
 
 import { getExercises } from "@/app/api/exercises/get-exercises";
-import { ExerciseModel, QueryResponse } from "@local/database";
+import { ExerciseModel, QueryResponse } from "@local/db";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { IconButton } from "@/components/icon-button";
 import { PlusIcon } from "lucide-react";
@@ -91,6 +91,7 @@ export function Exercises() {
             key={e.id}
             className="p-2 rounded-lg bg-zinc-200 dark:bg-zinc-800 mb-3"
             {...e}
+            categories={e.keywords ?? []}
             onUpdate={handleUpdateExercise}
             onDelete={handleDeleteExercise}
           />

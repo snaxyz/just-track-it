@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@local/db";
+import { db, QueryResponse, WorkoutSessionWithRelations } from "@local/db";
 import { getUserId } from "../user";
 
 export async function getWorkoutSessionServer(sessionId: string) {

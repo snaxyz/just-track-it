@@ -15,7 +15,12 @@ export const exercise = pgTable(
     name: text("name").notNull(),
     slug: text("slug").notNull().unique(),
     description: text("description"),
-    keywords: text("keywords").array().$type<string[]>(),
+    keywords: text("keywords").array().$type<string[]>().notNull().default([]),
+    categories: text("categories")
+      .array()
+      .$type<string[]>()
+      .notNull()
+      .default([]),
     createdAt: timestamp("created_at").notNull(),
     updatedAt: timestamp("updated_at").notNull(),
     hasSets: boolean("has_sets").notNull().default(true),

@@ -15,28 +15,26 @@ import { useCallback, useState } from "react";
 import {
   ExerciseModel,
   QueryResponse,
-  WorkoutSessionExercise,
-  WorkoutSessionExerciseSet,
+  WorkoutSessionExerciseModel,
+  WorkoutSetModel,
   WorkoutModel,
   WorkoutSessionModel,
   WeightUnit,
-} from "@local/database";
+  WorkoutSessionWithRelations,
+} from "@local/db";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  EnhancedWorkoutSessionModel,
-  getWorkoutSession,
-} from "@/app/api/workout-sessions/[id]/get-history";
+import { getWorkoutSession } from "@/app/api/workout-sessions/[id]/get-workout-session";
 import { IconButton } from "@/components/icon-button";
 import {
   updateWorkoutExercises,
   updateWorkoutSessionExercises,
-  updateWorkoutSessionName,
   updateWorkoutName,
 } from "@/server/workouts";
 import { useDebouncedCallback } from "@/lib/hooks/use-debounced-callback";
 import { getExercises } from "@/app/api/exercises/get-exercises";
 import { createExercise } from "@/server/exercises/create-exercise";
 import { DateTime } from "@/components/date-time";
+import { EnhancedWorkoutSession } from "@/app/api/workout-sessions/[id]/get-workout-session";
 
 interface SetStats {
   reps: number;
@@ -54,7 +52,7 @@ const defaultStats = {
 };
 
 function getLastExerciseSetStats(
-  lastSession: WorkoutSessionModel | undefined,
+  lastSession: WorkoutSessionWithRelations | undefined | null,
   exerciseId: string
 ): SetStats {
   if (!lastSession) return defaultStats;
@@ -78,7 +76,7 @@ export function WorkoutSession() {
 
   const queryClient = useQueryClient();
   const { data: workoutSession, isLoading: isWorkoutLoading } =
-    useQuery<EnhancedWorkoutSessionModel>({
+    useQuery<EnhancedWorkoutSession>({
       queryKey: ["session", id],
       queryFn: () => getWorkoutSession(id),
     });
@@ -104,14 +102,17 @@ export function WorkoutSession() {
     const exercise = workoutExercises.find((e) => e.exerciseId === exerciseId);
     if (exercise) {
       setSet((exercise.sets.length + 1).toString());
-      setReps(exercise.sets[exercise.sets.length - 1].reps.toString());
+      const lastSet = exercise.sets[exercise.sets.length - 1];
+      if (lastSet && lastSet.reps) {
+        setReps(lastSet.reps.toString());
+      }
       const weight = exercise.sets[exercise.sets.length - 1].weight;
       if (weight) {
         setWeight(weight.toString());
       } else {
         setWeight("");
       }
-      setCustomExercise(exercise.exerciseName);
+      setCustomExercise(exercise.exercise.name);
     }
     setSelectedExercise(exerciseId);
   };
@@ -129,11 +130,11 @@ export function WorkoutSession() {
       );
       if (workoutExercise) {
         setSet((workoutExercise.sets.length + 1).toString());
-        setReps(
-          workoutExercise.sets[workoutExercise.sets.length - 1].reps.toString()
-        );
-        const weight =
-          workoutExercise.sets[workoutExercise.sets.length - 1].weight;
+        const lastSet = workoutExercise.sets[workoutExercise.sets.length - 1];
+        if (lastSet && lastSet.reps) {
+          setReps(lastSet.reps.toString());
+        }
+        const weight = lastSet?.weight;
         if (weight) {
           setWeight(weight.toString());
         } else {
@@ -182,7 +183,7 @@ export function WorkoutSession() {
     }
     if (!workoutSession || !exercise) return;
     const inputWeight = input.weight ? input.weight : null;
-    let updatedWorkoutExercises: WorkoutSessionExercise[];
+    let updatedWorkoutExercises: WorkoutSessionExerciseModel[];
     if (
       input.set === "1" &&
       !workoutExercises.find((e) => e.exerciseId === exercise.id)
@@ -266,7 +267,7 @@ export function WorkoutSession() {
   const handleUpdateExerciseSet = (
     exerciseId: string,
     setIndex: number,
-    updates: Partial<WorkoutSessionExerciseSet>
+    updates: Partial<WorkoutSetModel>
   ) => {
     if (!workoutSession) return;
     const updatedWorkoutExercises = workoutExercises.map((exercise) => {
@@ -280,7 +281,10 @@ export function WorkoutSession() {
       }
       return exercise;
     });
-    updateWorkoutSessionExercises(workoutSession.id, updatedWorkoutExercises);
+    updateWorkoutSeessionExerciseModels(
+      workoutSession.id,
+      updatedWorkoutExercises
+    );
     queryClient.setQueryData(["session", workoutSession.id], {
       ...workoutSession,
       exercises: updatedWorkoutExercises,

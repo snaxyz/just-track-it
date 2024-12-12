@@ -1,18 +1,11 @@
-import { getUserId } from "@/server/user";
-import { getWorkoutSessionsByIdServer } from "@/server/workouts/get-workout-sessions-by-id";
-import { db, QueryResponse, WorkoutSessionModel } from "@local/database";
-
-export interface EnhancedWorkoutHistory
-  extends QueryResponse<WorkoutSessionModel> {
-  workoutName: string;
-}
+import { getWorkoutSessionsByWorkoutServer } from "@/server/workouts/get-workout-sessions-by-workout";
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const workoutId = (await params).id;
-  const workoutHistory = await getWorkoutSessionsByIdServer(workoutId);
+  const session = await getWorkoutSessionsByWorkoutServer(workoutId);
 
-  return Response.json(workoutHistory);
+  return Response.json(session);
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { getWorkoutHistory } from "@/app/api/workouts/[id]/get-workout-history";
+import { getWorkoutSessionByWorkout } from "@/app/api/workouts/[id]/get-workout-session-by-workout";
 import { EnhancedWorkoutHistory } from "@/app/api/workouts/[id]/route";
 import { Title } from "@/components/title";
 import { useQuery } from "@tanstack/react-query";
@@ -15,7 +15,7 @@ export function WorkoutHistory() {
   const { data: historyQuery, isLoading: isHistoryLoading } =
     useQuery<EnhancedWorkoutHistory>({
       queryKey: ["workout-history", id],
-      queryFn: () => getWorkoutHistory(id),
+      queryFn: () => getWorkoutSessionByWorkout(id),
     });
 
   if (isHistoryLoading) return <div>...loading...</div>;

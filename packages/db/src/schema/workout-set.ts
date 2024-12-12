@@ -10,6 +10,8 @@ import {
 import { exercise } from "./exercise";
 import { workoutSession } from "./workout-session";
 
+export type WeightUnit = "kg" | "lbs";
+
 export const weightUnitEnum = pgEnum("weight_unit", ["kg", "lbs"]);
 
 export const workoutSet = pgTable("workout_set", {
@@ -24,7 +26,7 @@ export const workoutSet = pgTable("workout_set", {
   set: integer("set"),
   reps: integer("reps"),
   weight: integer("weight"),
-  weightUnit: weightUnitEnum("weight_unit"),
+  unit: weightUnitEnum("weight_unit"),
   duration: integer("duration"), // in seconds
   createdAt: timestamp("created_at").notNull(),
   updatedAt: timestamp("updated_at").notNull(),

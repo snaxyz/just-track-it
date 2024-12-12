@@ -10,6 +10,6 @@ export async function createExercise(name: string, categories: string[]) {
     userId,
     name,
     slug: slugify(name),
-    keywords: categories,
+    categories,
   });
 }

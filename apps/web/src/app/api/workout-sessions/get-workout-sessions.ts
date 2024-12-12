@@ -1,4 +1,8 @@
-import { QueryResponse, WorkoutSessionModel } from "@local/database";
+import {
+  QueryResponse,
+  WorkoutSessionModel,
+  WorkoutSessionWithRelations,
+} from "@local/db";
 
 interface RequestOptions {
   pageParam?: unknown;
@@ -6,7 +10,7 @@ interface RequestOptions {
 
 export async function getWorkoutSessions(
   options: RequestOptions
-): Promise<QueryResponse<WorkoutSessionModel>> {
+): Promise<QueryResponse<WorkoutSessionWithRelations>> {
   const response = await fetch(
     `/api/workout-sessions?limit=10&cursor=${options.pageParam ?? ""}`
   );

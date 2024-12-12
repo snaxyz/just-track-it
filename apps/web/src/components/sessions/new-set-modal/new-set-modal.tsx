@@ -1,4 +1,4 @@
-import { ExerciseModel, WeightUnit } from "@local/database";
+import { ExerciseModel, WeightUnit } from "@local/db";
 import {
   Button,
   Modal,

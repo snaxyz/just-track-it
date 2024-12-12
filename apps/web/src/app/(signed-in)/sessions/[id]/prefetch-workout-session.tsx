@@ -7,14 +7,14 @@ import {
 
 interface Props {
   children: React.ReactNode;
-  historyId: string;
+  sessionId: string;
 }
 
-export async function PrefetchWorkoutSession({ historyId, children }: Props) {
+export async function PrefetchWorkoutSession({ sessionId, children }: Props) {
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
-    queryKey: ["history", historyId],
-    queryFn: () => getWorkoutSessionServer(historyId),
+    queryKey: ["session", sessionId],
+    queryFn: () => getWorkoutSessionServer(sessionId),
   });
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

@@ -1,7 +1,10 @@
 import { relations } from "drizzle-orm";
 import { index, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
-import { workoutSession } from "./workout-session";
-import { workoutExercise } from "./workout-exercise";
+import { workoutSession, WorkoutSessionWithRelations } from "./workout-session";
+import {
+  workoutExercise,
+  WorkoutExerciseWithRelations,
+} from "./workout-exercise";
 
 export const workout = pgTable(
   "workout",
@@ -31,3 +34,7 @@ export const workoutRelations = relations(workout, ({ many }) => ({
 
 export type WorkoutModel = typeof workout.$inferSelect;
 export type WorkoutInsertModel = typeof workout.$inferInsert;
+export type WorkoutWithRelations = typeof workout.$inferSelect & {
+  exercises: WorkoutExerciseWithRelations[];
+  sessions: WorkoutSessionWithRelations[];
+};

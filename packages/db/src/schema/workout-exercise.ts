@@ -1,5 +1,5 @@
 import { pgTable, text, uuid } from "drizzle-orm/pg-core";
-import { exercise } from "./exercise";
+import { exercise, ExerciseModel } from "./exercise";
 import { workout } from "./workout";
 import { relations } from "drizzle-orm";
 
@@ -30,3 +30,7 @@ export const workoutExerciseRelations = relations(
 
 export type WorkoutExerciseModel = typeof workoutExercise.$inferSelect;
 export type WorkoutExerciseInsertModel = typeof workoutExercise.$inferInsert;
+export type WorkoutExerciseWithRelations =
+  typeof workoutExercise.$inferSelect & {
+    exercise: ExerciseModel;
+  };

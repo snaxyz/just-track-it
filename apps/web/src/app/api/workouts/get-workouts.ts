@@ -1,4 +1,4 @@
-import { QueryResponse, WorkoutModel } from "@local/database";
+import { QueryResponse, WorkoutModel } from "@local/db";
 
 export async function getWorkouts(): Promise<QueryResponse<WorkoutModel>> {
   const response = await fetch("/api/workouts");

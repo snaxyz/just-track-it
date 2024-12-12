@@ -9,9 +9,7 @@ import {
 } from "../types";
 
 export class ExerciseRepository extends BaseRepository {
-  async create(
-    data: Omit<ExerciseInsertModel, "id" | "createdAt" | "updatedAt">
-  ) {
+  async create(data: Omit<ExerciseModel, "id" | "createdAt" | "updatedAt">) {
     const [result] = await this.db
       .insert(exercise)
       .values({
