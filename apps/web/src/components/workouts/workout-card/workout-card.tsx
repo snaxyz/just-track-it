@@ -13,7 +13,7 @@ import { EditWorkoutModal } from "../edit-workout-modal";
 interface Props {
   id: string;
   name: string;
-  description: string;
+  description: string | null;
   children: React.ReactNode;
   onStartWorkout: (workoutId: string) => void;
   onEditClick: (id: string) => void;

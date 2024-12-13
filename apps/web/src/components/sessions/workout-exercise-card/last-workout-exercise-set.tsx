@@ -6,10 +6,10 @@ import { PlusIcon } from "lucide-react";
 
 interface Props {
   className?: string;
-  set: number;
-  reps: number;
-  weight?: number;
-  unit?: WeightUnit;
+  set?: number | null;
+  reps?: number | null;
+  weight?: number | null;
+  unit?: WeightUnit | null;
   exerciseId: string;
   onPress: (exerciseId: string) => void;
 }

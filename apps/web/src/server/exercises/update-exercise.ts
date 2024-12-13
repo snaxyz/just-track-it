@@ -13,6 +13,6 @@ export async function updateExercise(
   return await db.exercise.update(userId, id, {
     name,
     slug: slugify(name),
-    keywords: categories,
+    categories,
   });
 }

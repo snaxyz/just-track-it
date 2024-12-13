@@ -11,7 +11,7 @@ import {
 import { EditIcon } from "lucide-react";
 import { useEffect } from "react";
 import { EditWorkoutExerciseModal } from "./edit-workout-exercise-modal";
-import { WorkoutSessionExerciseSet } from "@local/database";
+import { WorkoutSetModel } from "@local/db";
 
 interface Props {
   className?: string;
@@ -20,17 +20,17 @@ interface Props {
   children: React.ReactNode;
   showUpdateAnimation?: boolean;
   onAnimationComplete: () => void;
-  sets: WorkoutSessionExerciseSet[];
+  sets: WorkoutSetModel[];
   onDelete: (exerciseId: string) => void;
   onUpdateSet: (
     exerciseId: string,
     set: number,
-    updates: Partial<WorkoutSessionExerciseSet>
+    updates: Partial<WorkoutSetModel>
   ) => void;
   onDeleteSet: (exerciseId: string, set: number) => void;
 }
 
-export function WorkoutExercise({
+export function WorkoutExerciseCard({
   className,
   exerciseId,
   exerciseName,
@@ -60,10 +60,7 @@ export function WorkoutExercise({
     onDelete(exerciseId);
     onClose();
   };
-  const handleUpdateSet = (
-    set: number,
-    updates: Partial<WorkoutSessionExerciseSet>
-  ) => {
+  const handleUpdateSet = (set: number, updates: Partial<WorkoutSetModel>) => {
     onUpdateSet(exerciseId, set, updates);
   };
   const handleDeleteSet = (set: number) => {

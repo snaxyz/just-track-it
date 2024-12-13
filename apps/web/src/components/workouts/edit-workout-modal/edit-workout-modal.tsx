@@ -1,5 +1,5 @@
 import { ExerciseSelect } from "@/components/exercises";
-import { ExerciseModel, WorkoutModel } from "@local/database";
+import { ExerciseModel, WorkoutWithRelations } from "@local/db";
 import {
   Button,
   Modal,
@@ -20,7 +20,7 @@ interface SelectedExercise extends Pick<ExerciseModel, "id" | "name"> {
 }
 
 export interface EditWorkoutModalProps extends Omit<ModalProps, "children"> {
-  workout?: Pick<WorkoutModel, "name" | "description" | "exercises">;
+  workout?: Pick<WorkoutWithRelations, "name" | "description" | "exercises">;
   exercises: SelectedExercise[];
   onSave: (input: {
     name: string;
@@ -39,14 +39,14 @@ export function EditWorkoutModal({
   const [name, setName] = useState(workout?.name ?? "");
   const [description, setDescription] = useState(workout?.description ?? "");
   const [selectedExercises, setSelectedExercises] = useState<Selection>(
-    new Set(workout?.exercises.map((e) => e.exerciseId) ?? [])
+    new Set(workout?.exercises?.map((e) => e.exerciseId) ?? [])
   );
 
   useEffect(() => {
     setName(workout?.name ?? "");
     setDescription(workout?.description ?? "");
     setSelectedExercises(
-      new Set(workout?.exercises.map((e) => e.exerciseId) ?? [])
+      new Set(workout?.exercises?.map((e) => e.exerciseId) ?? [])
     );
   }, [workout?.name, workout?.description, workout?.exercises]);
 

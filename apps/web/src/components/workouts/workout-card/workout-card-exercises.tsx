@@ -1,8 +1,8 @@
-import { WorkoutExercise } from "@local/database";
+import { WorkoutExerciseWithRelations } from "@local/db";
 import { Chip } from "@nextui-org/react";
 
 interface Props {
-  exercises: WorkoutExercise[];
+  exercises: WorkoutExerciseWithRelations[];
 }
 
 export function WorkoutCardExercises({ exercises }: Props) {
@@ -25,7 +25,7 @@ export function WorkoutCardExercises({ exercises }: Props) {
       <div className="flex w-full gap-2 flex-wrap">
         {exercises.map((e) => (
           <Chip key={e.exerciseId} className="capitalize">
-            {e.exerciseName}
+            {e.exercise.name}
           </Chip>
         ))}
       </div>

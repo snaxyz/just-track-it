@@ -36,11 +36,7 @@ export class WorkoutSessionRepository extends BaseRepository {
       where: and(eq(workoutSession.id, id), eq(workoutSession.userId, userId)),
       with: {
         workout: true,
-        exercises: {
-          with: {
-            sets: true,
-          },
-        },
+        exercises: true,
       },
     });
   }
@@ -70,6 +66,10 @@ export class WorkoutSessionRepository extends BaseRepository {
           ? gt(workoutSession.createdAt, cursorData.createdAt)
           : undefined
       ),
+      with: {
+        workout: true,
+        exercises: true,
+      },
       orderBy:
         options.order === "asc"
           ? workoutSession.createdAt
@@ -111,11 +111,7 @@ export class WorkoutSessionRepository extends BaseRepository {
       limit: options.limit + 1,
       with: {
         workout: true,
-        exercises: {
-          with: {
-            sets: true,
-          },
-        },
+        exercises: true,
       },
     });
 

@@ -1,9 +1,4 @@
-import { WorkoutSessionWithRelations } from "@local/db";
-
-export type EnhancedWorkoutSession = WorkoutSessionWithRelations & {
-  lastSession: WorkoutSessionWithRelations;
-  isNew: boolean;
-};
+import { EnhancedWorkoutSession } from "@/server/types";
 
 export async function getWorkoutSession(
   sessionId: string

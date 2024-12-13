@@ -14,15 +14,3 @@ export async function updateWorkoutExercises(
     exerciseIds
   );
 }
-
-export async function updateWorkoutSessionExercises(
-  sessionId: string,
-  exercisesIds: string[]
-) {
-  const userId = await getUserId();
-  await db.workoutSessionExercise.updateSessionExercises(
-    userId,
-    sessionId,
-    exercisesIds
-  );
-}

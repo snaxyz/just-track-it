@@ -9,32 +9,27 @@ import {
   NewSetModalProps,
   EmptyExercisesPlaceholder,
   LastWorkoutExerciseSet,
-  WorkoutExercise,
+  WorkoutExerciseCard,
 } from "@/components/sessions";
 import { useCallback, useState } from "react";
 import {
   ExerciseModel,
   QueryResponse,
   WorkoutSessionExerciseModel,
-  WorkoutSetModel,
   WorkoutModel,
-  WorkoutSessionModel,
   WeightUnit,
   WorkoutSessionWithRelations,
 } from "@local/db";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getWorkoutSession } from "@/app/api/workout-sessions/[id]/get-workout-session";
 import { IconButton } from "@/components/icon-button";
-import {
-  updateWorkoutExercises,
-  updateWorkoutSessionExercises,
-  updateWorkoutName,
-} from "@/server/workouts";
+import { updateWorkoutExercises, updateWorkoutName } from "@/server/workouts";
 import { useDebouncedCallback } from "@/lib/hooks/use-debounced-callback";
 import { getExercises } from "@/app/api/exercises/get-exercises";
 import { createExercise } from "@/server/exercises/create-exercise";
 import { DateTime } from "@/components/date-time";
-import { EnhancedWorkoutSession } from "@/app/api/workout-sessions/[id]/get-workout-session";
+import { EnhancedWorkoutSession } from "@/server/types";
+import { updateWorkoutSessionExercises } from "@/server/workout-sessions/update-workout-session-exercises";
 
 interface SetStats {
   reps: number;
@@ -183,7 +178,10 @@ export function WorkoutSession() {
     }
     if (!workoutSession || !exercise) return;
     const inputWeight = input.weight ? input.weight : null;
-    let updatedWorkoutExercises: WorkoutSessionExerciseModel[];
+    let updatedWorkoutExercises: Pick<
+      WorkoutSessionExerciseModel,
+      "exerciseId" | "sets"
+    >[];
     if (
       input.set === "1" &&
       !workoutExercises.find((e) => e.exerciseId === exercise.id)
@@ -192,7 +190,6 @@ export function WorkoutSession() {
         ...workoutExercises,
         {
           exerciseId: exercise.id,
-          exerciseName: exercise.name,
           sets: [
             {
               reps: parseInt(input.reps),
@@ -267,7 +264,7 @@ export function WorkoutSession() {
   const handleUpdateExerciseSet = (
     exerciseId: string,
     setIndex: number,
-    updates: Partial<WorkoutSetModel>
+    updates: Partial<WorkoutSessionExerciseModel>
   ) => {
     if (!workoutSession) return;
     const updatedWorkoutExercises = workoutExercises.map((exercise) => {
@@ -281,10 +278,7 @@ export function WorkoutSession() {
       }
       return exercise;
     });
-    updateWorkoutSeessionExerciseModels(
-      workoutSession.id,
-      updatedWorkoutExercises
-    );
+    updateWorkoutSessionExercises(workoutSession.id, updatedWorkoutExercises);
     queryClient.setQueryData(["session", workoutSession.id], {
       ...workoutSession,
       exercises: updatedWorkoutExercises,
@@ -292,32 +286,29 @@ export function WorkoutSession() {
   };
 
   const handleComplete = async () => {
-    if (!workoutSession) return;
+    if (!workoutSession || !workoutSession.workoutId) return;
     const updatedWorkout = await updateWorkoutExercises(
       workoutSession.workoutId,
-      workoutExercises.map((e) => ({
-        exerciseId: e.exerciseId,
-        exerciseName: e.exerciseName,
-      }))
+      workoutExercises.map((e) => e.exerciseId)
     );
-    const cachedWorkouts = queryClient.getQueryData<
-      QueryResponse<WorkoutModel>
-    >(["workouts"]) ?? {
-      records: [],
-      cursor: "",
-    };
-    const updatedWorkouts: QueryResponse<WorkoutModel> = workoutSession.isNew
-      ? {
-          ...cachedWorkouts,
-          records: [...cachedWorkouts.records, updatedWorkout],
-        }
-      : {
-          ...cachedWorkouts,
-          records: cachedWorkouts.records.map((w) =>
-            w.id === workoutSession.workoutId ? updatedWorkout : w
-          ),
-        };
-    queryClient.setQueryData(["workouts"], updatedWorkouts);
+    // const cachedWorkouts = queryClient.getQueryData<
+    //   QueryResponse<WorkoutModel>
+    // >(["workouts"]) ?? {
+    //   records: [],
+    //   cursor: "",
+    // };
+    // const updatedWorkouts: QueryResponse<WorkoutModel> = workoutSession.isNew
+    //   ? {
+    //       ...cachedWorkouts,
+    //       records: [...cachedWorkouts.records, updatedWorkout],
+    //     }
+    //   : {
+    //       ...cachedWorkouts,
+    //       records: cachedWorkouts.records.map((w) =>
+    //         w.id === workoutSession.workoutId ? updatedWorkout : w
+    //       ),
+    //     };
+    // queryClient.setQueryData(["workouts"], updatedWorkouts);
 
     redirect("/");
   };
@@ -326,25 +317,28 @@ export function WorkoutSession() {
     updateWorkoutName,
     500
   );
-  const debouncedUpdateWorkoutHistoryName = useDebouncedCallback(
-    updateWorkoutSessionName,
-    500
-  );
+  // const debouncedUpdateWorkoutHistoryName = useDebouncedCallback(
+  //   updateWorkoutSessionName,
+  //   500
+  // );
 
   const handleNameChange = async (updatedName: string) => {
     if (!workoutSession?.workoutId) return;
-    queryClient.setQueryData<EnhancedWorkoutSessionModel>(["session", id], {
+    queryClient.setQueryData<EnhancedWorkoutSession>(["session", id], {
       ...workoutSession,
-      workoutName: updatedName,
+      workout: {
+        ...workoutSession.workout,
+        name: updatedName,
+      },
     });
     if (!updatedName) return; // don't save empty name
-    const promises = [
-      debouncedUpdateWorkoutHistoryName(workoutSession.id, updatedName),
-    ];
+    // const promises = [
+    //   debouncedUpdateWorkoutHistoryName(workoutSession.id, updatedName),
+    // ];
     if (workoutSession.isNew) {
       debouncedUpdateWorkoutName(workoutSession.workoutId, updatedName);
     }
-    await Promise.all(promises);
+    // await Promise.all(promises);
   };
 
   const handleStartWorkoutExercise = (
@@ -372,14 +366,14 @@ export function WorkoutSession() {
     <>
       {workoutSession && (
         <div className="mb-2 text-caption-light dark:text-caption text-xs">
-          <DateTime iso={workoutSession.date} />
+          <DateTime iso={workoutSession.startedAt?.toISOString()} />
         </div>
       )}
       <Input
         className="text-xl my-3"
         label="Workout"
         variant="faded"
-        value={workoutSession?.workoutName ?? ""}
+        value={workoutSession?.workout.name ?? ""}
         onValueChange={handleNameChange}
       />
       <div className="pb-24">
@@ -387,10 +381,10 @@ export function WorkoutSession() {
           <EmptyExercisesPlaceholder onAddClick={onOpen} />
         )}
         {workoutExercises.map((e) => (
-          <WorkoutExercise
+          <WorkoutExerciseCard
             key={e.exerciseId}
             className="mb-3 bg-zinc-200 dark:bg-zinc-800 z-0"
-            exerciseName={e.exerciseName}
+            exerciseName={e.exercise.name}
             exerciseId={e.exerciseId}
             showUpdateAnimation={e.exerciseId === lastUpdatedExercise}
             onAnimationComplete={onAnimationComplete}
@@ -421,14 +415,14 @@ export function WorkoutSession() {
                   color="secondary"
                   fullWidth
                   onPress={() =>
-                    handleStartWorkoutExercise(e.exerciseId, e.exerciseName)
+                    handleStartWorkoutExercise(e.exerciseId, e.exercise.name)
                   }
                 >
                   Add set
                 </Button>
               </div>
             )}
-          </WorkoutExercise>
+          </WorkoutExerciseCard>
         ))}
         <div className="mt-6">
           {workoutExercises.length > 0 && (

@@ -41,9 +41,9 @@ export function Dashboard() {
     getNextPageParam: (lastRes) => lastRes.cursor,
   });
 
-  const handleStartWorkout = useCallback(async (workoutId: string) => {
-    await startWorkoutSessionAndRedirect(workoutId);
-  }, []);
+  const handleStartWorkout = (workoutId: string) => {
+    startWorkoutSessionAndRedirect(workoutId);
+  };
 
   const handleStartTraining = () => {
     createWorkoutAndSessionAndRedirect();

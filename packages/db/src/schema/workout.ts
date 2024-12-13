@@ -35,6 +35,6 @@ export const workoutRelations = relations(workout, ({ many }) => ({
 export type WorkoutModel = typeof workout.$inferSelect;
 export type WorkoutInsertModel = typeof workout.$inferInsert;
 export type WorkoutWithRelations = typeof workout.$inferSelect & {
-  exercises: WorkoutExerciseWithRelations[];
-  sessions: WorkoutSessionWithRelations[];
+  exercises: WorkoutExerciseWithRelations[] | null;
+  sessions: WorkoutSessionWithRelations[] | null;
 };

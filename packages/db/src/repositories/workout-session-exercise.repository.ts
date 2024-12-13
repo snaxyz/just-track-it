@@ -1,6 +1,10 @@
 import { and, eq } from "drizzle-orm";
 import { BaseRepository } from "./base.repository";
-import { workoutSessionExercise } from "../schema";
+import {
+  workoutSessionExercise,
+  WorkoutSessionExerciseModel,
+  WorkoutSet,
+} from "../schema";
 
 export class WorkoutSessionExerciseRepository extends BaseRepository {
   async create(userId: string, sessionId: string, exerciseId: string) {
@@ -10,6 +14,8 @@ export class WorkoutSessionExerciseRepository extends BaseRepository {
         userId,
         workoutSessionId: sessionId,
         exerciseId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       })
       .returning();
     return result;
@@ -25,6 +31,9 @@ export class WorkoutSessionExerciseRepository extends BaseRepository {
           userId,
           workoutSessionId: sessionId,
           exerciseId,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          sets: [],
         }))
       )
       .returning();
@@ -34,21 +43,67 @@ export class WorkoutSessionExerciseRepository extends BaseRepository {
   async deleteBySessionId(userId: string, sessionId: string) {
     await this.db
       .delete(workoutSessionExercise)
-      .where(eq(workoutSessionExercise.workoutSessionId, sessionId));
+      .where(
+        and(
+          eq(workoutSessionExercise.workoutSessionId, sessionId),
+          eq(workoutSessionExercise.userId, userId)
+        )
+      );
   }
 
   async updateSessionExercises(
     userId: string,
     sessionId: string,
-    exerciseIds: string[]
+    exercises: {
+      exerciseId: string;
+      sets?: WorkoutSet[];
+    }[]
   ) {
     // Delete existing exercises
     await this.deleteBySessionId(userId, sessionId);
 
     // Add new exercises if any
-    if (exerciseIds.length) {
-      await this.createMany(userId, sessionId, exerciseIds);
+    if (exercises.length) {
+      const [result] = await this.db
+        .insert(workoutSessionExercise)
+        .values(
+          exercises.map((exercise) => ({
+            userId,
+            workoutSessionId: sessionId,
+            exerciseId: exercise.exerciseId,
+            sets: exercise.sets || [],
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          }))
+        )
+        .returning();
+      return result;
     }
+  }
+
+  async updateSets(
+    userId: string,
+    sessionId: string,
+    exerciseId: string,
+    sets: WorkoutSet[]
+  ) {
+    const [result] = await this.db
+      .update(workoutSessionExercise)
+      .set({
+        updatedAt: new Date(),
+        sets,
+        // TODO: should not require this casting, but json column
+        // not inferring the type correctly
+      } as WorkoutSessionExerciseModel)
+      .where(
+        and(
+          eq(workoutSessionExercise.workoutSessionId, sessionId),
+          eq(workoutSessionExercise.exerciseId, exerciseId),
+          eq(workoutSessionExercise.userId, userId)
+        )
+      )
+      .returning();
+    return result;
   }
 
   async getBySessionId(userId: string, sessionId: string) {
@@ -59,7 +114,6 @@ export class WorkoutSessionExerciseRepository extends BaseRepository {
       ),
       with: {
         exercise: true,
-        sets: true,
       },
     });
   }

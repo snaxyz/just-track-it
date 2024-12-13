@@ -645,7 +645,7 @@ drizzle-kit@^0.30.0:
     esbuild "^0.19.7"
     esbuild-register "^3.5.0"
 
-drizzle-orm@^0.38.0:
+drizzle-orm@^0.38.1:
   version "0.38.1"
   resolved "https://registry.yarnpkg.com/drizzle-orm/-/drizzle-orm-0.38.1.tgz#be534cabe8501719806aa98b0d79646a55216eaf"
   integrity sha512-TpOzNrPGy7dl0/uP9vKD6ATzp9noJaRYhOYqtOCKxxwSmZqrPxN4SW5kWawVUIcbSd2lkbDCdZue+gtVNLmQsg==

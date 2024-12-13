@@ -1,6 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import { BaseRepository } from "./base.repository";
-import { workoutExercise } from "../schema";
+import { workoutExercise, WorkoutExerciseModel } from "../schema";
 
 export class WorkoutExerciseRepository extends BaseRepository {
   async create(userId: string, workoutId: string, exerciseId: string) {
@@ -15,10 +15,14 @@ export class WorkoutExerciseRepository extends BaseRepository {
     return result;
   }
 
-  async createMany(userId: string, workoutId: string, exerciseIds: string[]) {
-    if (!exerciseIds.length) return [];
+  async createMany(
+    userId: string,
+    workoutId: string,
+    exerciseIds: string[]
+  ): Promise<WorkoutExerciseModel[]> {
+    if (exerciseIds.length === 0) return [];
 
-    const [result] = await this.db
+    const results = await this.db
       .insert(workoutExercise)
       .values(
         exerciseIds.map((exerciseId) => ({
@@ -28,7 +32,7 @@ export class WorkoutExerciseRepository extends BaseRepository {
         }))
       )
       .returning();
-    return result;
+    return results;
   }
 
   async deleteByWorkoutId(userId: string, workoutId: string) {
@@ -46,14 +50,16 @@ export class WorkoutExerciseRepository extends BaseRepository {
     userId: string,
     workoutId: string,
     exerciseIds: string[]
-  ) {
+  ): Promise<WorkoutExerciseModel[]> {
     // Delete existing exercises
     await this.deleteByWorkoutId(userId, workoutId);
 
     // Add new exercises if any
-    if (exerciseIds.length) {
-      await this.createMany(userId, workoutId, exerciseIds);
+    if (exerciseIds.length > 0) {
+      return await this.createMany(userId, workoutId, exerciseIds);
     }
+
+    return [];
   }
 
   async getByWorkoutId(userId: string, workoutId: string) {

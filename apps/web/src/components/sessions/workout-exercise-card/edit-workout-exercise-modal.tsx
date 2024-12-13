@@ -7,10 +7,7 @@ import {
   ModalHeader,
   ModalProps,
 } from "@nextui-org/react";
-import {
-  WorkoutSessionExercise,
-  WorkoutSessionExerciseSet,
-} from "@local/database";
+import { WorkoutSetModel } from "@local/db";
 import { SetSelect, RepSelect, WeightSelect } from "../common";
 import { Grow } from "@/components/layout/grow";
 import { DeleteIcon, TrashIcon } from "lucide-react";
@@ -18,12 +15,9 @@ import { DeleteIcon, TrashIcon } from "lucide-react";
 interface EditWorkoutExerciseModalProps extends Omit<ModalProps, "children"> {
   id: string;
   name: string;
-  sets: WorkoutSessionExerciseSet[];
+  sets: WorkoutSetModel[];
   onDeleteExercise: () => void;
-  onUpdateSet: (
-    set: number,
-    updates: Partial<WorkoutSessionExerciseSet>
-  ) => void;
+  onUpdateSet: (set: number, updates: Partial<WorkoutSetModel>) => void;
   onDeleteSet: (set: number) => void;
 }
 
@@ -42,10 +36,7 @@ export function EditWorkoutExerciseModal({
     onDeleteExercise();
   };
 
-  const handleUpdateSet = (
-    set: number,
-    updates: Partial<WorkoutSessionExerciseSet>
-  ) => {
+  const handleUpdateSet = (set: number, updates: Partial<WorkoutSetModel>) => {
     onUpdateSet(set, updates);
   };
 
@@ -73,7 +64,7 @@ export function EditWorkoutExerciseModal({
               </div>
               <div className="flex items-center gap-2">
                 <RepSelect
-                  reps={set.reps.toString()}
+                  reps={set.reps?.toString() ?? ""}
                   onChange={(reps) =>
                     handleUpdateSet(ind, {
                       reps: parseInt(reps),

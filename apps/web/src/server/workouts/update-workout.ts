@@ -12,25 +12,37 @@ export async function updateWorkout(
 ) {
   const userId = await getUserId();
 
-  const draftExercises = await Promise.all(
-    exercises
-      .filter((e) => e.isDraft)
-      .map((e) =>
-        db.exercise.create({
-          userId,
-          name: e.name,
-          slug: slugify(e.name),
-          keywords: [],
-        })
-      )
+  const workoutExercises = await Promise.all(
+    exercises.map((e) =>
+      e.isDraft
+        ? db.exercise.create({
+            userId,
+            name: e.name,
+            slug: slugify(e.name),
+            keywords: [],
+            categories: [],
+            description: "",
+            hasSets: true,
+            hasReps: true,
+            hasWeight: true,
+            hasDuration: false,
+          })
+        : e
+    )
   );
 
-  const existingExercises = exercises.filter((e) => !e.isDraft);
-  const allExercises = [...existingExercises, ...draftExercises];
+  await db.workoutExercise.deleteByWorkoutId(userId, workoutId);
+  await db.workoutExercise.createMany(
+    userId,
+    workoutId,
+    workoutExercises.map((e) => e.id)
+  );
 
-  return await db.workout.update(userId, workoutId, {
+  const updatedWorkout = await db.workout.update(userId, workoutId, {
     name,
     slug: slugify(name),
     description,
   });
+
+  return updatedWorkout;
 }

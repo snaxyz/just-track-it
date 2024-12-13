@@ -1,10 +1,12 @@
-import { and, eq, gt, desc } from "drizzle-orm";
+import { and, eq, gt, desc, sql } from "drizzle-orm";
 import { BaseRepository } from "./base.repository";
 import {
   workout,
   WorkoutModel,
   WorkoutInsertModel,
   workoutExercise,
+  WorkoutWithRelations,
+  WorkoutExerciseWithRelations,
 } from "../schema";
 import {
   QueryResponse,
@@ -31,7 +33,7 @@ export class WorkoutRepository extends BaseRepository {
   async createWithExercises(
     data: Omit<WorkoutInsertModel, "id" | "createdAt" | "updatedAt">,
     exerciseIds: string[]
-  ) {
+  ): Promise<Omit<WorkoutWithRelations, "sessions">> {
     const [createdWorkout] = await this.db
       .insert(workout)
       .values({
@@ -41,25 +43,45 @@ export class WorkoutRepository extends BaseRepository {
       })
       .returning();
 
-    await this.db
-      .insert(workoutExercise)
-      .values(
-        exerciseIds.map((exerciseId) => ({
-          userId: data.userId,
-          workoutId: createdWorkout.id,
-          exerciseId,
-        }))
-      )
-      .returning();
+    if (exerciseIds.length === 0) {
+      return {
+        ...createdWorkout,
+        exercises: [],
+      };
+    }
 
-    return createdWorkout;
+    await this.db.insert(workoutExercise).values(
+      exerciseIds.map((exerciseId) => ({
+        userId: data.userId,
+        workoutId: createdWorkout.id,
+        exerciseId,
+      }))
+    );
+
+    return await this.db.query.workout.findFirst({
+      where: and(
+        eq(workout.id, createdWorkout.id),
+        eq(workout.userId, data.userId)
+      ),
+      with: {
+        exercises: {
+          with: {
+            exercise: true,
+          },
+        },
+      },
+    });
   }
 
   async get(userId: string, id: string) {
     return await this.db.query.workout.findFirst({
       where: and(eq(workout.id, id), eq(workout.userId, userId)),
       with: {
-        exercises: true,
+        exercises: {
+          with: {
+            exercise: true,
+          },
+        },
         sessions: true,
       },
     });
@@ -80,6 +102,13 @@ export class WorkoutRepository extends BaseRepository {
       ),
       orderBy: options.order === "asc" ? workout.name : desc(workout.name),
       limit: options.limit + 1,
+      with: {
+        exercises: {
+          with: {
+            exercise: true,
+          },
+        },
+      },
     });
 
     const hasMore = workouts.length > options.limit;
@@ -93,15 +122,24 @@ export class WorkoutRepository extends BaseRepository {
   }
 
   async update(userId: string, id: string, data: Partial<WorkoutInsertModel>) {
-    const [result] = await this.db
+    await this.db
       .update(workout)
       .set({
         ...data,
         updatedAt: new Date(),
       })
-      .where(and(eq(workout.id, id), eq(workout.userId, userId)))
-      .returning();
-    return result;
+      .where(and(eq(workout.id, id), eq(workout.userId, userId)));
+
+    return await this.db.query.workout.findFirst({
+      where: and(eq(workout.id, id), eq(workout.userId, data.userId)),
+      with: {
+        exercises: {
+          with: {
+            exercise: true,
+          },
+        },
+      },
+    });
   }
 
   async delete(userId: string, id: string) {

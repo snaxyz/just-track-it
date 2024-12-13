@@ -49,6 +49,7 @@ export function CreateWorkoutModal({
       id: name.replace(/\s/g, "").toLowerCase(),
       name,
       categories: [],
+      isDraft: true,
     };
     setDraftExercises((e) => [...e, exercise]);
     setSelectedExercises((e) => new Set([...e, exercise.id]));

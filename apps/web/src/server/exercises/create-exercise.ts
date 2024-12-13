@@ -11,5 +11,11 @@ export async function createExercise(name: string, categories: string[]) {
     name,
     slug: slugify(name),
     categories,
+    description: null,
+    keywords: [],
+    hasSets: true,
+    hasReps: true,
+    hasWeight: true,
+    hasDuration: false,
   });
 }

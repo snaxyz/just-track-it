@@ -14,6 +14,7 @@ export async function getWorkoutSessionServer(sessionId: string) {
       order: "desc",
     }
   );
+
   const lastSession = records[0];
   return {
     ...workoutSession,

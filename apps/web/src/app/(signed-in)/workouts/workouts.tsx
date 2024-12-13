@@ -6,7 +6,12 @@ import {
   createWorkout,
   createWorkoutAndSessionAndRedirect,
 } from "@/server/workouts";
-import { ExerciseModel, QueryResponse, WorkoutModel } from "@local/database";
+import {
+  ExerciseModel,
+  QueryResponse,
+  WorkoutModel,
+  WorkoutWithRelations,
+} from "@local/db";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ActivityIcon, PlusIcon } from "lucide-react";
 import {
@@ -32,7 +37,7 @@ import { updateWorkout } from "@/server/workouts";
 export function Workouts() {
   const queryClient = useQueryClient();
   const { data: workoutsQuery, isLoading } = useQuery<
-    QueryResponse<WorkoutModel>
+    QueryResponse<WorkoutWithRelations>
   >({
     queryKey: ["workouts"],
     queryFn: () => getWorkouts(),
@@ -62,14 +67,19 @@ export function Workouts() {
       input.selectedExercises
     );
     setIsCreating(false);
-    queryClient.setQueryData<QueryResponse<WorkoutModel>>(["workouts"], {
+
+    queryClient.setQueryData<
+      QueryResponse<Omit<WorkoutWithRelations, "sessions">>
+    >(["workouts"], {
       ...(workoutsQuery ?? { cursor: "" }),
       records: [...(workoutsQuery?.records ?? []), workout],
     });
   };
 
   const [selectedWorkout, setSelectedWorkout] =
-    useState<Pick<WorkoutModel, "id" | "name" | "description" | "exercises">>();
+    useState<
+      Pick<WorkoutWithRelations, "id" | "name" | "description" | "exercises">
+    >();
 
   const handleEditWorkout = (id: string) => {
     setSelectedWorkout(workoutsQuery?.records?.find((w) => w.id === id));
@@ -100,12 +110,16 @@ export function Workouts() {
       input.description,
       input.selectedExercises
     );
-    queryClient.setQueryData(["workouts"], {
-      ...(workoutsQuery ?? { cursor: "" }),
-      records: workoutsQuery?.records.map((w) =>
-        w.id === workoutId ? workout : w
-      ),
-    });
+    queryClient.setQueryData<QueryResponse<WorkoutWithRelations>>(
+      ["workouts"],
+      {
+        ...(workoutsQuery ?? { cursor: "" }),
+        records:
+          workoutsQuery?.records.map((w) =>
+            w.id === workoutId ? { ...w, ...workout } : w
+          ) ?? [],
+      }
+    );
 
     closeEditWorkoutModal();
   };
@@ -132,7 +146,7 @@ export function Workouts() {
             onStartWorkout={handleStartWorkout}
             onEditClick={handleEditWorkout}
           >
-            <WorkoutCardExercises exercises={w.exercises} />
+            <WorkoutCardExercises exercises={w.exercises ?? []} />
           </WorkoutCard>
         ))}
         {isCreating && <WorkoutCardSkeleton />}
