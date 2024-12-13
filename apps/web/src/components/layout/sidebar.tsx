@@ -29,11 +29,6 @@ export function Sidebar({ className, children, user }: Props) {
         )}
       >
         <div className="flex items-center py-1 px-2">
-          {/* <SidebarWorkspaceDropdown
-            name={user.name ?? ""}
-            picture={user.picture}
-          />
-          <SidebarCollapseButton /> */}
           <div className="p-4 capitalize flex mb-2 items-center justify-center w-full">
             <span className="mr-2">
               <HeartHandshakeIcon size={22} />

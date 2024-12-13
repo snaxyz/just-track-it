@@ -1,5 +1,12 @@
 import { relations } from "drizzle-orm";
-import { index, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import {
+  index,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+  uniqueIndex,
+} from "drizzle-orm/pg-core";
 import { workoutSession, WorkoutSessionWithRelations } from "./workout-session";
 import {
   workoutExercise,
@@ -11,7 +18,7 @@ export const workout = pgTable(
   {
     id: uuid("id").primaryKey().defaultRandom(),
     userId: text("user_id").notNull(),
-    slug: text("slug").notNull().unique(),
+    slug: text("slug").notNull(),
     name: text("name").notNull(),
     description: text("description"),
     createdAt: timestamp("created_at", {
@@ -28,6 +35,10 @@ export const workout = pgTable(
     index("workout_updated_at_idx").on(table.userId, table.updatedAt),
     // Index for querying by userId + name
     index("workout_name_idx").on(table.userId, table.name),
+    // Unique constraint for name + userId combination
+    uniqueIndex("workout_name_user_id_idx").on(table.userId, table.name),
+    // Unique constraint for slug + userId combination
+    uniqueIndex("workout_slug_user_id_idx").on(table.userId, table.slug),
   ]
 );
 

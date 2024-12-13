@@ -81,7 +81,7 @@ export function Dashboard() {
             <Title className="text-lg">Recent workouts</Title>
           </div>
           <div className="space-y-3">
-            {workoutSessionsQuery?.pages.length === 0 && (
+            {workoutSessionsQuery?.pages[0]?.records.length === 0 && (
               <EmptySessionsPlaceholder onAddClick={handleStartTraining} />
             )}
             {workoutSessionsQuery?.pages.map((p) =>
@@ -157,7 +157,7 @@ export function Dashboard() {
                 </Button>
               </div>
             )}
-            {workoutSessionsQuery?.pages.length !== 0 && (
+            {workoutSessionsQuery?.pages[0]?.records.length !== 0 && (
               <div className="p-2">
                 <Button
                   variant="solid"

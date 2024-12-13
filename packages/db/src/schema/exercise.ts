@@ -5,6 +5,7 @@ import {
   text,
   timestamp,
   uuid,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 export const exercise = pgTable(
@@ -41,6 +42,8 @@ export const exercise = pgTable(
     index("exercise_name_idx").on(table.userId, table.name),
     // Index for full text search on keywords
     index("exercise_keywords_idx").on(table.userId, table.keywords),
+    // Unique constraint for name + userId combination
+    uniqueIndex("exercise_name_user_id_idx").on(table.userId, table.name),
   ]
 );
 
