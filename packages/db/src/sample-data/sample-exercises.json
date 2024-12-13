@@ -1,0 +1,80 @@
+[
+  {
+    "name": "Bench Press (Barbell)",
+    "categories": ["Chest", "Upper", "Push"]
+  },
+  {
+    "name": "Bench Press (Dumbbell)",
+    "categories": ["Chest", "Upper", "Push"]
+  },
+  {
+    "name": "Incline Bench Press (Barbell)",
+    "categories": ["Chest", "Upper", "Push"]
+  },
+  {
+    "name": "Incline Bench Press (Dumbbell)",
+    "categories": ["Chest", "Upper", "Push"]
+  },
+  { "name": "Cable Flyes", "categories": ["Chest", "Upper", "Push"] },
+  { "name": "Chest Dips", "categories": ["Chest", "Upper", "Push"] },
+  { "name": "Push-Ups", "categories": ["Chest", "Upper", "Push"] },
+  { "name": "Pull-Ups", "categories": ["Back", "Upper", "Pull"] },
+  { "name": "Chin-Ups", "categories": ["Back", "Upper", "Pull"] },
+  { "name": "Barbell Rows", "categories": ["Back", "Upper", "Pull"] },
+  {
+    "name": "Deadlift",
+    "categories": ["Back", "Lower Back", "Lower", "Pull"]
+  },
+  { "name": "Dumbbell Rows", "categories": ["Back", "Upper", "Pull"] },
+  { "name": "Lat Pulldowns", "categories": ["Back", "Upper", "Pull"] },
+  { "name": "Face Pulls", "categories": ["Back", "Upper", "Pull"] },
+  {
+    "name": "Overhead Press (Barbell)",
+    "categories": ["Shoulders", "Upper", "Push"]
+  },
+  {
+    "name": "Overhead Press (Dumbbell)",
+    "categories": ["Shoulders", "Upper", "Push"]
+  },
+  { "name": "Push Press", "categories": ["Shoulders", "Upper", "Push"] },
+  { "name": "Lateral Raises", "categories": ["Shoulders", "Upper", "Push"] },
+  { "name": "Rear Delt Flyes", "categories": ["Shoulders", "Upper", "Pull"] },
+  { "name": "Arnold Press", "categories": ["Shoulders", "Upper", "Push"] },
+  { "name": "Barbell Curls", "categories": ["Biceps", "Upper", "Pull"] },
+  { "name": "Dumbbell Curls", "categories": ["Biceps", "Upper", "Pull"] },
+  { "name": "Hammer Curls", "categories": ["Biceps", "Upper", "Pull"] },
+  { "name": "Tricep Dips", "categories": ["Triceps", "Upper", "Push"] },
+  {
+    "name": "Overhead Tricep Extensions",
+    "categories": ["Triceps", "Upper", "Push"]
+  },
+  {
+    "name": "Close-Grip Push-Ups",
+    "categories": ["Triceps", "Upper", "Push"]
+  },
+  { "name": "Squats", "categories": ["Legs", "Lower"] },
+  { "name": "Bulgarian Split Squats", "categories": ["Legs", "Lower"] },
+  { "name": "Leg Press", "categories": ["Legs", "Lower"] },
+  { "name": "Walking Lunges", "categories": ["Legs", "Lower"] },
+  { "name": "Romanian Deadlifts", "categories": ["Legs", "Lower"] },
+  { "name": "Hip Thrusts", "categories": ["Glutes (Butt)", "Lower"] },
+  { "name": "Sumo Deadlift", "categories": ["Glutes (Butt)", "Lower"] },
+  { "name": "Calf Raises", "categories": ["Calves", "Lower"] },
+  { "name": "Donkey Calf Raises", "categories": ["Calves", "Lower"] },
+  {
+    "name": "Plank Variations (Basic, Side, Weighted)",
+    "categories": ["Abs", "Lower"]
+  },
+  { "name": "Hanging Leg Raises", "categories": ["Abs", "Lower"] },
+  { "name": "Cable Crunches", "categories": ["Abs", "Lower"] },
+  { "name": "Russian Twists", "categories": ["Oblique", "Lower"] },
+  { "name": "Side Planks", "categories": ["Oblique", "Lower"] },
+  {
+    "name": "Woodchoppers (Cable or Band)",
+    "categories": ["Oblique", "Lower"]
+  },
+  {
+    "name": "Hyperextensions (Bodyweight or Weighted)",
+    "categories": ["Back", "Lower", "Pull"]
+  }
+]

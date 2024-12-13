@@ -7,6 +7,7 @@ import {
   WorkoutSessionExerciseRepository,
   WorkoutSessionRepository,
 } from "./repositories";
+import { createSampleWorkouts } from "./sample-data/create-sample-workouts";
 
 export class DatabaseService {
   exercise: ExerciseRepository;
@@ -25,5 +26,9 @@ export class DatabaseService {
     this.workoutSessionExercise = new WorkoutSessionExerciseRepository(
       drizzleClient
     );
+  }
+
+  async insertSampleWorkouts(userId: string) {
+    await createSampleWorkouts(this, userId);
   }
 }

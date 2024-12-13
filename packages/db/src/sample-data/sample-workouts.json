@@ -1,0 +1,72 @@
+[
+  {
+    "name": "Push Strength",
+    "description": "A workout focused on building upper body pushing strength with heavier weights and lower reps.",
+    "exercises": [
+      { "name": "Bench Press (Barbell)", "sets": 5, "reps": 5 },
+      { "name": "Incline Bench Press (Barbell)", "sets": 4, "reps": 6 },
+      { "name": "Overhead Press (Barbell)", "sets": 4, "reps": 6 },
+      { "name": "Chest Dips", "sets": 3, "reps": 8 }
+    ]
+  },
+  {
+    "name": "Push Hypertrophy",
+    "description": "A workout aimed at increasing muscle size in the pushing muscles with moderate weights and higher reps.",
+    "exercises": [
+      { "name": "Bench Press (Dumbbell)", "sets": 4, "reps": 10 },
+      { "name": "Incline Bench Press (Dumbbell)", "sets": 3, "reps": 12 },
+      { "name": "Arnold Press", "sets": 3, "reps": 10 },
+      { "name": "Lateral Raises", "sets": 3, "reps": 15 },
+      { "name": "Cable Flyes", "sets": 4, "reps": 12 }
+    ]
+  },
+  {
+    "name": "Pull Strength",
+    "description": "A workout focused on building upper body pulling strength with heavier weights and lower reps.",
+    "exercises": [
+      { "name": "Deadlift", "sets": 5, "reps": 3 },
+      { "name": "Pull-Ups", "sets": 4, "reps": 6 },
+      { "name": "Barbell Rows", "sets": 4, "reps": 5 },
+      { "name": "Face Pulls", "sets": 3, "reps": 12 }
+    ]
+  },
+  {
+    "name": "Pull Hypertrophy",
+    "description": "A workout designed for increasing muscle size in the pulling muscles with moderate weights and higher reps.",
+    "exercises": [
+      { "name": "Dumbbell Rows", "sets": 3, "reps": 10 },
+      { "name": "Lat Pulldowns", "sets": 4, "reps": 10 },
+      { "name": "Chin-Ups", "sets": 3, "reps": 8 },
+      { "name": "Rear Delt Flyes", "sets": 3, "reps": 12 },
+      {
+        "name": "Hyperextensions (Bodyweight or Weighted)",
+        "sets": 3,
+        "reps": 15
+      }
+    ]
+  },
+  {
+    "name": "Leg Strength",
+    "description": "A workout for building leg strength with heavy compound movements.",
+    "exercises": [
+      { "name": "Squats", "sets": 5, "reps": 5 },
+      { "name": "Romanian Deadlifts", "sets": 4, "reps": 6 },
+      { "name": "Bulgarian Split Squats", "sets": 3, "reps": 8 },
+      { "name": "Calf Raises", "sets": 3, "reps": 15 }
+    ]
+  },
+  {
+    "name": "Core Focus",
+    "description": "A workout focused on building core strength and stability.",
+    "exercises": [
+      {
+        "name": "Plank Variations (Basic, Side, Weighted)",
+        "sets": 3,
+        "duration": "1 min"
+      },
+      { "name": "Hanging Leg Raises", "sets": 3, "reps": 12 },
+      { "name": "Russian Twists", "sets": 3, "reps": 20 },
+      { "name": "Woodchoppers (Cable or Band)", "sets": 3, "reps": 15 }
+    ]
+  }
+]
