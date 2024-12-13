@@ -11,7 +11,6 @@ import {
   Button,
   Card,
   CardBody,
-  CardFooter,
   CardHeader,
   Skeleton,
 } from "@nextui-org/react";
