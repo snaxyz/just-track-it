@@ -1,4 +1,4 @@
-import { ExerciseModel } from "@local/database";
+import { ExerciseModel } from "@local/db";
 import {
   Autocomplete,
   AutocompleteItem,

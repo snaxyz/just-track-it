@@ -20,6 +20,7 @@ import {
   WeightUnit,
   WorkoutSessionWithRelations,
   WorkoutSessionExerciseWithRelations,
+  WorkoutSet,
 } from "@local/db";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getWorkoutSession } from "@/app/api/workout-sessions/[id]/get-workout-session";
@@ -266,7 +267,7 @@ export function WorkoutSession() {
   const handleUpdateExerciseSet = (
     exerciseId: string,
     setIndex: number,
-    updates: Partial<WorkoutSessionExerciseModel>
+    updates: Partial<WorkoutSet>
   ) => {
     if (!workoutSession) return;
     const updatedWorkoutExercises = workoutExercises.map((exercise) => {
