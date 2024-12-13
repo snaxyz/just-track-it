@@ -21,8 +21,12 @@ export const exercise = pgTable(
       .$type<string[]>()
       .notNull()
       .default([]),
-    createdAt: timestamp("created_at").notNull(),
-    updatedAt: timestamp("updated_at").notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+    }).notNull(),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+    }).notNull(),
     hasSets: boolean("has_sets").notNull().default(true),
     hasReps: boolean("has_reps").notNull().default(true),
     hasWeight: boolean("has_weight").notNull().default(true),

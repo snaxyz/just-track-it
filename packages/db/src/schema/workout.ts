@@ -14,8 +14,12 @@ export const workout = pgTable(
     slug: text("slug").notNull().unique(),
     name: text("name").notNull(),
     description: text("description"),
-    createdAt: timestamp("created_at").notNull(),
-    updatedAt: timestamp("updated_at").notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+    }).notNull(),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+    }).notNull(),
   },
   (table) => [
     // Index for querying by userId + createdAt (for cursor pagination)

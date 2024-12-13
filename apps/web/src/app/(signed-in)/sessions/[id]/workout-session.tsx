@@ -368,7 +368,7 @@ export function WorkoutSession() {
     <>
       {workoutSession && (
         <div className="mb-2 text-caption-light dark:text-caption text-xs">
-          <DateTime iso={workoutSession.startedAt?.toISOString()} />
+          <DateTime iso={workoutSession.startedAt ?? ""} />
         </div>
       )}
       <Input

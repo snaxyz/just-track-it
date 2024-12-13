@@ -23,9 +23,9 @@ export class WorkoutSessionRepository extends BaseRepository {
       .insert(workoutSession)
       .values({
         ...data,
-        startedAt: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        startedAt: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       })
       .returning();
     return result;
@@ -60,7 +60,7 @@ export class WorkoutSessionRepository extends BaseRepository {
     options: QueryOptions = { limit: 20, order: "asc" }
   ): Promise<QueryResponse<WorkoutSessionModel>> {
     const cursorData = options.nextCursor
-      ? cursorToKey<{ createdAt: Date }>(options.nextCursor)
+      ? cursorToKey<{ createdAt: string }>(options.nextCursor)
       : undefined;
 
     const sessions = await this.db.query.workoutSession.findMany({
@@ -87,7 +87,7 @@ export class WorkoutSessionRepository extends BaseRepository {
 
     return {
       records,
-      cursor: hasMore ? keyToCursor({ createdAt: lastRecord.createdAt }) : "",
+      cursor: hasMore ? keyToCursor({ createdAt: lastRecord.createdAt }) : null,
     };
   }
 
@@ -97,7 +97,7 @@ export class WorkoutSessionRepository extends BaseRepository {
     options: QueryOptions = { limit: 20, order: "asc" }
   ) {
     const cursorData = options.nextCursor
-      ? cursorToKey<{ createdAt: Date }>(options.nextCursor)
+      ? cursorToKey<{ createdAt: string }>(options.nextCursor)
       : undefined;
 
     const sessions = await this.db.query.workoutSession.findMany({
@@ -125,7 +125,7 @@ export class WorkoutSessionRepository extends BaseRepository {
 
     return {
       records,
-      cursor: hasMore ? keyToCursor({ createdAt: lastRecord.createdAt }) : "",
+      cursor: hasMore ? keyToCursor({ createdAt: lastRecord.createdAt }) : null,
     };
   }
 
@@ -138,7 +138,7 @@ export class WorkoutSessionRepository extends BaseRepository {
       .update(workoutSession)
       .set({
         ...data,
-        updatedAt: new Date(),
+        updatedAt: new Date().toISOString(),
       })
       .where(and(eq(workoutSession.id, id), eq(workoutSession.userId, userId)))
       .returning();

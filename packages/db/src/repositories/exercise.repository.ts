@@ -14,8 +14,8 @@ export class ExerciseRepository extends BaseRepository {
       .insert(exercise)
       .values({
         ...data,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       })
       .returning();
     return result;
@@ -59,7 +59,7 @@ export class ExerciseRepository extends BaseRepository {
       .update(exercise)
       .set({
         ...data,
-        updatedAt: new Date(),
+        updatedAt: new Date().toISOString(),
       })
       .where(and(eq(exercise.id, id), eq(exercise.userId, userId)))
       .returning();

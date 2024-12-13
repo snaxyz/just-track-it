@@ -13,11 +13,21 @@ export const workoutSession = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     userId: text("user_id").notNull(),
     workoutId: uuid("workout_id").references(() => workout.id),
-    startedAt: timestamp("started_at").notNull(),
-    completedAt: timestamp("completed_at"),
+    startedAt: timestamp("started_at", {
+      withTimezone: true,
+      mode: "string",
+    }).notNull(),
+    completedAt: timestamp("completed_at", {
+      withTimezone: true,
+      mode: "string",
+    }),
     notes: text("notes"),
-    createdAt: timestamp("created_at").notNull(),
-    updatedAt: timestamp("updated_at").notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+    }).notNull(),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+    }).notNull(),
   },
   (table) => [
     // Index for querying by userId + createdAt (for cursor pagination)

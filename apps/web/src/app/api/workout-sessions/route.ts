@@ -8,5 +8,6 @@ export async function GET(request: NextRequest) {
   const limit = limitParam ? parseInt(limitParam) : undefined;
   const cursor = cursorParam ?? "";
   const workouts = await getWorkoutSessionsServer({ limit, cursor });
+
   return Response.json(workouts);
 }

@@ -14,8 +14,8 @@ export class WorkoutSessionExerciseRepository extends BaseRepository {
         userId,
         workoutSessionId: sessionId,
         exerciseId,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       })
       .returning();
     return result;
@@ -31,8 +31,8 @@ export class WorkoutSessionExerciseRepository extends BaseRepository {
           userId,
           workoutSessionId: sessionId,
           exerciseId,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
           sets: [],
         }))
       )
@@ -72,8 +72,8 @@ export class WorkoutSessionExerciseRepository extends BaseRepository {
             workoutSessionId: sessionId,
             exerciseId: exercise.exerciseId,
             sets: exercise.sets || [],
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
           }))
         )
         .returning();
@@ -90,7 +90,7 @@ export class WorkoutSessionExerciseRepository extends BaseRepository {
     const [result] = await this.db
       .update(workoutSessionExercise)
       .set({
-        updatedAt: new Date(),
+        updatedAt: new Date().toISOString(),
         sets,
         // TODO: should not require this casting, but json column
         // not inferring the type correctly

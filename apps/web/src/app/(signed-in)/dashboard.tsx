@@ -107,8 +107,7 @@ export function Dashboard() {
                   </CardHeader>
                   <CardBody>
                     <div className="text-caption-light dark:text-caption text-xs mb-2">
-                      Completed on{" "}
-                      <DateTime iso={w.completedAt?.toISOString()} />
+                      Completed on <DateTime iso={w.completedAt ?? ""} />
                     </div>
                     <Button
                       fullWidth
@@ -166,7 +165,7 @@ export function Dashboard() {
                 color="primary"
                 fullWidth
               >
-                Start new workout
+                Create &amp; start new workout
               </Button>
             </div>
           </div>

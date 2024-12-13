@@ -23,8 +23,12 @@ export const workoutSessionExercise = pgTable("workout_session_exercise", {
     .notNull()
     .references(() => exercise.id),
   sets: json("sets").$type<WorkoutSet[]>().notNull().default([]),
-  createdAt: timestamp("created_at").notNull(),
-  updatedAt: timestamp("updated_at").notNull(),
+  createdAt: timestamp("created_at", {
+    mode: "string",
+  }).notNull(),
+  updatedAt: timestamp("updated_at", {
+    mode: "string",
+  }).notNull(),
 });
 
 export const workoutSessionExerciseRelations = relations(

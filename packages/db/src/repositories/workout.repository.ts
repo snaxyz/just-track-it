@@ -23,8 +23,8 @@ export class WorkoutRepository extends BaseRepository {
       .insert(workout)
       .values({
         ...data,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       })
       .returning();
     return result;
@@ -38,8 +38,8 @@ export class WorkoutRepository extends BaseRepository {
       .insert(workout)
       .values({
         ...data,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       })
       .returning();
 
@@ -126,7 +126,7 @@ export class WorkoutRepository extends BaseRepository {
       .update(workout)
       .set({
         ...data,
-        updatedAt: new Date(),
+        updatedAt: new Date().toISOString(),
       })
       .where(and(eq(workout.id, id), eq(workout.userId, userId)));
 
