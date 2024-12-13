@@ -6,27 +6,26 @@ import { Grow } from "@/components/layout/grow";
 import { Title } from "@/components/title";
 import { createWorkoutAndSessionAndRedirect } from "@/server/workouts";
 import { startWorkoutSessionAndRedirect } from "@/server/workout-sessions/start-workout";
-import {
-  QueryResponse,
-  WorkoutSessionModel,
-  WorkoutSessionWithRelations,
-} from "@local/db";
+import { QueryResponse, WorkoutSessionWithRelations } from "@local/db";
 import {
   Button,
   Card,
   CardBody,
+  CardFooter,
   CardHeader,
   Skeleton,
 } from "@nextui-org/react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { ActivityIcon, HistoryIcon } from "lucide-react";
+import {
+  ActivityIcon,
+  DumbbellIcon,
+  HistoryIcon,
+  SquareLibraryIcon,
+} from "lucide-react";
 import Link from "next/link";
-import { useCallback } from "react";
-import { getWorkoutSessions } from "../api/workout-sessions/get-workout-sessions";
 import { DateTime } from "@/components/date-time";
-import workoutsSrc from "./workouts.jpg";
-import startTrainingSrc from "./start-training-2.jpg";
-import Image from "next/image";
+import { getWorkoutSessions } from "../api/workout-sessions/get-workout-sessions";
+import { EmptySessionsPlaceholder } from "@/components/sessions";
 
 export function Dashboard() {
   const {
@@ -52,36 +51,39 @@ export function Dashboard() {
   return (
     <>
       <div className="pb-24">
-        <section className="mb-6 flex items-center gap-2">
-          <Card className="z-0 basis-1/3 h-[150px]" as={Link} href="/workouts">
-            <CardHeader className="absolute z-10 top-1 text-white">
-              Workouts
-            </CardHeader>
-            <Image
-              alt="Goto workouts"
-              className="z-0 w-full h-full object-cover"
-              src={workoutsSrc}
-            />
-          </Card>
-          <Card
-            className="z-0 basis-2/3 h-[150px]"
-            fullWidth
-            isPressable
-            onPress={handleStartTraining}
+        <section className="flex flex-wrap gap-2 mb-6">
+          <Button
+            variant="light"
+            as={Link}
+            href="/workouts"
+            startContent={<DumbbellIcon size={16} />}
           >
-            <CardHeader className="absolute z-10 top-1 text-white">
-              Start training
-            </CardHeader>
-            <Image
-              alt="Star training"
-              className="z-0 w-full h-full object-cover"
-              src={startTrainingSrc}
-            />
-          </Card>
+            See workouts
+          </Button>
+          <Button
+            variant="light"
+            onPress={handleStartTraining}
+            startContent={<ActivityIcon size={16} />}
+          >
+            Start new workout
+          </Button>
+          <Button
+            variant="light"
+            as={Link}
+            href="/exercises"
+            startContent={<SquareLibraryIcon size={16} />}
+          >
+            See exercises
+          </Button>
         </section>
         <section className="mb-6">
-          <Title className="text-lg">Recent workouts</Title>
+          <div className="px-3">
+            <Title className="text-lg">Recent workouts</Title>
+          </div>
           <div className="space-y-3">
+            {workoutSessionsQuery?.pages.length === 0 && (
+              <EmptySessionsPlaceholder onAddClick={handleStartTraining} />
+            )}
             {workoutSessionsQuery?.pages.map((p) =>
               p.records.map((w) => (
                 <Card
@@ -155,19 +157,21 @@ export function Dashboard() {
                 </Button>
               </div>
             )}
-            <div className="p-2">
-              <Button
-                variant="solid"
-                startContent={<ActivityIcon size={16} />}
-                size="sm"
-                onPress={() => createWorkoutAndSessionAndRedirect()}
-                radius="lg"
-                color="primary"
-                fullWidth
-              >
-                Create &amp; start new workout
-              </Button>
-            </div>
+            {workoutSessionsQuery?.pages.length !== 0 && (
+              <div className="p-2">
+                <Button
+                  variant="solid"
+                  startContent={<ActivityIcon size={16} />}
+                  size="sm"
+                  onPress={() => createWorkoutAndSessionAndRedirect()}
+                  radius="lg"
+                  color="primary"
+                  fullWidth
+                >
+                  Create &amp; start new workout
+                </Button>
+              </div>
+            )}
           </div>
         </section>
       </div>

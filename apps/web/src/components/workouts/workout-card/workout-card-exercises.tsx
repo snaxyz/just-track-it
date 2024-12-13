@@ -8,7 +8,7 @@ interface Props {
 export function WorkoutCardExercises({ exercises }: Props) {
   if (exercises.length === 0) {
     return (
-      <div className="p-2">
+      <div>
         <div className="text-caption-light dark:text-caption text-xs mb-2">
           No exercises
         </div>
@@ -17,7 +17,7 @@ export function WorkoutCardExercises({ exercises }: Props) {
   }
 
   return (
-    <div className="p-2">
+    <div className="mb-2">
       <div className="text-caption-light dark:text-caption text-xs mb-2">
         {exercises.length} Exercise
         {exercises.length > 1 ? "s" : ""}

@@ -1,13 +1,13 @@
-import { WorkoutSessionExerciseSet } from "@local/database";
+import { WorkoutSessionExerciseWithRelations } from "@local/db";
 
 interface Props {
   className?: string;
   exerciseId: string;
   exerciseName: string;
-  sets: WorkoutSessionExerciseSet[];
+  sets: WorkoutSessionExerciseWithRelations["sets"];
 }
 
-export function WorkoutSessionCardExercise({
+export function WorkoutSessionHistoryCardExercise({
   className,
   exerciseId,
   exerciseName,

@@ -289,28 +289,10 @@ export function WorkoutSession() {
 
   const handleComplete = async () => {
     if (!workoutSession || !workoutSession.workoutId) return;
-    const updatedWorkout = await updateWorkoutExercises(
+    await updateWorkoutExercises(
       workoutSession.workoutId,
       workoutExercises.map((e) => e.exerciseId)
     );
-    // const cachedWorkouts = queryClient.getQueryData<
-    //   QueryResponse<WorkoutModel>
-    // >(["workouts"]) ?? {
-    //   records: [],
-    //   cursor: "",
-    // };
-    // const updatedWorkouts: QueryResponse<WorkoutModel> = workoutSession.isNew
-    //   ? {
-    //       ...cachedWorkouts,
-    //       records: [...cachedWorkouts.records, updatedWorkout],
-    //     }
-    //   : {
-    //       ...cachedWorkouts,
-    //       records: cachedWorkouts.records.map((w) =>
-    //         w.id === workoutSession.workoutId ? updatedWorkout : w
-    //       ),
-    //     };
-    // queryClient.setQueryData(["workouts"], updatedWorkouts);
 
     redirect("/");
   };
@@ -319,10 +301,6 @@ export function WorkoutSession() {
     updateWorkoutName,
     500
   );
-  // const debouncedUpdateWorkoutHistoryName = useDebouncedCallback(
-  //   updateWorkoutSessionName,
-  //   500
-  // );
 
   const handleNameChange = async (updatedName: string) => {
     if (!workoutSession?.workoutId) return;
@@ -334,13 +312,9 @@ export function WorkoutSession() {
       },
     });
     if (!updatedName) return; // don't save empty name
-    // const promises = [
-    //   debouncedUpdateWorkoutHistoryName(workoutSession.id, updatedName),
-    // ];
     if (workoutSession.isNew) {
       debouncedUpdateWorkoutName(workoutSession.workoutId, updatedName);
     }
-    // await Promise.all(promises);
   };
 
   const handleStartWorkoutExercise = (
@@ -433,7 +407,7 @@ export function WorkoutSession() {
                 className="mb-2"
                 size="md"
                 radius="lg"
-                color="primary"
+                color="secondary"
                 variant="flat"
                 fullWidth
                 startContent={<PlusIcon size={16} />}
@@ -444,8 +418,8 @@ export function WorkoutSession() {
               <Button
                 size="md"
                 radius="lg"
-                color="secondary"
-                variant="flat"
+                color="primary"
+                variant="solid"
                 fullWidth
                 startContent={<ListCheckIcon size={16} />}
                 onPress={handleComplete}

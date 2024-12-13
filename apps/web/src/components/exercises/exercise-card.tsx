@@ -1,8 +1,15 @@
 import { IconButton } from "@/components/icon-button";
 import { Grow } from "@/components/layout/grow";
-import { Chip, useDisclosure } from "@nextui-org/react";
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Chip,
+  useDisclosure,
+} from "@nextui-org/react";
 import { PencilIcon, TrashIcon } from "lucide-react";
 import { EditExerciseModal } from "./edit-exercise-modal";
+import { cn } from "@/lib/utils";
 
 interface Props {
   className?: string;
@@ -33,9 +40,17 @@ export function ExerciseCard({
 
   return (
     <>
-      <div className={className}>
-        <div className="flex items-center gap-1 mb-2">
-          <span className="capitalize">{name}</span>
+      <Card
+        className={cn("mb-3 bg-zinc-200 dark:bg-zinc-800 z-0", className)}
+        shadow="none"
+      >
+        <CardHeader className="capitalize pb-0">
+          <span
+            className="text-nowrap text-ellipsis overflow-hidden mr-2"
+            title={name}
+          >
+            {name}
+          </span>
           <Grow />
           <IconButton onPress={onOpen}>
             <PencilIcon size={16} />
@@ -44,20 +59,22 @@ export function ExerciseCard({
           {/* <IconButton onPress={() => onDelete(id)}>
             <TrashIcon size={16} />
           </IconButton> */}
-        </div>
-        <div className="text-caption-light dark:text-caption text-xs mb-2">
-          {categories.length === 0 ? "No categories" : "Categories"}
-        </div>
-        {categories.length > 0 && (
-          <div className="flex capitalize gap-2 flex-wrap items-center">
-            {categories.map((c) => (
-              <Chip key={c} size="sm">
-                {c}
-              </Chip>
-            ))}
+        </CardHeader>
+        <CardBody>
+          <div className="text-caption-light dark:text-caption text-xs mb-2">
+            {categories.length === 0 ? "No categories" : "Categories"}
           </div>
-        )}
-      </div>
+          {categories.length > 0 && (
+            <div className="flex capitalize gap-2 flex-wrap items-center">
+              {categories.map((c) => (
+                <Chip key={c} size="sm">
+                  {c}
+                </Chip>
+              ))}
+            </div>
+          )}
+        </CardBody>
+      </Card>
       <EditExerciseModal
         key={id}
         isOpen={isOpen}

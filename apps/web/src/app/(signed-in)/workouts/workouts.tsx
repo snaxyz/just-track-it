@@ -130,7 +130,9 @@ export function Workouts() {
 
   return (
     <>
-      <Title>Workouts</Title>
+      <div className="px-3">
+        <Title>Workouts</Title>
+      </div>
       {noWorkouts && (
         <EmptyWorkoutsPlaceholder
           onAddClick={() => createWorkoutAndSessionAndRedirect()}

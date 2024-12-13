@@ -1,8 +1,8 @@
-import { WorkoutSessionWithRelations } from "@local/db";
+import { QueryResponse, WorkoutSessionWithRelations } from "@local/db";
 
 export async function getWorkoutSessionByWorkout(
   workoutId: string
-): Promise<WorkoutSessionWithRelations> {
+): Promise<QueryResponse<WorkoutSessionWithRelations>> {
   const response = await fetch(`/api/workouts/${workoutId}`);
 
   if (!response.ok) {

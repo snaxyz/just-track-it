@@ -72,7 +72,11 @@ export class WorkoutSessionRepository extends BaseRepository {
       ),
       with: {
         workout: true,
-        exercises: true,
+        exercises: {
+          with: {
+            exercise: true,
+          },
+        },
       },
       orderBy:
         options.order === "asc"
@@ -115,7 +119,11 @@ export class WorkoutSessionRepository extends BaseRepository {
       limit: options.limit + 1,
       with: {
         workout: true,
-        exercises: true,
+        exercises: {
+          with: {
+            exercise: true,
+          },
+        },
       },
     });
 

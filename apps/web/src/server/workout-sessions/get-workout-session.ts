@@ -15,7 +15,7 @@ export async function getWorkoutSessionServer(sessionId: string) {
     }
   );
 
-  const lastSession = records[0];
+  const lastSession = records[1];
   return {
     ...workoutSession,
     isNew: records.length === 1,

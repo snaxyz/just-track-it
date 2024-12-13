@@ -83,13 +83,14 @@ export function Exercises() {
 
   return (
     <>
-      <Title>Exercises</Title>
+      <div className="px-3">
+        <Title>Exercises</Title>
+      </div>
       {noExercises && <EmptyExercisesPlaceholder onAddClick={onOpen} />}
       <div className="pb-24">
         {exercisesQuery?.records.map((e) => (
           <ExerciseCard
             key={e.id}
-            className="p-2 rounded-lg bg-zinc-200 dark:bg-zinc-800 mb-3"
             {...e}
             onUpdate={handleUpdateExercise}
             onDelete={handleDeleteExercise}
