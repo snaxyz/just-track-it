@@ -18,21 +18,6 @@ services:
       timeout: 5s
       retries: 5
 
-  migrate:
-    image: node:20
-    networks:
-      - workout
-    depends_on:
-      postgres:
-        condition: service_healthy
-    working_dir: /app
-    volumes:
-      - ./packages/db:/app
-    environment:
-      DATABASE_URL: postgres://postgres:postgres@postgres:5432/workout
-    command: >
-      bash -c "yarn install && yarn push"
-
   pgadmin:
     image: dpage/pgadmin4
     networks:
