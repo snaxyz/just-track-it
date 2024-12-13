@@ -140,20 +140,36 @@ export function Dashboard() {
               </Card>
             )}
           </div>
-          {hasNextPage && (
-            <div className="mt-6 p-2">
+          <div className="mt-6">
+            {hasNextPage && (
+              <div className="p-2">
+                <Button
+                  size="sm"
+                  radius="lg"
+                  variant="flat"
+                  color="secondary"
+                  fullWidth
+                  isDisabled={isFetchingNextPage}
+                  onPress={() => fetchNextPage()}
+                >
+                  View more
+                </Button>
+              </div>
+            )}
+            <div className="p-2">
               <Button
+                variant="solid"
+                startContent={<ActivityIcon size={16} />}
+                size="sm"
+                onPress={() => createWorkoutAndSessionAndRedirect()}
                 radius="lg"
-                variant="flat"
-                color="secondary"
+                color="primary"
                 fullWidth
-                isDisabled={isFetchingNextPage}
-                onPress={() => fetchNextPage()}
               >
-                View more
+                Start new workout
               </Button>
             </div>
-          )}
+          </div>
         </section>
       </div>
       <FabContainer>

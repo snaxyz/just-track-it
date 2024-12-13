@@ -19,6 +19,7 @@ import {
   WorkoutModel,
   WeightUnit,
   WorkoutSessionWithRelations,
+  WorkoutSessionExerciseWithRelations,
 } from "@local/db";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getWorkoutSession } from "@/app/api/workout-sessions/[id]/get-workout-session";
@@ -179,8 +180,8 @@ export function WorkoutSession() {
     if (!workoutSession || !exercise) return;
     const inputWeight = input.weight ? input.weight : null;
     let updatedWorkoutExercises: Pick<
-      WorkoutSessionExerciseModel,
-      "exerciseId" | "sets"
+      WorkoutSessionExerciseWithRelations,
+      "exerciseId" | "sets" | "exercise"
     >[];
     if (
       input.set === "1" &&
@@ -190,6 +191,7 @@ export function WorkoutSession() {
         ...workoutExercises,
         {
           exerciseId: exercise.id,
+          exercise,
           sets: [
             {
               reps: parseInt(input.reps),

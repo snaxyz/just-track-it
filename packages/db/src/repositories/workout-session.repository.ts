@@ -36,7 +36,11 @@ export class WorkoutSessionRepository extends BaseRepository {
       where: and(eq(workoutSession.id, id), eq(workoutSession.userId, userId)),
       with: {
         workout: true,
-        exercises: true,
+        exercises: {
+          with: {
+            exercise: true,
+          },
+        },
       },
     });
   }

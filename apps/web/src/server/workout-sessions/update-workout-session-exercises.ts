@@ -1,3 +1,5 @@
+"use server";
+
 import { db, WorkoutSessionExerciseModel } from "@local/db";
 import { getUserId } from "../user";
 
