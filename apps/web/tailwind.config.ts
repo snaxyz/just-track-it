@@ -64,6 +64,25 @@ const config: Config = {
     },
   },
   darkMode: "class",
-  plugins: [nextui()],
+  plugins: [
+    nextui({
+      themes: {
+        light: {
+          layout: {
+            fontSize: {
+              small: "16px",
+            },
+          },
+        },
+        dark: {
+          layout: {
+            fontSize: {
+              small: "16px",
+            },
+          },
+        },
+      },
+    }),
+  ],
 };
 export default config;
