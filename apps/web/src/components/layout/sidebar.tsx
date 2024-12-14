@@ -8,6 +8,7 @@ import { ReactNode } from "react";
 import { SidebarCollapseButton } from "./sidebar-collapse-button";
 import { SessionData } from "@auth0/nextjs-auth0/server";
 import { BicepsFlexedIcon, HeartHandshakeIcon } from "lucide-react";
+import { permanentMarker } from "@/app/fonts";
 
 interface Props {
   className?: string;
@@ -29,10 +30,12 @@ export function Sidebar({ className, children, user }: Props) {
         )}
       >
         <div className="flex items-center py-1 px-2">
-          <div className="p-4 capitalize flex mb-2 items-center justify-center w-full">
-            <span className="mr-2">
-              <HeartHandshakeIcon size={22} />
-            </span>
+          <div
+            className={cn(
+              "p-4 capitalize flex mb-2 items-center justify-center w-full",
+              permanentMarker.className
+            )}
+          >
             Just Track It
           </div>
         </div>

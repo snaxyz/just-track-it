@@ -5,6 +5,8 @@ import { HeartHandshakeIcon } from "lucide-react";
 import { SidebarWorkspaceDropdown } from "./sidebar-workspace-dropdown";
 import { Grow } from "./grow";
 import { TopAppbarMenu } from "./top-appbar-menu";
+import Link from "next/link";
+import { permanentMarker } from "@/app/fonts";
 
 interface Props {
   className?: string;
@@ -16,10 +18,9 @@ export function TopAppbar({ user, children, className }: Props) {
   return (
     <>
       <div className="capitalize flex items-center justify-center text-sm">
-        <span className="mr-2">
-          <HeartHandshakeIcon size={16} />
-        </span>
-        {children ?? "Just Track It"}
+        <Link href="/" className={permanentMarker.className}>
+          Just Track It
+        </Link>
       </div>
       <Grow />
       <TopAppbarMenu />
