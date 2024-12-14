@@ -2,13 +2,9 @@
 
 import { Divider } from "@nextui-org/react";
 import { SidebarNavigation } from "./sidebar-navigation";
-import { SidebarWorkspaceDropdown } from "./sidebar-workspace-dropdown";
 import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
-import { SidebarCollapseButton } from "./sidebar-collapse-button";
-import { SessionData } from "@auth0/nextjs-auth0/server";
-import { BicepsFlexedIcon, HeartHandshakeIcon } from "lucide-react";
-import { kalam } from "@/app/fonts";
+import type { SessionData } from "@auth0/nextjs-auth0/types";
 import { Logo } from "../logo";
 import Link from "next/link";
 
