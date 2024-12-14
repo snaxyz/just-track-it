@@ -18,6 +18,8 @@ import {
 } from "@nextui-org/react";
 import { useState } from "react";
 
+export const dynamic = "force-dynamic";
+
 export default function SettingsPage() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
