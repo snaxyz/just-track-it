@@ -1,13 +1,11 @@
 "use client";
 
-import { SessionData } from "@auth0/nextjs-auth0/server";
-import { HeartHandshakeIcon } from "lucide-react";
 import { SidebarWorkspaceDropdown } from "./sidebar-workspace-dropdown";
 import { Grow } from "./grow";
 import { TopAppbarMenu } from "./top-appbar-menu";
 import Link from "next/link";
-import { kalam } from "@/app/fonts";
 import { Logo } from "../logo";
+import type { SessionData } from "@auth0/nextjs-auth0/types";
 
 interface Props {
   className?: string;
