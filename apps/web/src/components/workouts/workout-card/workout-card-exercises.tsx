@@ -17,14 +17,20 @@ export function WorkoutCardExercises({ exercises }: Props) {
   }
 
   return (
-    <div className="mb-2">
-      <div className="text-caption-light dark:text-caption text-xs mb-2">
+    <div className="mb-4">
+      <div className="text-caption-light dark:text-caption text-xs mb-3">
         {exercises.length} Exercise
         {exercises.length > 1 ? "s" : ""}
       </div>
       <div className="flex w-full gap-2 flex-wrap">
         {exercises.map((e) => (
-          <Chip key={e.exerciseId} className="capitalize">
+          <Chip
+            key={e.exerciseId}
+            className="capitalize"
+            variant="flat"
+            color="default"
+            size="sm"
+          >
             {e.exercise.name}
           </Chip>
         ))}

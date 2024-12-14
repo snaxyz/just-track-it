@@ -1,28 +1,28 @@
 import { Button } from "@nextui-org/react";
-import { ActivityIcon } from "lucide-react";
+import { DumbbellIcon, PlusIcon } from "lucide-react";
 
 interface Props {
   onAddClick: () => void;
 }
 
-export function EmptySessionsPlaceholder({ onAddClick }: Props) {
+export function EmptySessionExercisePlaceholder({ onAddClick }: Props) {
   return (
     <div className="bg-zinc-200 dark:bg-zinc-800 rounded-lg p-6 flex flex-col justify-center items-center min-h-[200px]">
       <div className="flex flex-col items-center justify-center gap-4 text-center">
-        <ActivityIcon className="w-12 h-12 text-default-400" />
+        <DumbbellIcon className="w-12 h-12 text-default-400" />
         <div className="space-y-2">
-          <h3 className="text-xl font-medium">No recent workouts</h3>
+          <h3 className="text-xl font-medium">No sets</h3>
           <p className="text-default-500">
-            Start a new workout to track your progress
+            Add your first exercise to get started
           </p>
         </div>
         <Button
           variant="flat"
-          startContent={<ActivityIcon size={16} />}
+          startContent={<PlusIcon size={16} />}
           color="primary"
           onPress={onAddClick}
         >
-          Start New Workout
+          Add set
         </Button>
       </div>
     </div>

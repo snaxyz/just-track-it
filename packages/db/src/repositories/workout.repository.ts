@@ -131,14 +131,7 @@ export class WorkoutRepository extends BaseRepository {
       .where(and(eq(workout.id, id), eq(workout.userId, userId)));
 
     return await this.db.query.workout.findFirst({
-      where: and(eq(workout.id, id), eq(workout.userId, data.userId)),
-      with: {
-        exercises: {
-          with: {
-            exercise: true,
-          },
-        },
-      },
+      where: and(eq(workout.id, id), eq(workout.userId, userId)),
     });
   }
 

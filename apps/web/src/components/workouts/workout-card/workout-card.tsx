@@ -1,20 +1,8 @@
 import { IconButton } from "@/components/icon-button";
 import { Grow } from "@/components/layout/grow";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  useDisclosure,
-} from "@nextui-org/react";
-import {
-  ActivityIcon,
-  EditIcon,
-  HistoryIcon,
-  MoreHorizontalIcon,
-} from "lucide-react";
+import { Button, Card, CardBody, CardHeader } from "@nextui-org/react";
+import { ActivityIcon, EditIcon, HistoryIcon } from "lucide-react";
 import Link from "next/link";
-import { EditWorkoutModal } from "../edit-workout-modal";
 
 interface Props {
   id: string;
@@ -49,7 +37,7 @@ export function WorkoutCard({
         </IconButton> */}
       </CardHeader>
       <CardBody>
-        {description && <div className="mb-2">{description}</div>}
+        {description && <div className="mb-4">{description}</div>}
         {children}
         <div>
           <Button

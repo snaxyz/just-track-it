@@ -98,7 +98,7 @@ export function Workouts() {
               description: input.description,
               exercises: input.selectedExercises.map((e) => ({
                 exerciseId: e.id,
-                exerciseName: e.name,
+                exercise: { name: e.name },
               })),
             }
           : w
@@ -107,9 +107,10 @@ export function Workouts() {
     const workout = await updateWorkout(
       workoutId,
       input.name,
-      input.description,
+      input.description ?? "",
       input.selectedExercises
     );
+    console.log("workout", workout);
     queryClient.setQueryData<QueryResponse<WorkoutWithRelations>>(
       ["workouts"],
       {

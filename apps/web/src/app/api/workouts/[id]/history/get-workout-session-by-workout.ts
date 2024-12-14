@@ -1,9 +1,11 @@
 import { QueryResponse, WorkoutSessionWithRelations } from "@local/db";
 
-export async function getWorkoutSessionByWorkout(
+export async function getWorkoutHistory(
   workoutId: string
-): Promise<QueryResponse<WorkoutSessionWithRelations>> {
-  const response = await fetch(`/api/workouts/${workoutId}`);
+): Promise<
+  QueryResponse<WorkoutSessionWithRelations> & { workoutName: string }
+> {
+  const response = await fetch(`/api/workouts/${workoutId}/history`);
 
   if (!response.ok) {
     throw new Error("Failed to fetch workout history");

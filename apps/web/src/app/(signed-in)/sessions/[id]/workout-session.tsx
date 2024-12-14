@@ -7,7 +7,7 @@ import { redirect, useParams } from "next/navigation";
 import {
   NewSetModal,
   NewSetModalProps,
-  EmptyExercisesPlaceholder,
+  EmptySessionExercisePlaceholder,
   LastWorkoutExerciseSet,
   WorkoutExerciseCard,
 } from "@/components/sessions";
@@ -355,7 +355,7 @@ export function WorkoutSession() {
       />
       <div className="pb-24">
         {workoutExercises.length === 0 && (
-          <EmptyExercisesPlaceholder onAddClick={onOpen} />
+          <EmptySessionExercisePlaceholder onAddClick={onOpen} />
         )}
         {workoutExercises.map((e) => (
           <WorkoutExerciseCard
