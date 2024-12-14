@@ -1,8 +1,14 @@
 import { kalam } from "@/app/fonts";
 import { cn } from "@/lib/utils";
 
-export function Logo() {
+interface Props {
+  className?: string;
+}
+
+export function Logo({ className }: Props) {
   return (
-    <div className={cn(kalam.className, "md:text-2xl")}>Just Track It</div>
+    <div className={cn(kalam.className, "md:text-2xl", className)}>
+      Just Track It
+    </div>
   );
 }

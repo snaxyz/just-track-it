@@ -18,7 +18,7 @@ export function TopAppbar({ user, children, className }: Props) {
     <>
       <div className="p-2">
         <Link href="/">
-          <Logo />
+          <Logo className="px-1" />
         </Link>
       </div>
       <Grow />

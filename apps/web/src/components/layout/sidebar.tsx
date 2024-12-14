@@ -28,18 +28,14 @@ export function Sidebar({ className, children, user }: Props) {
         )}
       >
         <div className="flex items-center py-1 px-2">
-          <div
-            className={cn(
-              "p-4 capitalize flex mb-2 items-center justify-center w-full"
-            )}
-          >
+          <div className={cn("p-4 capitalize flex mb-2 items-center w-full")}>
             <Link href="/">
               <Logo />
             </Link>
           </div>
         </div>
         <div className="py-1">
-          <SidebarNavigation className="py-1 px-2" />
+          <SidebarNavigation className="py-1 px-4" />
         </div>
         {Boolean(children) && <Divider />}
       </div>
