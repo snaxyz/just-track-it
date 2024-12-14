@@ -26,7 +26,6 @@ export function WeightSelect({
       fullWidth
       selectedKey={parseFloat(weight).toFixed(2)} // Normalize weight
       onSelectionChange={(key) => key && onChange(key.toString())}
-      size="sm"
       allowsCustomValue={false}
       isClearable={false}
     >

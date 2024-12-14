@@ -20,13 +20,7 @@ export function SidebarWorkspaceDropdown({ name, picture }: Props) {
   return (
     <Dropdown className="min-w-0 w-fit">
       <DropdownTrigger>
-        <Button
-          variant="light"
-          title={dropdownTitle}
-          radius="lg"
-          isIconOnly
-          size="sm"
-        >
+        <Button variant="light" title={dropdownTitle} radius="lg" isIconOnly>
           <UserAvatar
             className="h-[1.5rem] w-[1.5rem] shrink-0"
             // name={name}

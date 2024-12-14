@@ -133,11 +133,7 @@ export function Workouts() {
       <div className="px-3">
         <Title>Workouts</Title>
       </div>
-      {noWorkouts && (
-        <EmptyWorkoutsPlaceholder
-          onAddClick={() => createWorkoutAndSessionAndRedirect()}
-        />
-      )}
+      {noWorkouts && <EmptyWorkoutsPlaceholder onAddClick={onOpen} />}
       <div className="pb-24">
         {workoutsQuery?.records.map((w) => (
           <WorkoutCard
@@ -152,19 +148,20 @@ export function Workouts() {
           </WorkoutCard>
         ))}
         {isCreating && <WorkoutCardSkeleton />}
-        <div className="p-2">
-          <Button
-            variant="solid"
-            startContent={<PlusIcon size={16} />}
-            size="sm"
-            onPress={onOpen}
-            radius="lg"
-            color="primary"
-            fullWidth
-          >
-            Create new workout
-          </Button>
-        </div>
+        {!noWorkouts && (
+          <div className="p-2">
+            <Button
+              variant="solid"
+              startContent={<PlusIcon size={16} />}
+              onPress={onOpen}
+              radius="lg"
+              color="primary"
+              fullWidth
+            >
+              Create new workout
+            </Button>
+          </div>
+        )}
       </div>
       <FabContainer>
         <IconButton color="primary" variant="solid" onPress={onOpen}>

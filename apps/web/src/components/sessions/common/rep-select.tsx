@@ -15,7 +15,6 @@ export function RepSelect({ reps, onChange, maxReps = 100 }: Props) {
       fullWidth
       selectedKey={reps}
       onSelectionChange={(key) => key && onChange(key.toString())}
-      size="sm"
       allowsCustomValue={false}
       isClearable={false}
     >

@@ -117,7 +117,6 @@ export function CreateWorkoutModal({
             fullWidth
             value={name}
             onValueChange={setName}
-            size="sm"
             radius="lg"
           />
           <Textarea
@@ -126,7 +125,6 @@ export function CreateWorkoutModal({
             fullWidth
             value={description}
             onValueChange={setDescription}
-            size="sm"
             minRows={1}
             radius="lg"
           />
@@ -139,7 +137,6 @@ export function CreateWorkoutModal({
             />
           )}
           <Input
-            size="sm"
             radius="lg"
             label="New exercise"
             placeholder="Add a new exercise"
@@ -154,7 +151,6 @@ export function CreateWorkoutModal({
             disabled={!isValid}
             startContent={<PlusIcon size={16} />}
             radius="lg"
-            size="sm"
             color="primary"
           >
             Create

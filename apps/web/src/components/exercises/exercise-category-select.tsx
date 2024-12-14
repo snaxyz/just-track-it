@@ -42,7 +42,6 @@ export function ExerciseCategorySelect({
 }: Props) {
   return (
     <Select
-      size="sm"
       items={defaultCategories}
       label="Categories"
       variant="flat"
@@ -54,7 +53,7 @@ export function ExerciseCategorySelect({
         return (
           <div className="flex flex-wrap gap-2">
             {items.map((item) => (
-              <Chip key={item.key} size="sm" variant="flat">
+              <Chip key={item.key} variant="flat">
                 {item.data?.name}
               </Chip>
             ))}

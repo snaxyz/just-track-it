@@ -1,5 +1,5 @@
 import { Button } from "@nextui-org/react";
-import { ActivityIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 
 interface Props {
   onAddClick: () => void;
@@ -13,13 +13,13 @@ export function EmptyWorkoutsPlaceholder({ onAddClick }: Props) {
       </div>
       <Button
         variant="solid"
-        startContent={<ActivityIcon size={16} />}
+        startContent={<PlusIcon size={16} />}
         size="md"
         onPress={onAddClick}
         radius="lg"
         color="primary"
       >
-        Start workout
+        Create workout
       </Button>
     </div>
   );

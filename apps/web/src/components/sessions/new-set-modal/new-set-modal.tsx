@@ -97,7 +97,6 @@ export function NewSetModal({
             startContent={<PlusIcon size={16} />}
             radius="lg"
             variant="flat"
-            size="sm"
           >
             Add
           </Button>

@@ -58,7 +58,7 @@ export function SidebarNavigation({ className, itemClasses }: Props) {
         startContent={<SearchIcon size={20} />}
         fullWidth
         radius="sm"
-        size="sm"
+
       >
         Search
       </Button> */}
@@ -75,7 +75,6 @@ export function SidebarNavigation({ className, itemClasses }: Props) {
           startContent={<nav.Icon size={20} />}
           fullWidth
           radius="sm"
-          size="sm"
           as={Link}
           href={nav.href}
         >

@@ -114,7 +114,6 @@ export function Dashboard() {
                       fullWidth
                       variant="flat"
                       startContent={<ActivityIcon size={16} />}
-                      size="sm"
                       radius="lg"
                       color="secondary"
                       onPress={() => handleStartWorkout(w.workoutId!)}
@@ -144,7 +143,6 @@ export function Dashboard() {
             {hasNextPage && (
               <div className="p-2">
                 <Button
-                  size="sm"
                   radius="lg"
                   variant="flat"
                   color="secondary"
@@ -161,7 +159,6 @@ export function Dashboard() {
                 <Button
                   variant="solid"
                   startContent={<ActivityIcon size={16} />}
-                  size="sm"
                   onPress={() => createWorkoutAndSessionAndRedirect()}
                   radius="lg"
                   color="primary"

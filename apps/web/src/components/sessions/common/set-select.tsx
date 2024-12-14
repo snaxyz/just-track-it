@@ -19,7 +19,6 @@ export function SetSelect({ set, onChange, maxSets = 20, disabled }: Props) {
       fullWidth
       selectedKeys={[set]}
       onChange={handleChange}
-      size="sm"
       isDisabled={disabled}
     >
       {Array.from({ length: maxSets }, (_, i) => (

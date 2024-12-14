@@ -387,7 +387,6 @@ export function WorkoutSession() {
                 <Button
                   variant="flat"
                   startContent={<PlusIcon size={16} />}
-                  size="sm"
                   radius="lg"
                   color="secondary"
                   fullWidth

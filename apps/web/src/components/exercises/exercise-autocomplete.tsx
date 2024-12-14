@@ -64,7 +64,6 @@ export function ExerciseAutocomplete({
       allowsCustomValue={!disableCustomValue}
       inputValue={customExercise}
       onValueChange={onCustomExerciseChange}
-      size="sm"
       inputProps={inputProps}
       isClearable={false}
       placeholder={placeholder}

@@ -6,17 +6,22 @@ import { Subtitle } from "@/components/subtitle";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Title } from "@/components/title";
 import { deleteUserData } from "@/server/settings/delete-user-data";
-import { Button, Link } from "@nextui-org/react";
+import {
+  Button,
+  Link,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "@nextui-org/react";
+import { useState } from "react";
 
 export default function SettingsPage() {
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   const handleDeleteData = async () => {
-    if (
-      window.confirm(
-        "Are you sure you want to delete all your data? This action cannot be undone."
-      )
-    ) {
-      await deleteUserData();
-    }
+    await deleteUserData();
   };
 
   return (
@@ -32,11 +37,46 @@ export default function SettingsPage() {
             <Button variant="light" as={Link} href="/auth/logout">
               Logout
             </Button>
-            <Button color="danger" variant="flat" onPress={handleDeleteData}>
+            <Button
+              color="danger"
+              variant="flat"
+              onPress={() => setIsDeleteModalOpen(true)}
+            >
               Delete All Data
             </Button>
           </div>
         </section>
+
+        <Modal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          isDismissable={false}
+        >
+          <ModalContent>
+            <ModalHeader className="pt-3 px-2">Delete All Data</ModalHeader>
+            <ModalBody className="p-2">
+              Are you sure you want to delete all your data? This action cannot
+              be undone.
+            </ModalBody>
+            <ModalFooter className="p-2">
+              <Button
+                variant="light"
+                onPress={() => setIsDeleteModalOpen(false)}
+                radius="lg"
+              >
+                Cancel
+              </Button>
+              <Button
+                color="danger"
+                variant="flat"
+                onPress={handleDeleteData}
+                radius="lg"
+              >
+                Delete
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </MainContainer>
     </PageContainer>
   );

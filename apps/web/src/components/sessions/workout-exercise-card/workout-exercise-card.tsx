@@ -88,20 +88,14 @@ export function WorkoutExerciseCard({
           {/* <Button
           className="mr-2"
           isIconOnly
-          size="sm"
+
           radius="lg"
           variant="bordered"
         >
           <ChartLineIcon size={16} />
         </Button> */}
           {sets.length > 0 && (
-            <Button
-              isIconOnly
-              size="sm"
-              radius="lg"
-              variant="bordered"
-              onPress={onOpen}
-            >
+            <Button isIconOnly radius="lg" variant="bordered" onPress={onOpen}>
               <EditIcon size={16} />
             </Button>
           )}

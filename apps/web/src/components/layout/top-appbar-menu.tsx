@@ -23,7 +23,7 @@ export function TopAppbarMenu() {
 
   return (
     <>
-      <Button isIconOnly radius="lg" size="sm" variant="light" onPress={onOpen}>
+      <Button isIconOnly radius="lg" variant="light" onPress={onOpen}>
         <MenuIcon size={16} />
       </Button>
       <Drawer isOpen={isOpen} onOpenChange={onOpenChange} size="xs">

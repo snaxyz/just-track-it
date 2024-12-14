@@ -67,9 +67,7 @@ export function ExerciseCard({
           {categories.length > 0 && (
             <div className="flex capitalize gap-2 flex-wrap items-center">
               {categories.map((c) => (
-                <Chip key={c} size="sm">
-                  {c}
-                </Chip>
+                <Chip key={c}>{c}</Chip>
               ))}
             </div>
           )}

@@ -56,7 +56,6 @@ export function WorkoutCard({
             fullWidth
             variant="flat"
             startContent={<ActivityIcon size={16} />}
-            size="sm"
             radius="lg"
             color="secondary"
             onPress={() => onStartWorkout(id)}

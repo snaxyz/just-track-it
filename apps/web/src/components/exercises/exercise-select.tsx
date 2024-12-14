@@ -24,7 +24,6 @@ export function ExerciseSelect({
   return (
     <Select
       fullWidth={fullWidth}
-      size="sm"
       items={exercises}
       label="Exercises"
       isMultiline={true}
@@ -35,9 +34,7 @@ export function ExerciseSelect({
         return (
           <div className="flex flex-wrap gap-2">
             {items.map((item) => (
-              <Chip key={item.key} size="sm">
-                {item.data?.name}
-              </Chip>
+              <Chip key={item.key}>{item.data?.name}</Chip>
             ))}
           </div>
         );

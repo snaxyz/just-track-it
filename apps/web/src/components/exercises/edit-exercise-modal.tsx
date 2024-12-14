@@ -44,7 +44,6 @@ export function EditExerciseModal({
         <ModalHeader className="pt-3 px-2">Edit Exercise</ModalHeader>
         <ModalBody className="p-2">
           <Input
-            size="sm"
             fullWidth
             variant="flat"
             label="Exercise"
@@ -63,7 +62,6 @@ export function EditExerciseModal({
           </IconButton>
           <Grow />
           <Button
-            size="sm"
             variant="flat"
             radius="lg"
             color="primary"
