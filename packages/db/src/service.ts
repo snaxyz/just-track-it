@@ -8,6 +8,8 @@ import {
   WorkoutSessionRepository,
 } from "./repositories";
 import { createSampleWorkouts } from "./sample-data/create-sample-workouts";
+import { and, eq } from "drizzle-orm";
+import { exercise, workout, workoutSession, setting } from "./schema";
 
 export class DatabaseService {
   exercise: ExerciseRepository;
@@ -30,5 +32,23 @@ export class DatabaseService {
 
   async insertSampleWorkouts(userId: string) {
     await createSampleWorkouts(this, userId);
+  }
+
+  async deleteUserData(userId: string) {
+    // Delete in order to respect foreign key constraints
+    // workout_session_exercise and workout_exercise will be deleted automatically due to CASCADE
+    await drizzleClient.transaction(async (tx) => {
+      // Delete all workout sessions
+      await tx.delete(workoutSession).where(eq(workoutSession.userId, userId));
+
+      // Delete all workouts
+      await tx.delete(workout).where(eq(workout.userId, userId));
+
+      // Delete all exercises
+      await tx.delete(exercise).where(eq(exercise.userId, userId));
+
+      // Delete settings
+      await tx.delete(setting).where(eq(setting.userId, userId));
+    });
   }
 }

@@ -19,7 +19,7 @@ export function TopAppbar({ user, children, className }: Props) {
         <span className="mr-2">
           <HeartHandshakeIcon size={16} />
         </span>
-        {children ?? "Tracker"}
+        {children ?? "Just Track It"}
       </div>
       <Grow />
       <TopAppbarMenu />

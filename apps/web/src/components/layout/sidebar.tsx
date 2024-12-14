@@ -33,7 +33,7 @@ export function Sidebar({ className, children, user }: Props) {
             <span className="mr-2">
               <HeartHandshakeIcon size={22} />
             </span>
-            Tracker
+            Just Track It
           </div>
         </div>
         <div className="py-1">
