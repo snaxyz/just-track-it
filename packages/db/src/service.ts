@@ -8,10 +8,12 @@ import {
   WorkoutSessionRepository,
 } from "./repositories";
 import { createSampleWorkouts } from "./sample-data/create-sample-workouts";
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { exercise, workout, workoutSession, setting } from "./schema";
 
 export class DatabaseService {
+  drizzleClient = drizzleClient;
+
   exercise: ExerciseRepository;
   setting: SettingRepository;
   workout: WorkoutRepository;

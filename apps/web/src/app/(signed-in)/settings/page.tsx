@@ -6,6 +6,7 @@ import { Subtitle } from "@/components/subtitle";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Title } from "@/components/title";
 import { deleteUserData } from "@/server/settings/delete-user-data";
+import { initSampleData } from "@/server/settings/init-sample-data";
 import {
   Button,
   Link,
@@ -19,23 +20,44 @@ import { useState } from "react";
 
 export default function SettingsPage() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
 
   const handleDeleteData = async () => {
     await deleteUserData();
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleResetSampleData = async () => {
+    try {
+      setIsResetting(true);
+      await initSampleData();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsResetting(false);
+    }
   };
 
   return (
     <PageContainer>
-      <MainContainer className="px-2 md:px-3 md:py-4">
+      <MainContainer className="px-4 md:px-3 md:py-4">
         <Title>Settings</Title>
+
         <section className="flex flex-col gap-2 mb-6">
+          <Subtitle>Appearance</Subtitle>
           <ThemeToggle expanded />
         </section>
-        <section className="flex flex-col gap-2">
-          <Subtitle>Account</Subtitle>
+
+        <section className="flex flex-col gap-2 mb-6">
+          <Subtitle>Data Management</Subtitle>
           <div className="flex flex-col gap-2">
-            <Button variant="light" as={Link} href="/auth/logout">
-              Logout
+            <Button
+              color="warning"
+              variant="flat"
+              onPress={handleResetSampleData}
+              isLoading={isResetting}
+            >
+              Reset Sample Data
             </Button>
             <Button
               color="danger"
@@ -43,6 +65,19 @@ export default function SettingsPage() {
               onPress={() => setIsDeleteModalOpen(true)}
             >
               Delete All Data
+            </Button>
+          </div>
+        </section>
+
+        <section className="flex flex-col gap-2">
+          <Subtitle>Account</Subtitle>
+          <div className="flex flex-col gap-2">
+            <Button
+              variant="bordered"
+              as="a"
+              href="/auth/logout?returnTo=/login"
+            >
+              Logout
             </Button>
           </div>
         </section>

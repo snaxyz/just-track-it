@@ -47,34 +47,42 @@ export function Dashboard() {
     createWorkoutAndSessionAndRedirect();
   };
 
+  const noWorkoutSessions =
+    workoutSessionsQuery?.pages[0]?.records.length === 0;
+
   return (
     <>
       <div className="pb-24">
-        <section className="flex flex-wrap gap-2 mb-6">
-          <Button
-            variant="light"
-            as={Link}
-            href="/workouts"
-            startContent={<DumbbellIcon size={16} />}
-          >
-            See workouts
-          </Button>
-          <Button
-            variant="light"
-            onPress={handleStartTraining}
-            startContent={<ActivityIcon size={16} />}
-          >
-            Start new workout
-          </Button>
-          <Button
-            variant="light"
-            as={Link}
-            href="/exercises"
-            startContent={<SquareLibraryIcon size={16} />}
-          >
-            See exercises
-          </Button>
-        </section>
+        {noWorkoutSessions && (
+          <section className="flex flex-col gap-2 mb-6">
+            <Button
+              variant="bordered"
+              as={Link}
+              href="/workouts"
+              startContent={<DumbbellIcon size={16} />}
+              fullWidth
+            >
+              See workouts
+            </Button>
+            <Button
+              variant="bordered"
+              as={Link}
+              href="/exercises"
+              startContent={<SquareLibraryIcon size={16} />}
+              fullWidth
+            >
+              See exercises
+            </Button>
+            <Button
+              variant="bordered"
+              onPress={handleStartTraining}
+              startContent={<ActivityIcon size={16} />}
+              fullWidth
+            >
+              Start new workout
+            </Button>
+          </section>
+        )}
         <section className="mb-6">
           <div className="px-3">
             <Title className="text-lg">Recent workouts</Title>

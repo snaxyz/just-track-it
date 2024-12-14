@@ -27,6 +27,12 @@ export class ExerciseRepository extends BaseRepository {
     });
   }
 
+  async getByName(userId: string, name: string) {
+    return await this.db.query.exercise.findFirst({
+      where: and(eq(exercise.name, name), eq(exercise.userId, userId)),
+    });
+  }
+
   async query(
     userId: string,
     options: QueryOptions = { limit: 20, order: "asc" }

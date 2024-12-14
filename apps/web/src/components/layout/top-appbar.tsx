@@ -6,7 +6,8 @@ import { SidebarWorkspaceDropdown } from "./sidebar-workspace-dropdown";
 import { Grow } from "./grow";
 import { TopAppbarMenu } from "./top-appbar-menu";
 import Link from "next/link";
-import { permanentMarker } from "@/app/fonts";
+import { kalam } from "@/app/fonts";
+import { Logo } from "../logo";
 
 interface Props {
   className?: string;
@@ -17,9 +18,9 @@ interface Props {
 export function TopAppbar({ user, children, className }: Props) {
   return (
     <>
-      <div className="capitalize flex items-center justify-center text-sm">
-        <Link href="/" className={permanentMarker.className}>
-          Just Track It
+      <div className="p-2">
+        <Link href="/">
+          <Logo />
         </Link>
       </div>
       <Grow />
