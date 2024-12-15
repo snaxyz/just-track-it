@@ -1,0 +1,1 @@
+ALTER TABLE "exercise" DROP CONSTRAINT "exercise_slug_unique";

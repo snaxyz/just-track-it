@@ -24,7 +24,6 @@ export async function createSampleWorkouts(
   db: any,
   userId: string
 ): Promise<void> {
-  console.log("createSampleWorkouts", userId);
   // First, create all exercises for this user
   const exerciseMap = new Map<string, { id: string }>();
 

@@ -14,7 +14,7 @@ export const exercise = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     userId: text("user_id").notNull(),
     name: text("name").notNull(),
-    slug: text("slug").notNull().unique(),
+    slug: text("slug").notNull(),
     description: text("description"),
     keywords: text("keywords").array().$type<string[]>().notNull().default([]),
     categories: text("categories")
