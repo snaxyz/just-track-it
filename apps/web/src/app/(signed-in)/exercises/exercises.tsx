@@ -17,6 +17,7 @@ import { deleteExercise } from "@/server/exercises/delete-exercise";
 import { updateExercise } from "@/server/exercises/update-exercise";
 import { useState } from "react";
 import { Title } from "@/components/title";
+import { ExercisesLoading } from "./exercises-loading";
 
 export function Exercises() {
   const queryClient = useQueryClient();
@@ -77,7 +78,7 @@ export function Exercises() {
     await deleteExercise(exerciseId);
   };
 
-  if (isLoading) return <div>...loading...</div>;
+  if (isLoading) return <ExercisesLoading />;
 
   const noExercises = !exercisesQuery || exercisesQuery.records.length === 0;
 

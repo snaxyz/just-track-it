@@ -32,6 +32,7 @@ import { createExercise } from "@/server/exercises/create-exercise";
 import { DateTime } from "@/components/date-time";
 import { EnhancedWorkoutSession } from "@/server/types";
 import { updateWorkoutSessionExercises } from "@/server/workout-sessions/update-workout-session-exercises";
+import { WorkoutSessionLoading } from "./workout-session-loading";
 
 interface SetStats {
   reps: number;
@@ -337,7 +338,7 @@ export function WorkoutSession() {
   };
 
   // TODO: add SSR, prefetch queries, and better loading states
-  if (isLoading) return <div>loading...</div>;
+  if (isLoading) return <WorkoutSessionLoading />;
 
   return (
     <>

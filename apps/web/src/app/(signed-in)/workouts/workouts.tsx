@@ -33,6 +33,7 @@ import {
   EditWorkoutModalProps,
 } from "@/components/workouts/edit-workout-modal";
 import { updateWorkout } from "@/server/workouts";
+import { WorkoutsLoading } from "./workouts-loading";
 
 export function Workouts() {
   const queryClient = useQueryClient();
@@ -125,7 +126,7 @@ export function Workouts() {
     closeEditWorkoutModal();
   };
 
-  if (isLoading) return <div>...loading...</div>;
+  if (isLoading) return <WorkoutsLoading />;
 
   const noWorkouts = !workoutsQuery || workoutsQuery.records.length === 0;
 
