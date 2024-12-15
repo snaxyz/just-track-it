@@ -13,6 +13,7 @@ import { Button, Card } from "@nextui-org/react";
 import { DumbbellIcon } from "lucide-react";
 import Link from "next/link";
 import { startWorkoutSessionAndRedirect } from "@/server/workout-sessions/start-workout";
+import { WorkoutHistoryLoading } from "./workout-history-loading";
 
 export function WorkoutHistory() {
   const { id } = useParams<{ id: string }>();
@@ -27,7 +28,7 @@ export function WorkoutHistory() {
     startWorkoutSessionAndRedirect(id);
   };
 
-  if (isHistoryLoading) return <div>...loading...</div>;
+  if (isHistoryLoading) return <WorkoutHistoryLoading />;
 
   const hasHistory =
     historyQuery?.records.length && historyQuery.records.length > 0;
