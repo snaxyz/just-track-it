@@ -6,12 +6,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { IconButton } from "@/components/icon-button";
 import { MessageSquarePlusIcon, PlusIcon } from "lucide-react";
 import { FabContainer } from "@/components/layout/fab-container";
-import {
-  NewExerciseModal,
-  ExerciseCard,
-  EmptyExercisesPlaceholder,
-} from "@/components/exercises";
-import { Button, useDisclosure } from "@nextui-org/react";
+import { NewExerciseModal, ExerciseCard, EmptyExercisesPlaceholder } from "@/components/exercises";
+import { Button } from "@mui/material";
 import { createExercise } from "@/server/exercises/create-exercise";
 import { deleteExercise } from "@/server/exercises/delete-exercise";
 import { updateExercise } from "@/server/exercises/update-exercise";
@@ -21,14 +17,15 @@ import { ExercisesLoading } from "./exercises-loading";
 
 export function Exercises() {
   const queryClient = useQueryClient();
-  const { data: exercisesQuery, isLoading } = useQuery<
-    QueryResponse<ExerciseModel>
-  >({
+  const { data: exercisesQuery, isLoading } = useQuery<QueryResponse<ExerciseModel>>({
     queryKey: ["exercises"],
     queryFn: () => getExercises(),
   });
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isOpen, setIsOpen] = useState(false);
+  const onOpen = () => setIsOpen(true);
+  const onClose = () => setIsOpen(false);
+
   const [addError, setAddError] = useState("");
   const handleAddExercise = async (name: string, categories: string[]) => {
     try {
@@ -40,11 +37,7 @@ export function Exercises() {
       setAddError("");
       onClose();
     } catch (e) {
-      if (
-        (e as Error).message.includes(
-          "duplicate key value violates unique constraint"
-        )
-      ) {
+      if ((e as Error).message.includes("duplicate key value violates unique constraint")) {
         setAddError(`"${name}" already exists.`);
       } else {
         setAddError((e as Error).message);
@@ -52,11 +45,7 @@ export function Exercises() {
     }
   };
 
-  const handleUpdateExercise = async (
-    exerciseId: string,
-    name: string,
-    categories: string[]
-  ) => {
+  const handleUpdateExercise = async (exerciseId: string, name: string, categories: string[]) => {
     queryClient.setQueryData<QueryResponse<ExerciseModel>>(["exercises"], {
       ...(exercisesQuery ?? { cursor: "" }),
       records: (exercisesQuery?.records ?? []).map((e) =>
@@ -66,7 +55,7 @@ export function Exercises() {
               name,
               categories,
             }
-          : e
+          : e,
       ),
     });
     await updateExercise(exerciseId, name, categories);
@@ -75,9 +64,7 @@ export function Exercises() {
   const handleDeleteExercise = async (exerciseId: string) => {
     queryClient.setQueryData<QueryResponse<ExerciseModel>>(["exercises"], {
       ...(exercisesQuery ?? { cursor: "" }),
-      records: (exercisesQuery?.records ?? []).filter(
-        (e) => e.id !== exerciseId
-      ),
+      records: (exercisesQuery?.records ?? []).filter((e) => e.id !== exerciseId),
     });
     await deleteExercise(exerciseId);
   };
@@ -93,47 +80,25 @@ export function Exercises() {
       <div className="px-1">
         <Title>Exercises</Title>
       </div>
-      {noExercises && (
-        <EmptyExercisesPlaceholder
-          onAddClick={onOpen}
-          onAskAIClick={handleAskAI}
-        />
-      )}
+      {noExercises && <EmptyExercisesPlaceholder onAddClick={onOpen} onAskAIClick={handleAskAI} />}
       <div className="pb-24">
         {exercisesQuery?.records.map((e) => (
-          <ExerciseCard
-            key={e.id}
-            {...e}
-            onUpdate={handleUpdateExercise}
-            onDelete={handleDeleteExercise}
-          />
+          <ExerciseCard key={e.id} {...e} onUpdate={handleUpdateExercise} onDelete={handleDeleteExercise} />
         ))}
         {!noExercises && (
           <div className="p-2">
-            <Button
-              variant="solid"
-              startContent={<PlusIcon size={16} />}
-              onPress={onOpen}
-              radius="lg"
-              color="primary"
-              fullWidth
-            >
+            <Button variant="contained" startIcon={<PlusIcon size={16} />} onClick={onOpen} color="primary" fullWidth>
               Create new exercise
             </Button>
           </div>
         )}
       </div>
       <FabContainer>
-        <IconButton color="primary" variant="solid" onPress={onOpen}>
+        <IconButton color="primary" onClick={onOpen}>
           <MessageSquarePlusIcon size={16} />
         </IconButton>
       </FabContainer>
-      <NewExerciseModal
-        isOpen={isOpen}
-        onClose={onClose}
-        onAdd={handleAddExercise}
-        error={addError}
-      />
+      <NewExerciseModal isOpen={isOpen} onClose={onClose} onAdd={handleAddExercise} error={addError} />
     </>
   );
 }

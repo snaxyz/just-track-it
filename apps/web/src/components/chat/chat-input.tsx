@@ -1,22 +1,16 @@
-import { Button, Textarea, TextAreaProps } from "@nextui-org/react";
+import { IconButton, TextField } from "@mui/material";
 import { SendIcon } from "lucide-react";
 import { KeyboardEventHandler } from "react";
 
-interface Props
-  extends Omit<
-    TextAreaProps,
-    "endContent" | "classNames" | "autoFocus" | "onSubmit"
-  > {
+interface Props {
   onSubmit: (value: string) => void;
+  onValueChange: (value: string) => void;
+  value: string;
+  disabled?: boolean;
+  placeholder?: string;
 }
 
-export function ChatInput({
-  onSubmit,
-  onValueChange,
-  value,
-  disabled,
-  placeholder,
-}: Props) {
+export function ChatInput({ onSubmit, onValueChange, value, disabled, placeholder }: Props) {
   const handleSubmit = () => {
     if (!disabled && value && value.trim()) {
       onSubmit(value);
@@ -29,31 +23,26 @@ export function ChatInput({
       return handleSubmit();
     }
   };
+
   return (
-    <Textarea
-      classNames={{
-        input: "self-center",
-      }}
+    <TextField
       autoFocus
+      multiline
       minRows={1}
+      maxRows={4}
       placeholder={placeholder}
-      variant="bordered"
+      variant="outlined"
       fullWidth
-      endContent={
-        <Button
-          className="p-0 self-end"
-          isIconOnly
-          variant="light"
-          size="sm"
-          radius="full"
-          onPress={handleSubmit}
-        >
-          <SendIcon size={18} />
-        </Button>
-      }
       value={value}
-      onValueChange={onValueChange}
+      onChange={(e) => onValueChange(e.target.value)}
       onKeyDown={handleKeyDown}
+      InputProps={{
+        endAdornment: (
+          <IconButton size="small" onClick={handleSubmit} sx={{ alignSelf: "flex-end" }}>
+            <SendIcon size={18} />
+          </IconButton>
+        ),
+      }}
     />
   );
 }

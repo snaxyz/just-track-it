@@ -1,12 +1,5 @@
 import { ExerciseModel } from "@local/db";
-import {
-  Autocomplete,
-  AutocompleteItem,
-  AutocompleteProps,
-  InputProps,
-  PopoverProps,
-} from "@nextui-org/react";
-import { useMemo } from "react";
+import { Autocomplete, TextField } from "@mui/material";
 
 interface Props {
   label?: string;
@@ -16,15 +9,8 @@ interface Props {
   onSelectedExerciseChange: (exerciseId: string) => void;
   onCustomExerciseChange: (exercise: string) => void;
   disableCustomValue?: boolean;
-  inputProps?: Partial<InputProps>;
   placeholder?: string;
 }
-
-const autocompleteInputProps = {
-  classNames: {
-    input: "capitalize",
-  },
-};
 
 export function ExerciseAutocomplete({
   label,
@@ -34,49 +20,35 @@ export function ExerciseAutocomplete({
   onSelectedExerciseChange,
   onCustomExerciseChange,
   disableCustomValue,
-  inputProps: customInputProps,
   placeholder,
 }: Props) {
-  const handleSelectionChange = (key: React.Key | null) => {
-    if (key) {
-      onSelectedExerciseChange(key.toString());
-      onCustomExerciseChange(
-        exercises.find((e) => e.id === key.toString())!.name
-      );
+  const handleChange = (_: any, newValue: ExerciseModel | string | null) => {
+    if (typeof newValue === "string") {
+      onCustomExerciseChange(newValue);
+      onSelectedExerciseChange("");
+    } else if (newValue) {
+      onSelectedExerciseChange(newValue.id);
+      onCustomExerciseChange(newValue.name);
     }
   };
 
-  const inputProps = useMemo(
-    () => ({
-      ...autocompleteInputProps,
-      ...(customInputProps ?? {}),
-    }),
-    [customInputProps]
-  );
-
   return (
     <Autocomplete
-      label={label ?? "Exercise"}
-      fullWidth
-      defaultItems={exercises}
-      selectedKey={selectedExercise ?? ""}
-      onSelectionChange={handleSelectionChange}
-      allowsCustomValue={!disableCustomValue}
-      inputValue={customExercise}
-      onValueChange={onCustomExerciseChange}
-      inputProps={inputProps}
-      isClearable={false}
-      placeholder={placeholder}
-    >
-      {exercises.map((exercise) => (
-        <AutocompleteItem
-          key={exercise.id}
-          value={exercise.id}
-          className="capitalize"
-        >
-          {exercise.name}
-        </AutocompleteItem>
-      ))}
-    </Autocomplete>
+      freeSolo={!disableCustomValue}
+      options={exercises}
+      getOptionLabel={(option) => {
+        if (typeof option === "string") {
+          return option;
+        }
+        return option.name;
+      }}
+      value={exercises.find((e) => e.id === selectedExercise) || customExercise || null}
+      onChange={handleChange}
+      inputValue={customExercise || ""}
+      onInputChange={(_, value) => onCustomExerciseChange(value)}
+      renderInput={(params) => (
+        <TextField {...params} label={label ?? "Exercise"} placeholder={placeholder} className="capitalize" />
+      )}
+    />
   );
 }

@@ -1,13 +1,8 @@
 "use client";
 
-import {
-  Button,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-} from "@nextui-org/react";
+import { Box, IconButton, Menu, MenuItem } from "@mui/material";
 import { UserAvatar } from "../user-avatar";
+import { useState } from "react";
 
 interface Props {
   name: string;
@@ -15,38 +10,32 @@ interface Props {
 }
 
 export function SidebarWorkspaceDropdown({ name, picture }: Props) {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const dropdownTitle = `${name}'s space`;
 
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
-    <Dropdown className="min-w-0 w-fit">
-      <DropdownTrigger>
-        <Button variant="light" title={dropdownTitle} radius="lg" isIconOnly>
-          <UserAvatar
-            className="h-[1.5rem] w-[1.5rem] shrink-0"
-            // name={name}
-            picture={picture ?? ""}
-          />
-          {/* <span className="overflow-hidden text-ellipsis whitespace-nowrap max-w-[8rem]">
-            {dropdownTitle}
-          </span> */}
-          {/* <Grow />
-          <ChevronDown /> */}
-        </Button>
-      </DropdownTrigger>
-      <DropdownMenu className="bg-zinc-100 dark:bg-stone-900 rounded-lg">
-        {/* <DropdownSection showDivider>
-          <DropdownItem key="create-new-account">
-            Create new account
-          </DropdownItem>
-        </DropdownSection> */}
-        <DropdownItem
-          key="logout"
-          as="a"
-          href="/auth/logout?returnTo=https://justtrackitapp.com/login"
-        >
+    <Box>
+      <IconButton onClick={handleClick} title={dropdownTitle}>
+        <UserAvatar className="h-[1.5rem] w-[1.5rem] shrink-0" picture={picture ?? ""} />
+      </IconButton>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        className="bg-zinc-100 dark:bg-stone-900 rounded-lg"
+      >
+        <MenuItem component="a" href="/auth/logout?returnTo=https://justtrackitapp.com/login" onClick={handleClose}>
           Logout
-        </DropdownItem>
-      </DropdownMenu>
-    </Dropdown>
+        </MenuItem>
+      </Menu>
+    </Box>
   );
 }

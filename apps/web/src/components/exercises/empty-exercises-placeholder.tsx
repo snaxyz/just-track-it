@@ -1,9 +1,5 @@
-import { Button } from "@nextui-org/react";
-import {
-  LibrarySquareIcon,
-  MessageSquarePlusIcon,
-  PlusIcon,
-} from "lucide-react";
+import { Button } from "@mui/material";
+import { LibrarySquareIcon, MessageSquarePlusIcon, PlusIcon } from "lucide-react";
 import { EmptyPlaceholderCard } from "../cards";
 
 interface Props {
@@ -18,20 +14,10 @@ export function EmptyExercisesPlaceholder({ onAddClick, onAskAIClick }: Props) {
       title="No exercises"
       message="Create your first exercise to get started"
     >
-      <Button
-        variant="solid"
-        startContent={<PlusIcon size={16} />}
-        color="primary"
-        onPress={onAddClick}
-      >
+      <Button variant="contained" startIcon={<PlusIcon size={16} />} color="primary" onClick={onAddClick}>
         Create exercise
       </Button>
-      <Button
-        variant="bordered"
-        startContent={<MessageSquarePlusIcon size={16} />}
-        color="primary"
-        onPress={onAskAIClick}
-      >
+      <Button variant="outlined" startIcon={<MessageSquarePlusIcon size={16} />} color="primary" onClick={onAskAIClick}>
         Ask AI for exercise
       </Button>
     </EmptyPlaceholderCard>

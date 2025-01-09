@@ -1,4 +1,4 @@
-import { Button } from "@nextui-org/react";
+import { Button } from "@mui/material";
 import { ActivityIcon } from "lucide-react";
 
 interface Props {
@@ -14,15 +14,13 @@ export function EmptyWorkoutHistoryPlaceholder({ onStartWorkoutClick }: Props) {
         </div>
         <div className="space-y-2 mb-2">
           <h3 className="text-xl font-medium">No workout history</h3>
-          <p className="text-default-500">
-            You haven't completed any sessions for this workout.
-          </p>
+          <p className="text-default-500">You haven't completed any sessions for this workout.</p>
         </div>
         <Button
-          variant="solid"
-          startContent={<ActivityIcon size={16} />}
+          variant="contained"
+          startIcon={<ActivityIcon size={16} />}
           color="primary"
-          onPress={onStartWorkoutClick}
+          onClick={onStartWorkoutClick}
         >
           Start workout
         </Button>

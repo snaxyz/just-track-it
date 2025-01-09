@@ -1,18 +1,9 @@
-import { Grow } from "@/components/layout/grow";
+import { Box, Button, Card, CardContent, Divider } from "@mui/material";
 import { cn } from "@/lib/utils";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Divider,
-  useDisclosure,
-} from "@nextui-org/react";
 import { EditIcon } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { EditWorkoutSessionExerciseModal } from "./edit-workout-session-exercise-modal";
 import { WorkoutSessionExerciseModel, WorkoutSet } from "@local/db";
-import { GradientCard } from "@/components/cards";
 
 interface Props {
   className?: string;
@@ -23,11 +14,7 @@ interface Props {
   onAnimationComplete: () => void;
   sets: WorkoutSessionExerciseModel["sets"];
   onDelete: (exerciseId: string) => void;
-  onUpdateSet: (
-    exerciseId: string,
-    set: number,
-    updates: Partial<WorkoutSet>
-  ) => void;
+  onUpdateSet: (exerciseId: string, set: number, updates: Partial<WorkoutSet>) => void;
   onDeleteSet: (exerciseId: string, set: number) => void;
 }
 
@@ -43,73 +30,54 @@ export function WorkoutSessionExerciseCard({
   onUpdateSet,
   onDeleteSet,
 }: Props) {
+  const [isOpen, setIsOpen] = useState(false);
+
   useEffect(() => {
     let timeout: NodeJS.Timeout;
     if (showUpdateAnimation) {
       timeout = setTimeout(onAnimationComplete, 2000);
     }
+    return () => timeout && clearTimeout(timeout);
+  }, [showUpdateAnimation, onAnimationComplete]);
 
-    return () => {
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-    };
-  }, [showUpdateAnimation]);
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const handleDeleteExercise = () => {
     onDelete(exerciseId);
-    onClose();
+    setIsOpen(false);
   };
+
   const handleUpdateSet = (set: number, updates: Partial<WorkoutSet>) => {
     onUpdateSet(exerciseId, set, updates);
   };
+
   const handleDeleteSet = (set: number) => {
     onDeleteSet(exerciseId, set);
     if (sets.length === 1) {
-      onClose();
+      setIsOpen(false);
     }
   };
 
   return (
     <>
-      <GradientCard
-        className={cn(
-          showUpdateAnimation && "animate-gradient-outline",
-          className
-        )}
-        fullWidth
-        shadow="none"
-      >
-        <CardHeader className="capitalize">
-          <span
-            className="text-nowrap text-ellipsis overflow-hidden mr-2"
-            title={exerciseName}
-          >
-            {exerciseName}
-          </span>
-          <Grow />
-          {/* <Button
-          className="mr-2"
-          isIconOnly
-
-          radius="lg"
-          variant="bordered"
-        >
-          <ChartLineIcon size={16} />
-        </Button> */}
-          {sets.length > 0 && (
-            <Button isIconOnly radius="lg" variant="bordered" onPress={onOpen}>
-              <EditIcon size={16} />
-            </Button>
-          )}
-        </CardHeader>
-        {sets.length > 0 && <Divider />}
-        <CardBody className="p-0">{children}</CardBody>
-      </GradientCard>
+      <Card className={cn(showUpdateAnimation && "animate-gradient-outline", className)} elevation={0}>
+        <CardContent>
+          <Box className="flex items-center">
+            <Box className="text-nowrap text-ellipsis overflow-hidden mr-2 capitalize" title={exerciseName}>
+              {exerciseName}
+            </Box>
+            <Box sx={{ flexGrow: 1 }} />
+            {sets.length > 0 && (
+              <Button variant="outlined" onClick={() => setIsOpen(true)} sx={{ minWidth: 0, p: 1 }}>
+                <EditIcon size={16} />
+              </Button>
+            )}
+          </Box>
+          {sets.length > 0 && <Divider sx={{ my: 1 }} />}
+          {children}
+        </CardContent>
+      </Card>
       <EditWorkoutSessionExerciseModal
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={() => setIsOpen(false)}
         id={exerciseId}
         name={exerciseName}
         sets={sets}

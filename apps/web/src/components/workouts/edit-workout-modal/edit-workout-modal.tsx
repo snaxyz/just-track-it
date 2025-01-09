@@ -1,53 +1,32 @@
 import { ExerciseSelect } from "@/components/exercises";
 import { ExerciseModel, WorkoutWithRelations } from "@local/db";
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalProps,
-  Input,
-  Textarea,
-  Selection,
-} from "@nextui-org/react";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 import { SaveIcon } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { KeyboardEventHandler, useCallback, useEffect, useState } from "react";
 
 interface SelectedExercise extends Pick<ExerciseModel, "id" | "name"> {
   isDraft?: boolean;
 }
 
-export interface EditWorkoutModalProps extends Omit<ModalProps, "children"> {
+export interface EditWorkoutModalProps {
+  isOpen: boolean;
+  onClose: () => void;
   workout?: Pick<WorkoutWithRelations, "name" | "description" | "exercises">;
   exercises: SelectedExercise[];
-  onSave: (input: {
-    name: string;
-    description: string;
-    selectedExercises: SelectedExercise[];
-  }) => void;
+  onSave: (input: { name: string; description: string; selectedExercises: SelectedExercise[] }) => void;
 }
 
-export function EditWorkoutModal({
-  isOpen,
-  onClose,
-  workout,
-  exercises,
-  onSave,
-}: EditWorkoutModalProps) {
+export function EditWorkoutModal({ isOpen, onClose, workout, exercises, onSave }: EditWorkoutModalProps) {
   const [name, setName] = useState(workout?.name ?? "");
   const [description, setDescription] = useState(workout?.description ?? "");
-  const [selectedExercises, setSelectedExercises] = useState<Selection>(
-    new Set(workout?.exercises?.map((e) => e.exerciseId) ?? [])
+  const [selectedExercises, setSelectedExercises] = useState<string[]>(
+    workout?.exercises?.map((e) => e.exerciseId) ?? [],
   );
 
   useEffect(() => {
     setName(workout?.name ?? "");
     setDescription(workout?.description ?? "");
-    setSelectedExercises(
-      new Set(workout?.exercises?.map((e) => e.exerciseId) ?? [])
-    );
+    setSelectedExercises(workout?.exercises?.map((e) => e.exerciseId) ?? []);
   }, [workout?.name, workout?.description, workout?.exercises]);
 
   const [newExercise, setNewExercise] = useState("");
@@ -59,80 +38,68 @@ export function EditWorkoutModal({
       name,
       isDraft: true,
     };
-    setDraftExercises((e) => [...e, exercise]);
-    setSelectedExercises((e) => new Set([...e, exercise.id]));
+    setDraftExercises((prev) => [...prev, exercise]);
+    setSelectedExercises((prev) => [...prev, exercise.id]);
   }, []);
 
   const selectableExercises = exercises.concat(...draftExercises);
 
   const handleSave = () => {
-    const selectedIds = Array.from(selectedExercises) as string[];
     onSave({
       name,
       description,
-      selectedExercises: selectableExercises.filter((e) =>
-        selectedIds.includes(e.id)
-      ),
+      selectedExercises: selectableExercises.filter((e) => selectedExercises.includes(e.id)),
     });
 
     onClose?.();
     setDraftExercises([]);
-    setNewExercise("");
   };
 
-  const handleNewExerciseKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>
-  ) => {
+  const handleNewExerciseKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
     const exerciseName = newExercise.trim();
     if (!exerciseName) return;
-    switch (e.key) {
-      case "Enter": {
-        const existingExercise = selectableExercises.find(
-          (e) => e.name.toLowerCase() === exerciseName.toLowerCase()
-        );
-        if (!existingExercise) {
-          setNewExercise("");
-          return handleCreateDraftExercise(exerciseName);
-        }
-        const alreadySelected = Array.from(selectedExercises).includes(
-          existingExercise.id
-        );
-        if (!alreadySelected) {
-          setSelectedExercises((e) => new Set([...e, existingExercise.id]));
-        }
+    if (e.key === "Enter") {
+      const existingExercise = selectableExercises.find((e) => e.name.toLowerCase() === exerciseName.toLowerCase());
+      if (!existingExercise) {
         setNewExercise("");
+        return handleCreateDraftExercise(exerciseName);
       }
+      const alreadySelected = selectedExercises.includes(existingExercise.id);
+      if (!alreadySelected) {
+        setSelectedExercises((prev) => [...prev, existingExercise.id]);
+      }
+      setNewExercise("");
     }
   };
 
-  const isValid = name && Array.from(selectedExercises).length > 0;
+  const isValid = name && selectedExercises.length > 0;
 
   return (
-    <Modal
-      isOpen={isOpen && Boolean(workout)}
+    <Dialog
+      open={isOpen && Boolean(workout)}
       onClose={onClose}
-      isDismissable={false}
-      scrollBehavior="inside"
+      PaperProps={{
+        className: "bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-stone-900 dark:to-stone-950",
+      }}
     >
-      <ModalContent className="bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-stone-900 dark:to-stone-950">
-        <ModalHeader className="pt-3 px-3">Edit Workout</ModalHeader>
-        <ModalBody className="p-2">
-          <Input
+      <DialogTitle className="pt-3 px-3">Edit Workout</DialogTitle>
+      <DialogContent className="p-2">
+        <Box className="space-y-4">
+          <TextField
             label="Name"
             placeholder="Workout name"
             fullWidth
             value={name}
-            onValueChange={setName}
-            radius="lg"
+            onChange={(e) => setName(e.target.value)}
           />
-          <Textarea
+          <TextField
             label="Description"
             placeholder="1 - 3 sets, 5-8 reps."
             fullWidth
             value={description}
-            onValueChange={setDescription}
+            onChange={(e) => setDescription(e.target.value)}
+            multiline
             minRows={1}
-            radius="lg"
           />
           {selectableExercises.length > 0 && (
             <ExerciseSelect
@@ -142,27 +109,26 @@ export function EditWorkoutModal({
               fullWidth
             />
           )}
-          <Input
-            radius="lg"
+          <TextField
             label="New exercise"
             placeholder="Add a new exercise"
             onKeyDown={handleNewExerciseKeyDown}
             value={newExercise}
-            onValueChange={setNewExercise}
+            onChange={(e) => setNewExercise(e.target.value)}
           />
-        </ModalBody>
-        <ModalFooter className="p-2">
-          <Button
-            onPress={handleSave}
-            disabled={!isValid}
-            startContent={<SaveIcon size={16} />}
-            radius="lg"
-            color="primary"
-          >
-            Save
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+        </Box>
+      </DialogContent>
+      <DialogActions className="p-2">
+        <Button
+          onClick={handleSave}
+          disabled={!isValid}
+          startIcon={<SaveIcon size={16} />}
+          variant="contained"
+          color="primary"
+        >
+          Save
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }

@@ -1,8 +1,6 @@
-import { Grow } from "@/components/layout/grow";
+import { Box, Button } from "@mui/material";
 import { cn } from "@/lib/utils";
 import { WeightUnit } from "@local/db";
-import { Button, Input } from "@nextui-org/react";
-import { PlusIcon } from "lucide-react";
 
 interface Props {
   className?: string;
@@ -14,38 +12,24 @@ interface Props {
   onPress: (exerciseId: string) => void;
 }
 
-export function LastWorkoutExerciseSet({
-  className,
-  set,
-  reps,
-  weight,
-  unit,
-  exerciseId,
-  onPress,
-}: Props) {
+export function LastWorkoutExerciseSet({ className, set, reps, weight, unit, exerciseId, onPress }: Props) {
   return (
     <Button
-      className={cn(
-        "min-w-0 block bg-transparent p-3",
-        "text-left h-auto",
-        className
-      )}
+      className={cn("min-w-0 block bg-transparent p-3", "text-left h-auto", className)}
       fullWidth
-      onPress={() => onPress(exerciseId)}
+      onClick={() => onPress(exerciseId)}
     >
-      <div>Last set</div>
-      <div className="flex items-center w-full justify-between mb-2">
-        <div>Set {set}</div>
-        <div>{reps} reps</div>
+      <Box>Last set</Box>
+      <Box className="flex items-center w-full justify-between mb-2">
+        <Box>Set {set}</Box>
+        <Box>{reps} reps</Box>
         {weight && (
-          <div>
+          <Box>
             {weight} {unit}
-          </div>
+          </Box>
         )}
-      </div>
-      <div className="text-caption-light dark:text-caption text-xs italic text-center">
-        Add another set
-      </div>
+      </Box>
+      <Box className="text-caption-light dark:text-caption text-xs italic text-center">Add another set</Box>
     </Button>
   );
 }

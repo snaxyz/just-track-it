@@ -1,7 +1,7 @@
 "use client";
 
 import { Title } from "@/components/title";
-import { Card, CardBody, CardHeader } from "@nextui-org/react";
+import { Box, Card, CardContent, CardHeader } from "@mui/material";
 import {
   ActivityIcon,
   BarChart3Icon,
@@ -20,58 +20,53 @@ import {
   WorkoutCalendarChart,
   ConsistencyTrendChart,
 } from "@/components/insights";
-import { GradientCard } from "@/components/cards";
 
 export function Insights() {
   return (
     <>
       <Title>Insights</Title>
 
-      <div className="space-y-6">
-        {/* Volume by Muscle Group Card */}
-        <GradientCard className="p-4">
+      <Box className="space-y-6">
+        <Card className="p-4" elevation={0}>
           <CardHeader className="gap-3">
             <BarChart3Icon className="text-primary" />
             <h2 className="text-lg font-medium">Volume by Muscle Group</h2>
           </CardHeader>
-          <CardBody>
+          <CardContent>
             <VolumeByMuscleChart />
-          </CardBody>
-        </GradientCard>
+          </CardContent>
+        </Card>
 
-        {/* Personal Records Card */}
-        <GradientCard className="p-4">
+        <Card className="p-4" elevation={0}>
           <CardHeader className="gap-3">
             <TrophyIcon className="text-primary" />
             <h2 className="text-lg font-medium">Personal Records</h2>
           </CardHeader>
-          <CardBody>
+          <CardContent>
             <PersonalRecordsChart />
-          </CardBody>
-        </GradientCard>
+          </CardContent>
+        </Card>
 
-        {/* Workout Calendar Card */}
-        <GradientCard className="p-4">
+        <Card className="p-4" elevation={0}>
           <CardHeader className="gap-3">
             <CalendarIcon className="text-primary" />
             <h2 className="text-lg font-medium">Activity Calendar</h2>
           </CardHeader>
-          <CardBody>
+          <CardContent>
             <WorkoutCalendarChart />
-          </CardBody>
-        </GradientCard>
+          </CardContent>
+        </Card>
 
-        {/* Consistency Trend Card */}
-        <GradientCard className="p-4">
+        <Card className="p-4" elevation={0}>
           <CardHeader className="gap-3">
             <LineChartIcon className="text-primary" />
             <h2 className="text-lg font-medium">Monthly Consistency</h2>
           </CardHeader>
-          <CardBody>
+          <CardContent>
             <ConsistencyTrendChart />
-          </CardBody>
-        </GradientCard>
-      </div>
+          </CardContent>
+        </Card>
+      </Box>
     </>
   );
 }

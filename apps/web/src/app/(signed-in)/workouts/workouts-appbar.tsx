@@ -1,11 +1,9 @@
 "use client";
 
-import { BreadcrumbItem } from "@nextui-org/react";
 import { TopAppbarContainer } from "@/components/layout/top-appbar-container";
-import { Breadcrumbs } from "@nextui-org/react";
+import { Breadcrumbs, BreadcrumbItem } from "@/components/breadcrumbs";
 import { DumbbellIcon, HomeIcon } from "lucide-react";
-import Link from "next/link";
-import { Grow } from "@/components/layout/grow";
+import { Box } from "@mui/material";
 import { User } from "@auth0/nextjs-auth0/types";
 import { SidebarWorkspaceDropdown } from "@/components/layout/sidebar-workspace-dropdown";
 
@@ -20,14 +18,11 @@ export function WorkoutsAppbar({ user }: Props) {
         <BreadcrumbItem startContent={<HomeIcon size={16} />} href="/">
           Home
         </BreadcrumbItem>
-        <BreadcrumbItem
-          startContent={<DumbbellIcon size={16} />}
-          href="/workouts"
-        >
+        <BreadcrumbItem startContent={<DumbbellIcon size={16} />} href="/workouts">
           Workouts
         </BreadcrumbItem>
       </Breadcrumbs>
-      <Grow />
+      <Box sx={{ flexGrow: 1 }} />
       <SidebarWorkspaceDropdown name={user.name ?? ""} picture={user.picture} />
     </TopAppbarContainer>
   );

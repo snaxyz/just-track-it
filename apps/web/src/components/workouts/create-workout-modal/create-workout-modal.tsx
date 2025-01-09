@@ -1,20 +1,6 @@
 import { ExerciseAutocomplete, ExerciseSelect } from "@/components/exercises";
 import { ExerciseModel } from "@local/db";
-import {
-  Autocomplete,
-  AutocompleteItem,
-  Button,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalProps,
-  Input,
-  Textarea,
-  Chip,
-  Selection,
-} from "@nextui-org/react";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 import { PlusIcon } from "lucide-react";
 import { KeyboardEventHandler, useCallback, useState } from "react";
 
@@ -22,28 +8,20 @@ interface SelectedExercise extends Pick<ExerciseModel, "id" | "name"> {
   isDraft?: boolean;
 }
 
-export interface CreateWorkoutModalProps extends Omit<ModalProps, "children"> {
+export interface CreateWorkoutModalProps {
+  isOpen: boolean;
+  onClose: () => void;
   exercises: SelectedExercise[];
-  onCreate: (input: {
-    name: string;
-    description: string;
-    selectedExercises: SelectedExercise[];
-  }) => void;
+  onCreate: (input: { name: string; description: string; selectedExercises: SelectedExercise[] }) => void;
 }
 
-export function CreateWorkoutModal({
-  isOpen,
-  onClose,
-  exercises,
-  onCreate,
-}: CreateWorkoutModalProps) {
+export function CreateWorkoutModal({ isOpen, onClose, exercises, onCreate }: CreateWorkoutModalProps) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [selectedExercises, setSelectedExercises] = useState<Selection>(
-    new Set([])
-  );
+  const [selectedExercises, setSelectedExercises] = useState<string[]>([]);
   const [newExercise, setNewExercise] = useState("");
   const [draftExercises, setDraftExercises] = useState<SelectedExercise[]>([]);
+
   const handleCreateDraftExercise = useCallback((name: string) => {
     const exercise = {
       id: name.replace(/\s/g, "").toLowerCase(),
@@ -51,82 +29,72 @@ export function CreateWorkoutModal({
       categories: [],
       isDraft: true,
     };
-    setDraftExercises((e) => [...e, exercise]);
-    setSelectedExercises((e) => new Set([...e, exercise.id]));
+    setDraftExercises((prev) => [...prev, exercise]);
+    setSelectedExercises((prev) => [...prev, exercise.id]);
   }, []);
+
   const selectableExercises = exercises.concat(...draftExercises);
 
   const handleCreate = () => {
-    const selectedIds = Array.from(selectedExercises) as string[];
     onCreate({
       name,
       description,
-      selectedExercises: selectableExercises.filter((e) =>
-        selectedIds.includes(e.id)
-      ),
+      selectedExercises: selectableExercises.filter((e) => selectedExercises.includes(e.id)),
     });
 
     onClose?.();
     setName("");
     setDescription("");
-    setSelectedExercises(new Set([]));
+    setSelectedExercises([]);
     setDraftExercises([]);
     setNewExercise("");
   };
 
-  const handleNewExerciseKeyDown: KeyboardEventHandler<HTMLInputElement> = (
-    e
-  ) => {
+  const handleNewExerciseKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
     const exerciseName = newExercise.trim();
     if (!exerciseName) return;
-    switch (e.key) {
-      case "Enter": {
-        const existingExercise = selectableExercises.find(
-          (e) => e.name.toLowerCase() === exerciseName.toLowerCase()
-        );
-        if (!existingExercise) {
-          setNewExercise("");
-          return handleCreateDraftExercise(exerciseName);
-        }
-        const alreadySelected = Array.from(selectedExercises).includes(
-          exerciseName.toLowerCase()
-        );
-        if (!alreadySelected) {
-          setSelectedExercises((e) => new Set([...e, existingExercise.id]));
-        }
+    if (e.key === "Enter") {
+      const existingExercise = selectableExercises.find((e) => e.name.toLowerCase() === exerciseName.toLowerCase());
+      if (!existingExercise) {
         setNewExercise("");
+        return handleCreateDraftExercise(exerciseName);
       }
+      const alreadySelected = selectedExercises.includes(existingExercise.id);
+      if (!alreadySelected) {
+        setSelectedExercises((prev) => [...prev, existingExercise.id]);
+      }
+      setNewExercise("");
     }
   };
 
-  const isValid = name && Array.from(selectedExercises).length > 0;
+  const isValid = name && selectedExercises.length > 0;
 
   return (
-    <Modal
-      isOpen={isOpen}
+    <Dialog
+      open={isOpen}
       onClose={onClose}
-      isDismissable={false}
-      scrollBehavior="inside"
+      PaperProps={{
+        className: "bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-stone-900 dark:to-stone-950",
+      }}
     >
-      <ModalContent className="bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-stone-900 dark:to-stone-950">
-        <ModalHeader className="pt-3 px-3">Create Workout</ModalHeader>
-        <ModalBody className="p-2">
-          <Input
+      <DialogTitle className="pt-3 px-3">Create Workout</DialogTitle>
+      <DialogContent className="p-2">
+        <Box className="space-y-4">
+          <TextField
             label="Name"
             placeholder="Workout name"
             fullWidth
             value={name}
-            onValueChange={setName}
-            radius="lg"
+            onChange={(e) => setName(e.target.value)}
           />
-          <Textarea
+          <TextField
             label="Description"
             placeholder="1 - 3 sets, 5-8 reps."
             fullWidth
             value={description}
-            onValueChange={setDescription}
+            onChange={(e) => setDescription(e.target.value)}
+            multiline
             minRows={1}
-            radius="lg"
           />
           {selectableExercises.length > 0 && (
             <ExerciseSelect
@@ -136,27 +104,26 @@ export function CreateWorkoutModal({
               fullWidth
             />
           )}
-          <Input
-            radius="lg"
+          <TextField
             label="New exercise"
             placeholder="Add a new exercise"
             onKeyDown={handleNewExerciseKeyDown}
             value={newExercise}
-            onValueChange={setNewExercise}
+            onChange={(e) => setNewExercise(e.target.value)}
           />
-        </ModalBody>
-        <ModalFooter className="p-2">
-          <Button
-            onPress={handleCreate}
-            disabled={!isValid}
-            startContent={<PlusIcon size={16} />}
-            radius="lg"
-            color="primary"
-          >
-            Create
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+        </Box>
+      </DialogContent>
+      <DialogActions className="p-2">
+        <Button
+          onClick={handleCreate}
+          disabled={!isValid}
+          startIcon={<PlusIcon size={16} />}
+          variant="contained"
+          color="primary"
+        >
+          Create
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }

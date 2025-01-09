@@ -1,4 +1,4 @@
-import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
+import { Autocomplete, TextField } from "@mui/material";
 import { ChevronDownIcon } from "lucide-react";
 
 interface Props {
@@ -14,24 +14,15 @@ export function RepSelect({ reps, onChange, maxReps = 100 }: Props) {
     <>
       <Autocomplete
         className="hidden md:block"
-        label="Reps"
-        fullWidth
-        selectedKey={reps}
-        onSelectionChange={(key) => key && onChange(key.toString())}
-        allowsCustomValue={false}
-        isClearable={false}
-      >
-        {options.map((value) => (
-          <AutocompleteItem key={value} value={value}>
-            {value}
-          </AutocompleteItem>
-        ))}
-      </Autocomplete>
+        options={options}
+        value={reps}
+        onChange={(_, newValue) => newValue && onChange(newValue)}
+        disableClearable
+        renderInput={(params) => <TextField {...params} label="Reps" fullWidth />}
+      />
 
       <div className="relative md:hidden rounded-xl bg-default-100 py-2 px-3 w-full focus-within:outline-2 focus-within:outline-offset-0 focus-within:outline focus-within:outline-primary">
-        <label className="block text-sm mb-1 text-default-700 dark:text-default-500">
-          Reps
-        </label>
+        <label className="block text-sm mb-1 text-default-700 dark:text-default-500">Reps</label>
         <select
           className="w-full h-unit-10 bg-default-100 appearance-none focus:outline-none"
           value={reps}

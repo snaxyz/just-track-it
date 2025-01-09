@@ -1,18 +1,12 @@
 import { ExerciseModel, WeightUnit } from "@local/db";
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalProps,
-} from "@nextui-org/react";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { SetSelect, RepSelect, WeightSelect } from "../common";
 import { PlusIcon } from "lucide-react";
 import { ExerciseAutocomplete } from "@/components/exercises";
 
-export interface NewSetModalProps extends Omit<ModalProps, "children"> {
+export interface NewSetModalProps {
+  isOpen: boolean;
+  onClose: () => void;
   exercises: ExerciseModel[];
   onAdd: (input: {
     selectedExercise?: string;
@@ -61,19 +55,23 @@ export function NewSetModal({
       weight,
       unit,
     });
-
     onClose?.();
   };
 
   const isValid = (selectedExercise || customExercise) && set && reps && weight;
-
   const title = set === "1" ? "New Set" : `Set ${set}`;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isDismissable={false}>
-      <ModalContent className="bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-stone-900 dark:to-stone-950">
-        <ModalHeader className="pt-3 px-3">{title}</ModalHeader>
-        <ModalBody className="p-2">
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      PaperProps={{
+        className: "bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-stone-900 dark:to-stone-950",
+      }}
+    >
+      <DialogTitle className="pt-3 px-3">{title}</DialogTitle>
+      <DialogContent className="p-2">
+        <Box className="space-y-4">
           <ExerciseAutocomplete
             exercises={exercises}
             selectedExercise={selectedExercise}
@@ -84,20 +82,19 @@ export function NewSetModal({
           />
           <RepSelect reps={reps} onChange={onRepsChange} />
           <WeightSelect unit={unit} weight={weight} onChange={onWeightChange} />
-        </ModalBody>
-        <ModalFooter className="p-2">
-          <Button
-            onPress={handleAdd}
-            disabled={!isValid}
-            startContent={<PlusIcon size={16} />}
-            radius="lg"
-            variant="solid"
-            color="primary"
-          >
-            Add
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+        </Box>
+      </DialogContent>
+      <DialogActions className="p-2">
+        <Button
+          onClick={handleAdd}
+          disabled={!isValid}
+          startIcon={<PlusIcon size={16} />}
+          variant="contained"
+          color="primary"
+        >
+          Add
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }

@@ -1,30 +1,29 @@
-import { GradientCard } from "@/components/cards";
-import { Skeleton } from "@nextui-org/react";
+import { Card, Box, Skeleton } from "@mui/material";
 
 export function WorkoutHistoryLoading() {
   return (
-    <div className="space-y-3 pb-24">
-      <div className="px-1">
-        <Skeleton className="h-8 w-48 rounded-lg" />
-      </div>
+    <Box className="space-y-3 pb-24">
+      <Box className="px-1">
+        <Skeleton variant="text" width={192} height={32} />
+      </Box>
 
       {[...Array(3)].map((_, i) => (
-        <GradientCard key={i} className="p-4 mx-3">
-          <div className="space-y-4">
-            <Skeleton className="h-4 w-24 rounded-lg" />
+        <Card key={i} className="p-4 mx-3" elevation={0}>
+          <Box className="space-y-4">
+            <Skeleton variant="text" width={96} height={16} />
 
             {[...Array(2)].map((_, j) => (
-              <div key={j} className="space-y-2">
-                <Skeleton className="h-6 w-32 rounded-lg" />
-                <div className="flex gap-2">
-                  <Skeleton className="h-6 w-16 rounded-lg" />
-                  <Skeleton className="h-6 w-16 rounded-lg" />
-                </div>
-              </div>
+              <Box key={j} className="space-y-2">
+                <Skeleton variant="text" width={128} height={24} />
+                <Box className="flex gap-2">
+                  <Skeleton variant="text" width={64} height={24} />
+                  <Skeleton variant="text" width={64} height={24} />
+                </Box>
+              </Box>
             ))}
-          </div>
-        </GradientCard>
+          </Box>
+        </Card>
       ))}
-    </div>
+    </Box>
   );
 }

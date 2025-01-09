@@ -1,5 +1,5 @@
 import { WorkoutExerciseWithRelations } from "@local/db";
-import { Chip } from "@nextui-org/react";
+import { Box, Chip, Typography } from "@mui/material";
 
 interface Props {
   exercises: WorkoutExerciseWithRelations[];
@@ -8,33 +8,24 @@ interface Props {
 export function WorkoutCardExercises({ exercises }: Props) {
   if (exercises.length === 0) {
     return (
-      <div>
-        <div className="text-caption-light dark:text-caption text-xs mb-2">
+      <Box>
+        <Typography variant="caption" className="text-default-500 mb-2">
           No exercises
-        </div>
-      </div>
+        </Typography>
+      </Box>
     );
   }
 
   return (
-    <div className="mb-4">
-      <div className="text-caption-light dark:text-caption text-xs mb-3">
-        {exercises.length} Exercise
-        {exercises.length > 1 ? "s" : ""}
-      </div>
-      <div className="flex w-full gap-2 flex-wrap">
+    <Box className="mb-4">
+      <Typography variant="caption" className="text-default-500 mb-3">
+        {exercises.length} Exercise{exercises.length > 1 ? "s" : ""}
+      </Typography>
+      <Box className="flex w-full gap-2 flex-wrap">
         {exercises.map((e) => (
-          <Chip
-            key={e.exerciseId}
-            className="capitalize"
-            variant="flat"
-            color="default"
-            size="sm"
-          >
-            {e.exercise.name}
-          </Chip>
+          <Chip key={e.exerciseId} label={e.exercise.name} className="capitalize" variant="filled" size="small" />
         ))}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }

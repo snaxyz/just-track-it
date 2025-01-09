@@ -1,4 +1,4 @@
-import { Button } from "@nextui-org/react";
+import { Button } from "@mui/material";
 import { ActivityIcon, MessageSquarePlusIcon } from "lucide-react";
 import { EmptyPlaceholderCard } from "../cards";
 
@@ -14,20 +14,10 @@ export function EmptySessionsPlaceholder({ onAddClick, onAskAIClick }: Props) {
       title="No recent workouts"
       message="Start a new workout to track your progress"
     >
-      <Button
-        variant="solid"
-        startContent={<ActivityIcon size={16} />}
-        color="primary"
-        onPress={onAddClick}
-      >
+      <Button variant="contained" startIcon={<ActivityIcon size={16} />} color="primary" onClick={onAddClick}>
         Start new workout
       </Button>
-      <Button
-        variant="bordered"
-        startContent={<MessageSquarePlusIcon size={16} />}
-        color="primary"
-        onPress={onAskAIClick}
-      >
+      <Button variant="outlined" startIcon={<MessageSquarePlusIcon size={16} />} color="primary" onClick={onAskAIClick}>
         Ask AI for workout
       </Button>
     </EmptyPlaceholderCard>

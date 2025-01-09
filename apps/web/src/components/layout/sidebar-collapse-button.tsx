@@ -1,7 +1,7 @@
 "use client";
 
 import { useToggleSidebar } from "@/lib/hooks/use-toggle-sidebar";
-import { Button } from "@nextui-org/react";
+import { IconButton } from "@mui/material";
 import { MenuIcon } from "lucide-react";
 
 interface Props {
@@ -12,8 +12,8 @@ export function SidebarCollapseButton({ collapsed }: Props) {
   const collapse = useToggleSidebar({ collapsed });
 
   return (
-    <Button isIconOnly radius="lg" variant="light" onPress={collapse}>
+    <IconButton onClick={collapse}>
       <MenuIcon size={16} />
-    </Button>
+    </IconButton>
   );
 }

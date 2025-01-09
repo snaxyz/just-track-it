@@ -1,3 +1,4 @@
+import { Typography } from "@mui/material";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -6,5 +7,9 @@ interface Props {
 }
 
 export function Title({ children, className }: Props) {
-  return <div className={cn("text-xl mb-3", className)}>{children}</div>;
+  return (
+    <Typography variant="h5" className={cn("mb-3", className)}>
+      {children}
+    </Typography>
+  );
 }

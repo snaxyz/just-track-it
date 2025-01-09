@@ -1,7 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Providers } from "./providers";
-import { inter } from "./fonts";
+import { inter, roboto } from "./fonts";
 
 export const metadata: Metadata = {
   title: "Just track it fitness app",
@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={roboto.variable}>
         <Providers>{children}</Providers>
       </body>
     </html>

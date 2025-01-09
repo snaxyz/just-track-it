@@ -1,7 +1,4 @@
-import { GradientCard } from "@/components/cards";
-import { IconButton } from "@/components/icon-button";
-import { Grow } from "@/components/layout/grow";
-import { Button, Card, CardBody, CardHeader } from "@nextui-org/react";
+import { Box, Button, Card, CardContent, IconButton } from "@mui/material";
 import { ActivityIcon, EditIcon, HistoryIcon } from "lucide-react";
 import Link from "next/link";
 
@@ -14,45 +11,34 @@ interface Props {
   onEditClick: (id: string) => void;
 }
 
-export function WorkoutCard({
-  id,
-  name,
-  description,
-  children,
-  onStartWorkout,
-  onEditClick,
-}: Props) {
+export function WorkoutCard({ id, name, description, children, onStartWorkout, onEditClick }: Props) {
   return (
-    <GradientCard className="mb-3 z-0" shadow="none">
-      <CardHeader className="capitalize pb-0">
-        <div>{name}</div>
-        <Grow />
-        <IconButton as={Link} href={`/workouts/${id}/history`}>
-          <HistoryIcon size={16} />
-        </IconButton>
-        <IconButton onPress={() => onEditClick(id)}>
-          <EditIcon size={16} />
-        </IconButton>
-        {/* <IconButton>
-          <MoreHorizontalIcon size={16} />
-        </IconButton> */}
-      </CardHeader>
-      <CardBody>
-        {description && <div className="mb-4">{description}</div>}
+    <Card className="mb-3 z-0" elevation={0}>
+      <CardContent>
+        <Box className="flex items-center mb-2">
+          <Box>{name}</Box>
+          <Box sx={{ flexGrow: 1 }} />
+          <IconButton component={Link} href={`/workouts/${id}/history`}>
+            <HistoryIcon size={16} />
+          </IconButton>
+          <IconButton onClick={() => onEditClick(id)}>
+            <EditIcon size={16} />
+          </IconButton>
+        </Box>
+        {description && <Box className="mb-4">{description}</Box>}
         {children}
-        <div>
+        <Box>
           <Button
             fullWidth
-            variant="bordered"
-            startContent={<ActivityIcon size={16} />}
-            radius="lg"
+            variant="outlined"
+            startIcon={<ActivityIcon size={16} />}
             color="secondary"
-            onPress={() => onStartWorkout(id)}
+            onClick={() => onStartWorkout(id)}
           >
             Start workout
           </Button>
-        </div>
-      </CardBody>
-    </GradientCard>
+        </Box>
+      </CardContent>
+    </Card>
   );
 }

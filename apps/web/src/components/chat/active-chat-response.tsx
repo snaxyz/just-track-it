@@ -7,6 +7,7 @@ import ChatMessage from "./chat-message";
 import { useQueryClient } from "@tanstack/react-query";
 import type { ChatMessageModel, QueryResponse } from "@local/db";
 import { useUserId } from "@/lib/hooks/use-user";
+import { Box } from "@mui/material";
 
 interface Props {
   id: string;
@@ -36,16 +37,14 @@ export default function ActiveChatResponse({ id, scrollToBottom }: Props) {
       const msgChunk = data.content || "";
       setStreamedMessage((msg) => msg + msgChunk);
       if (streamedMessageRef) {
-        streamedMessageRef.current =
-          (streamedMessageRef.current ?? "") + msgChunk;
+        streamedMessageRef.current = (streamedMessageRef.current ?? "") + msgChunk;
       }
       if (data.finishReason === "stop") {
         setStreamedMessage("");
 
         const updateCache = () => {
           const queryKey = ["chat-messages", id];
-          const cache =
-            queryClient.getQueryData<QueryResponse<ChatMessageModel>>(queryKey);
+          const cache = queryClient.getQueryData<QueryResponse<ChatMessageModel>>(queryKey);
           if (!streamedMessageRef.current) {
             return;
           }
@@ -86,9 +85,9 @@ export default function ActiveChatResponse({ id, scrollToBottom }: Props) {
 
   return (
     streamedMessage && (
-      <div className="px-3">
+      <Box className="px-3">
         <ChatMessage className="p-2" message={message} />
-      </div>
+      </Box>
     )
   );
 }

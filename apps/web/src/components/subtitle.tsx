@@ -1,3 +1,4 @@
+import { Typography } from "@mui/material";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -6,5 +7,9 @@ interface Props {
 }
 
 export function Subtitle({ children, className }: Props) {
-  return <div className={cn("text-lg mb-3", className)}>{children}</div>;
+  return (
+    <Typography variant="h6" className={cn("mb-3", className)}>
+      {children}
+    </Typography>
+  );
 }

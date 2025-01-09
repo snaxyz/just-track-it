@@ -2,24 +2,10 @@
 
 import { FabContainer } from "@/components/layout/fab-container";
 import { getWorkouts } from "@/app/api/workouts/get-workouts";
-import {
-  createWorkout,
-  createWorkoutAndSessionAndRedirect,
-} from "@/server/workouts";
-import {
-  ChatMessageModel,
-  ExerciseModel,
-  QueryResponse,
-  WorkoutModel,
-  WorkoutWithRelations,
-} from "@local/db";
+import { createWorkout, createWorkoutAndSessionAndRedirect } from "@/server/workouts";
+import { ChatMessageModel, ExerciseModel, QueryResponse, WorkoutModel, WorkoutWithRelations } from "@local/db";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  ActivityIcon,
-  MessageCirclePlusIcon,
-  MessageSquarePlusIcon,
-  PlusIcon,
-} from "lucide-react";
+import { ActivityIcon, MessageCirclePlusIcon, MessageSquarePlusIcon, PlusIcon } from "lucide-react";
 import {
   CreateWorkoutModal,
   CreateWorkoutModalProps,
@@ -32,12 +18,9 @@ import { IconButton } from "@/components/icon-button";
 import { Title } from "@/components/title";
 import { useCallback, useState } from "react";
 import { startWorkoutSessionAndRedirect } from "@/server/workout-sessions/start-workout";
-import { Button, useDisclosure } from "@nextui-org/react";
+import { Button } from "@mui/material";
 import { getExercises } from "@/app/api/exercises/get-exercises";
-import {
-  EditWorkoutModal,
-  EditWorkoutModalProps,
-} from "@/components/workouts/edit-workout-modal";
+import { EditWorkoutModal, EditWorkoutModalProps } from "@/components/workouts/edit-workout-modal";
 import { updateWorkout } from "@/server/workouts";
 import { WorkoutsLoading } from "./workouts-loading";
 import { ChatModal } from "@/components/chat/chat-modal";
@@ -45,16 +28,12 @@ import { getChatMessages } from "@/app/api/chat/[id]/messages/get-chat-messages"
 
 export function Workouts() {
   const queryClient = useQueryClient();
-  const { data: workoutsQuery, isLoading } = useQuery<
-    QueryResponse<WorkoutWithRelations>
-  >({
+  const { data: workoutsQuery, isLoading } = useQuery<QueryResponse<WorkoutWithRelations>>({
     queryKey: ["workouts"],
     queryFn: () => getWorkouts(),
   });
 
-  const { data: exercisesQuery, isLoading: exercisesLoading } = useQuery<
-    QueryResponse<ExerciseModel>
-  >({
+  const { data: exercisesQuery } = useQuery<QueryResponse<ExerciseModel>>({
     queryKey: ["exercises"],
     queryFn: () => getExercises(),
   });
@@ -62,9 +41,7 @@ export function Workouts() {
   // TODO: Replace with actual chat ID
   const chatId = "a19ac188-44df-4c52-8b28-83442ac5f63f";
 
-  const { data: chatMessagesQuery, isLoading: chatLoading } = useQuery<
-    QueryResponse<ChatMessageModel>
-  >({
+  const { data: chatMessagesQuery } = useQuery<QueryResponse<ChatMessageModel>>({
     queryKey: ["chat-messages", chatId],
     queryFn: () => getChatMessages(chatId),
   });
@@ -73,32 +50,24 @@ export function Workouts() {
     await startWorkoutSessionAndRedirect(workoutId);
   }, []);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isOpen, setIsOpen] = useState(false);
+  const onOpen = () => setIsOpen(true);
+  const onClose = () => setIsOpen(false);
   const [isCreating, setIsCreating] = useState(false);
 
-  const handleCreateWorkout: CreateWorkoutModalProps["onCreate"] = async (
-    input
-  ) => {
+  const handleCreateWorkout: CreateWorkoutModalProps["onCreate"] = async (input) => {
     setIsCreating(true);
-    const workout = await createWorkout(
-      input.name,
-      input.description,
-      input.selectedExercises
-    );
+    const workout = await createWorkout(input.name, input.description, input.selectedExercises);
     setIsCreating(false);
 
-    queryClient.setQueryData<
-      QueryResponse<Omit<WorkoutWithRelations, "sessions">>
-    >(["workouts"], {
+    queryClient.setQueryData<QueryResponse<Omit<WorkoutWithRelations, "sessions">>>(["workouts"], {
       ...(workoutsQuery ?? { cursor: "" }),
       records: [...(workoutsQuery?.records ?? []), workout],
     });
   };
 
   const [selectedWorkout, setSelectedWorkout] =
-    useState<
-      Pick<WorkoutWithRelations, "id" | "name" | "description" | "exercises">
-    >();
+    useState<Pick<WorkoutWithRelations, "id" | "name" | "description" | "exercises">>();
 
   const handleEditWorkout = (id: string) => {
     setSelectedWorkout(workoutsQuery?.records?.find((w) => w.id === id));
@@ -120,35 +89,22 @@ export function Workouts() {
                 exercise: { name: e.name },
               })),
             }
-          : w
+          : w,
       ),
     });
-    const workout = await updateWorkout(
-      workoutId,
-      input.name,
-      input.description ?? "",
-      input.selectedExercises
-    );
+    const workout = await updateWorkout(workoutId, input.name, input.description ?? "", input.selectedExercises);
 
-    queryClient.setQueryData<QueryResponse<WorkoutWithRelations>>(
-      ["workouts"],
-      {
-        ...(workoutsQuery ?? { cursor: "" }),
-        records:
-          workoutsQuery?.records.map((w) =>
-            w.id === workoutId ? { ...w, ...workout } : w
-          ) ?? [],
-      }
-    );
+    queryClient.setQueryData<QueryResponse<WorkoutWithRelations>>(["workouts"], {
+      ...(workoutsQuery ?? { cursor: "" }),
+      records: workoutsQuery?.records.map((w) => (w.id === workoutId ? { ...w, ...workout } : w)) ?? [],
+    });
 
     onCloseEditWorkout();
   };
 
-  const {
-    isOpen: isChatOpen,
-    onOpen: onOpenChat,
-    onClose: onCloseChat,
-  } = useDisclosure();
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const onOpenChat = () => setIsChatOpen(true);
+  const onCloseChat = () => setIsChatOpen(false);
 
   if (isLoading) return <WorkoutsLoading />;
 
@@ -159,12 +115,7 @@ export function Workouts() {
       <div className="px-1">
         <Title>Workouts</Title>
       </div>
-      {noWorkouts && (
-        <EmptyWorkoutsPlaceholder
-          onAddClick={onOpen}
-          onAskAIClick={onOpenChat}
-        />
-      )}
+      {noWorkouts && <EmptyWorkoutsPlaceholder onAddClick={onOpen} onAskAIClick={onOpenChat} />}
       <div className="pb-24">
         {workoutsQuery?.records.map((w) => (
           <WorkoutCard
@@ -181,21 +132,14 @@ export function Workouts() {
         {isCreating && <WorkoutCardSkeleton />}
         {!noWorkouts && (
           <div className="p-2">
-            <Button
-              variant="solid"
-              startContent={<PlusIcon size={16} />}
-              onPress={onOpen}
-              radius="lg"
-              color="primary"
-              fullWidth
-            >
+            <Button variant="contained" startIcon={<PlusIcon size={16} />} onClick={onOpen} color="primary" fullWidth>
               Create new workout
             </Button>
           </div>
         )}
       </div>
       <FabContainer>
-        <IconButton color="primary" variant="solid" onPress={onOpenChat}>
+        <IconButton color="primary" onClick={onOpenChat}>
           <MessageSquarePlusIcon size={22} />
         </IconButton>
       </FabContainer>

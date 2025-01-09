@@ -1,72 +1,59 @@
-import {
-  Button,
-  Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalProps,
-  Selection,
-} from "@nextui-org/react";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 import { PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ExerciseCategorySelect } from "./exercise-category-select";
 
-export interface NewExerciseModalProps extends Omit<ModalProps, "children"> {
+export interface NewExerciseModalProps {
+  isOpen: boolean;
+  onClose: () => void;
   onAdd: (name: string, categories: string[]) => void;
   error?: string;
 }
 
-export function NewExerciseModal({
-  isOpen,
-  onClose,
-  onAdd,
-  error,
-}: NewExerciseModalProps) {
+export function NewExerciseModal({ isOpen, onClose, onAdd, error }: NewExerciseModalProps) {
   const [name, setName] = useState("");
-  const [categories, setCategories] = useState<Selection>(new Set([]));
+  const [categories, setCategories] = useState<string[]>([]);
 
   useEffect(() => {
     if (!isOpen) {
       setName("");
-      setCategories(new Set([]));
+      setCategories([]);
     }
   }, [isOpen]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isDismissable={false}>
-      <ModalContent className="bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-stone-900 dark:to-stone-950">
-        <ModalHeader className="pt-3 px-3">New Exercise</ModalHeader>
-        <ModalBody className="p-2">
-          <Input
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      PaperProps={{
+        className: "bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-stone-900 dark:to-stone-950",
+      }}
+    >
+      <DialogTitle className="pt-3 px-3">New Exercise</DialogTitle>
+      <DialogContent className="p-2">
+        <Box className="space-y-4">
+          <TextField
             fullWidth
-            variant="flat"
             label="Exercise"
             value={name}
-            onValueChange={setName}
-            isInvalid={Boolean(error)}
-            errorMessage={error}
+            onChange={(e) => setName(e.target.value)}
+            error={Boolean(error)}
+            helperText={error}
           />
-          <ExerciseCategorySelect
-            selectedCategories={categories}
-            onCategoriesChange={setCategories}
-            fullWidth
-          />
-        </ModalBody>
-        <ModalFooter className="p-2">
-          <Button
-            variant="solid"
-            radius="lg"
-            color="primary"
-            startContent={<PlusIcon size={16} />}
-            disabled={!name}
-            onPress={() => onAdd(name, Array.from(categories) as string[])}
-          >
-            Add exercise
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+          <ExerciseCategorySelect selectedCategories={categories} onCategoriesChange={setCategories} fullWidth />
+        </Box>
+      </DialogContent>
+      <DialogActions className="p-2">
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<PlusIcon size={16} />}
+          disabled={!name}
+          onClick={() => onAdd(name, categories)}
+        >
+          Add exercise
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }

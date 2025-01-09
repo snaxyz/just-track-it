@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import { kalam } from "@/app/fonts";
 import { cn } from "@/lib/utils";
 
@@ -7,8 +8,8 @@ interface Props {
 
 export function Logo({ className }: Props) {
   return (
-    <div className={cn(kalam.className, "md:text-2xl", className)}>
+    <Box component="span" className={cn(kalam.className, "md:text-2xl", className)}>
       Just Track It
-    </div>
+    </Box>
   );
 }

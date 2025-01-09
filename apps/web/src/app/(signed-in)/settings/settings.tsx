@@ -5,14 +5,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Title } from "@/components/title";
 import { deleteUserData } from "@/server/settings/delete-user-data";
 import { initSampleData } from "@/server/settings/init-sample-data";
-import {
-  Button,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from "@nextui-org/react";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { useState } from "react";
 
 export function Settings() {
@@ -47,19 +40,10 @@ export function Settings() {
       <section className="flex flex-col gap-2 mb-6">
         <Subtitle>Data Management</Subtitle>
         <div className="flex flex-col gap-2">
-          <Button
-            color="warning"
-            variant="solid"
-            onPress={handleResetSampleData}
-            isLoading={isResetting}
-          >
+          <Button color="warning" variant="contained" onClick={handleResetSampleData} disabled={isResetting}>
             Reset Sample Data
           </Button>
-          <Button
-            color="danger"
-            variant="solid"
-            onPress={() => setIsDeleteModalOpen(true)}
-          >
+          <Button color="error" variant="contained" onClick={() => setIsDeleteModalOpen(true)}>
             Delete All Data
           </Button>
         </div>
@@ -68,46 +52,32 @@ export function Settings() {
       <section className="flex flex-col gap-2">
         <Subtitle>Account</Subtitle>
         <div className="flex flex-col gap-2">
-          <Button
-            variant="bordered"
-            as="a"
-            href="/auth/logout?returnTo=https://justtrackitapp.com/login"
-          >
+          <Button variant="outlined" component="a" href="/auth/logout?returnTo=https://justtrackitapp.com/login">
             Logout
           </Button>
         </div>
       </section>
 
-      <Modal
-        isOpen={isDeleteModalOpen}
+      <Dialog
+        open={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-        isDismissable={false}
+        PaperProps={{
+          className: "bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-stone-900 dark:to-stone-950",
+        }}
       >
-        <ModalContent className="bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-stone-900 dark:to-stone-950">
-          <ModalHeader className="pt-3 px-3">Delete All Data</ModalHeader>
-          <ModalBody className="p-2">
-            Are you sure you want to delete all your data? This action cannot be
-            undone.
-          </ModalBody>
-          <ModalFooter className="p-2">
-            <Button
-              variant="light"
-              onPress={() => setIsDeleteModalOpen(false)}
-              radius="lg"
-            >
-              Cancel
-            </Button>
-            <Button
-              color="danger"
-              variant="solid"
-              onPress={handleDeleteData}
-              radius="lg"
-            >
-              Delete
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+        <DialogTitle className="pt-3 px-3">Delete All Data</DialogTitle>
+        <DialogContent className="p-2">
+          Are you sure you want to delete all your data? This action cannot be undone.
+        </DialogContent>
+        <DialogActions className="p-2">
+          <Button variant="text" onClick={() => setIsDeleteModalOpen(false)}>
+            Cancel
+          </Button>
+          <Button color="error" variant="contained" onClick={handleDeleteData}>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

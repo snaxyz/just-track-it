@@ -1,11 +1,4 @@
-import {
-  Select,
-  SelectItem,
-  Chip,
-  SelectedItems,
-  Selection,
-  SharedSelection,
-} from "@nextui-org/react";
+import { Autocomplete, Chip, TextField } from "@mui/material";
 
 export interface Category {
   id: string;
@@ -30,44 +23,25 @@ const defaultCategories = [
 ].map((c) => ({ id: c, name: c }));
 
 interface Props {
-  selectedCategories: Selection;
-  onCategoriesChange: (keys: SharedSelection) => void;
+  selectedCategories: string[];
+  onCategoriesChange: (categories: string[]) => void;
   fullWidth?: boolean;
 }
 
-export function ExerciseCategorySelect({
-  selectedCategories,
-  onCategoriesChange,
-  fullWidth,
-}: Props) {
+export function ExerciseCategorySelect({ selectedCategories, onCategoriesChange, fullWidth }: Props) {
   return (
-    <Select
-      items={defaultCategories}
-      label="Categories"
-      variant="flat"
-      isMultiline={true}
-      selectionMode="multiple"
-      placeholder="Select categories"
-      fullWidth={fullWidth}
-      renderValue={(items: SelectedItems<Category>) => {
-        return (
-          <div className="flex flex-wrap gap-2">
-            {items.map((item) => (
-              <Chip key={item.key} variant="flat">
-                {item.data?.name}
-              </Chip>
-            ))}
-          </div>
-        );
+    <Autocomplete
+      multiple
+      options={defaultCategories}
+      getOptionLabel={(option) => option.name}
+      value={defaultCategories.filter((cat) => selectedCategories.includes(cat.id))}
+      onChange={(_, newValue) => {
+        onCategoriesChange(newValue.map((v) => v.id));
       }}
-      selectedKeys={selectedCategories}
-      onSelectionChange={onCategoriesChange}
-    >
-      {(category: Category) => (
-        <SelectItem key={category.id} textValue={category.name}>
-          {category.name}
-        </SelectItem>
-      )}
-    </Select>
+      renderInput={(params) => <TextField {...params} label="Categories" fullWidth={fullWidth} />}
+      renderTags={(value, getTagProps) =>
+        value.map((option, index) => <Chip variant="filled" label={option.name} {...getTagProps({ index })} />)
+      }
+    />
   );
 }

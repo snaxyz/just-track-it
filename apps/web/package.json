@@ -13,8 +13,12 @@
   "dependencies": {
     "@auth0/nextjs-auth0": "4.0.0-beta.10",
     "@aws-sdk/client-lambda": "^3.716.0",
+    "@emotion/cache": "^11.14.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@local/db": "*",
-    "@nextui-org/react": "^2.6.8",
+    "@mui/material": "^6.3.1",
+    "@mui/material-nextjs": "^6.3.1",
     "@tanstack/react-query": "^5.62.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
