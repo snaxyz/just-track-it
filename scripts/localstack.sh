@@ -1,0 +1,37 @@
+#!/bin/bash
+
+ABSOLUTE_PATH=$(pwd)
+
+source $ABSOLUTE_PATH/.env
+source $ABSOLUTE_PATH/scripts/aws-utils.sh
+
+# LAMBDA
+LAMBDA_AGENT_DIST="$ABSOLUTE_PATH/packages/agent/dist"
+LAMBDA_DATABASE_URL=postgres://postgres:postgres@postgres:5432/workout
+LAMBDA_ENV_VARIABLES="Variables={\
+AWS_REGION=$AWS_REGION,\
+AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID,\
+AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY,\
+AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN,\
+OPENAI_ORG=$OPENAI_ORG,\
+OPENAI_API_KEY=$OPENAI_API_KEY,\
+SQS_ENDPOINT_STRATEGY=domain,\
+SQS_ENDPOINT=$SQS_ENDPOINT,\
+SQS_AGENT_URL=$SQS_AGENT_URL,\
+PUSHER_APP_ID=$PUSHER_APP_ID,\
+PUSHER_APP_KEY=$PUSHER_APP_KEY,\
+PUSHER_SECRET=$PUSHER_SECRET,\
+PUSHER_CLUSTER=$PUSHER_CLUSTER,\
+DATABASE_URL=$LAMBDA_DATABASE_URL\
+}"
+
+echo "Setting up local aws infrastructure"
+
+# Create the agent handler
+create_lambda $LAMBDA_AGENT_HANDLER index.handler $LAMBDA_AGENT_DIST nodejs20.x $LAMBDA_ENV_VARIABLES
+
+# Create sqs queue to trigger realtime event handler
+create_sqs $SQS_AGENT_QUEUE '{"VisibilityTimeout":"60"}'
+create_sqs_lambda_trigger $LAMBDA_AGENT_HANDLER "http://localhost:4566/000000000000/$SQS_AGENT_QUEUE"
+
+echo "Setup complete"

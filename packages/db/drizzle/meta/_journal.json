@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1734233942773,
+      "tag": "0000_messy_red_hulk",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1734580091217,
+      "tag": "0001_powerful_warhawk",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1734747068152,
+      "tag": "0002_great_frightful_four",
+      "breakpoints": true
+    }
+  ]
+}

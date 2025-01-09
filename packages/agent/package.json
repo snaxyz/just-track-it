@@ -1,0 +1,30 @@
+{
+  "name": "@local/agent",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "yarn build --watch",
+    "build": "esbuild ./src/index.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js",
+    "logs": "awslocal logs tail /aws/lambda/tracker-agent --follow --region us-west-2"
+  },
+  "dependencies": {
+    "@aws-sdk/client-sqs": "^3.716.0",
+    "@langchain/community": "^0.3.19",
+    "@langchain/core": "^0.3.26",
+    "@langchain/openai": "^0.3.16",
+    "@local/db": "*",
+    "@local/llm": "*",
+    "@local/realtime": "*",
+    "aws-lambda": "^1.0.7",
+    "openai": "^4.77.0",
+    "pusher": "^5.2.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.146",
+    "@types/node": "^22.10.2",
+    "esbuild": "^0.21.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}
