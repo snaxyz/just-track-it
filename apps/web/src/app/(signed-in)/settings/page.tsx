@@ -10,7 +10,7 @@ export default async function SettingsPage() {
   return (
     <PageContainer>
       {user && <SettingsAppbar user={user} />}
-      <MainContainer className="px-4 md:px-3 md:py-4">
+      <MainContainer sx={{ px: { xs: 4, md: 3 }, py: { md: 4 } }}>
         <Settings />
       </MainContainer>
     </PageContainer>

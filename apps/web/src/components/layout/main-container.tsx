@@ -1,14 +1,22 @@
-import { cn } from "@/lib/utils";
+import { Container, SxProps, Theme } from "@mui/material";
+import { ReactNode } from "react";
 
 interface Props {
-  children: React.ReactNode;
-  className?: string;
+  children: ReactNode;
+  sx?: SxProps<Theme>;
 }
 
-export function MainContainer({ children, className }: Props) {
+export function MainContainer({ children, sx }: Props) {
   return (
-    <div className={cn("mx-auto w-full max-w-screen-sm", className)}>
+    <Container
+      maxWidth="sm"
+      sx={{
+        width: "100%",
+        mx: "auto",
+        ...sx,
+      }}
+    >
       {children}
-    </div>
+    </Container>
   );
 }

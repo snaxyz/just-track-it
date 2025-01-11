@@ -1,19 +1,21 @@
 import { MainContainer } from "@/components/layout/main-container";
 import { PageContainer } from "@/components/layout/page-container";
 import { Dashboard } from "./dashboard";
-import { PrefetchRecentWorkouts } from "./prefetch-recent-workouts";
 import { DashboardAppbar } from "./dashboard-appbar";
 import { getUser } from "@/server/user";
+import { Title } from "@/components/title";
+import { Box } from "@mui/material";
 
-export default async function DashboardPage() {
+export default async function Page() {
   const user = await getUser();
   return (
     <PageContainer>
       <DashboardAppbar user={user} />
-      <MainContainer className="px-2 md:px-3 md:py-4">
-        <PrefetchRecentWorkouts>
-          <Dashboard />
-        </PrefetchRecentWorkouts>
+      <MainContainer sx={{ px: { xs: 1, md: 2 }, py: { md: 3 } }}>
+        <Box sx={{ px: 1 }}>
+          <Title>Recent workouts</Title>
+        </Box>
+        <Dashboard />
       </MainContainer>
     </PageContainer>
   );

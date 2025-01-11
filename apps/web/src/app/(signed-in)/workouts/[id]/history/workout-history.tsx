@@ -4,14 +4,12 @@ import { getWorkoutHistory } from "@/app/api/workouts/[id]/history/get-workout-s
 import { Title } from "@/components/title";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import {
-  WorkoutSessionHistoryCard,
-  WorkoutSessionHistoryCardExercise,
-} from "@/components/sessions";
+import { WorkoutSessionHistoryCard, WorkoutSessionHistoryCardExercise } from "@/components/sessions";
 import { QueryResponse, WorkoutSessionWithRelations } from "@local/db";
 import { startWorkoutSessionAndRedirect } from "@/server/workout-sessions/start-workout";
 import { WorkoutHistoryLoading } from "./workout-history-loading";
 import { EmptyWorkoutHistoryPlaceholder } from "./empty-workout-history-placeholder";
+import { Box } from "@mui/material";
 
 export function WorkoutHistory() {
   const { id } = useParams<{ id: string }>();
@@ -28,15 +26,10 @@ export function WorkoutHistory() {
 
   if (isHistoryLoading) return <WorkoutHistoryLoading />;
 
-  const hasHistory =
-    historyQuery?.records.length && historyQuery.records.length > 0;
+  const hasHistory = historyQuery?.records.length && historyQuery.records.length > 0;
 
   return (
-    <div className="pb-24">
-      <div className="px-1">
-        <Title>{historyQuery?.workoutName}</Title>
-      </div>
-
+    <Box sx={{ pb: 24 }}>
       {!hasHistory ? (
         <EmptyWorkoutHistoryPlaceholder onStartWorkoutClick={startWorkout} />
       ) : (
@@ -45,7 +38,7 @@ export function WorkoutHistory() {
             {h.exercises.map((e) => (
               <WorkoutSessionHistoryCardExercise
                 key={e.exerciseId}
-                className="mb-2"
+                sx={{ mb: 2 }}
                 exerciseName={e.exercise.name}
                 {...e}
               />
@@ -53,6 +46,6 @@ export function WorkoutHistory() {
           </WorkoutSessionHistoryCard>
         ))
       )}
-    </div>
+    </Box>
   );
 }

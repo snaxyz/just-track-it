@@ -15,7 +15,16 @@ interface Props {
 
 export function SessionAppbar({ user, id, workoutName }: Props) {
   return (
-    <TopAppbarContainer className="py-3 px-4 hidden md:flex sticky top-0 bg-stone-50 dark:bg-stone-950 z-50">
+    <TopAppbarContainer
+      sx={{
+        py: 1,
+        px: 2,
+        display: { xs: "none", md: "flex" },
+        position: "sticky",
+        top: 0,
+        zIndex: 50,
+      }}
+    >
       <Breadcrumbs>
         <BreadcrumbItem startContent={<HomeIcon size={16} />} href="/">
           Home

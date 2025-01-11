@@ -14,11 +14,9 @@ import {
   WorkoutCardExercises,
   WorkoutCardSkeleton,
 } from "@/components/workouts";
-import { IconButton } from "@/components/icon-button";
-import { Title } from "@/components/title";
 import { useCallback, useState } from "react";
 import { startWorkoutSessionAndRedirect } from "@/server/workout-sessions/start-workout";
-import { Button } from "@mui/material";
+import { Box, Button, IconButton } from "@mui/material";
 import { getExercises } from "@/app/api/exercises/get-exercises";
 import { EditWorkoutModal, EditWorkoutModalProps } from "@/components/workouts/edit-workout-modal";
 import { updateWorkout } from "@/server/workouts";
@@ -112,11 +110,8 @@ export function Workouts() {
 
   return (
     <>
-      <div className="px-1">
-        <Title>Workouts</Title>
-      </div>
       {noWorkouts && <EmptyWorkoutsPlaceholder onAddClick={onOpen} onAskAIClick={onOpenChat} />}
-      <div className="pb-24">
+      <Box sx={{ pb: 24 }}>
         {workoutsQuery?.records.map((w) => (
           <WorkoutCard
             key={w.id}
@@ -131,13 +126,13 @@ export function Workouts() {
         ))}
         {isCreating && <WorkoutCardSkeleton />}
         {!noWorkouts && (
-          <div className="p-2">
+          <Box sx={{ p: 2 }}>
             <Button variant="contained" startIcon={<PlusIcon size={16} />} onClick={onOpen} color="primary" fullWidth>
               Create new workout
             </Button>
-          </div>
+          </Box>
         )}
-      </div>
+      </Box>
       <FabContainer>
         <IconButton color="primary" onClick={onOpenChat}>
           <MessageSquarePlusIcon size={22} />

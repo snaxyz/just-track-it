@@ -1,11 +1,13 @@
 import { MainContainer } from "@/components/layout/main-container";
 import { PageContainer } from "@/components/layout/page-container";
-import { PrefetchExercises } from "../../exercises/prefetch-exercises";
-import { PrefetchWorkoutSession } from "./prefetch-workout-session";
 import { WorkoutSession } from "./workout-session";
-import { getWorkoutSessionServer } from "@/server/workout-sessions/get-workout-session";
-import { SessionAppbar } from "./session-appbar";
+import { PrefetchWorkoutSession } from "./prefetch-workout-session";
+import { PrefetchExercises } from "../../exercises/prefetch-exercises";
 import { getUser } from "@/server/user";
+import { SessionAppbar } from "./session-appbar";
+import { getWorkoutSessionServer } from "@/server/workout-sessions/get-workout-session";
+import { DateTime } from "@/components/date-time";
+import { Box } from "@mui/material";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -13,12 +15,17 @@ interface Props {
 
 export default async function WorkoutSessionPage({ params }: Props) {
   const { id } = await params;
-  const workout = await getWorkoutSessionServer(id);
   const user = await getUser();
+  const workoutSession = await getWorkoutSessionServer(id);
   return (
     <PageContainer>
-      <SessionAppbar user={user} id={id} workoutName={workout.workout.name} />
-      <MainContainer className="px-2 md:px-3 md:py-4">
+      <SessionAppbar user={user} id={id} workoutName={workoutSession?.workout.name ?? ""} />
+      <MainContainer sx={{ px: { xs: 1, md: 2 }, py: { md: 3 } }}>
+        {workoutSession && (
+          <Box sx={{ mb: 2, color: "text.secondary", typography: "caption" }}>
+            <DateTime iso={workoutSession.startedAt ?? ""} />
+          </Box>
+        )}
         <PrefetchExercises>
           <PrefetchWorkoutSession sessionId={id}>
             <WorkoutSession />

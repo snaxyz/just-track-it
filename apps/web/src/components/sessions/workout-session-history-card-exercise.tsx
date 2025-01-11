@@ -1,41 +1,33 @@
 import { WorkoutSessionExerciseWithRelations } from "@local/db";
+import { Box, SxProps, Theme } from "@mui/material";
 
 interface Props {
-  className?: string;
+  sx?: SxProps<Theme>;
   exerciseId: string;
   exerciseName: string;
   sets: WorkoutSessionExerciseWithRelations["sets"];
 }
 
-export function WorkoutSessionHistoryCardExercise({
-  className,
-  exerciseId,
-  exerciseName,
-  sets,
-}: Props) {
+export function WorkoutSessionHistoryCardExercise({ sx, exerciseId, exerciseName, sets }: Props) {
   return (
-    <div key={exerciseId} className={className}>
-      <div className="text-caption-light dark:text-caption capitalize">
-        {exerciseName}
-      </div>
+    <Box key={exerciseId} sx={sx}>
+      <Box sx={{ color: "text.secondary", textTransform: "capitalize" }}>{exerciseName}</Box>
       {sets.map((set, ind) => (
-        <div key={exerciseId + ind}>
-          <div className="flex items-center w-full justify-between">
-            <div className="basis-4/12">Set {ind + 1}</div>
-            <div className="basis-4/12">{set.reps} reps</div>
+        <Box key={exerciseId + ind}>
+          <Box sx={{ display: "flex", alignItems: "center", width: "100%", justifyContent: "space-between" }}>
+            <Box sx={{ flexBasis: "33.33%" }}>Set {ind + 1}</Box>
+            <Box sx={{ flexBasis: "33.33%" }}>{set.reps} reps</Box>
             {set.weight && (
-              <div className="basis-4/12">
+              <Box sx={{ flexBasis: "33.33%" }}>
                 {set.weight} {set.unit}
-              </div>
+              </Box>
             )}
-          </div>
-        </div>
+          </Box>
+        </Box>
       ))}
       {sets.length === 0 && (
-        <div className="text-caption-light dark:text-caption text-xs italic">
-          No sets recorded.
-        </div>
+        <Box sx={{ color: "text.secondary", typography: "caption", fontStyle: "italic" }}>No sets recorded.</Box>
       )}
-    </div>
+    </Box>
   );
 }

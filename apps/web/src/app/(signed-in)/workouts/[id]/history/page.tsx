@@ -1,21 +1,28 @@
 import { MainContainer } from "@/components/layout/main-container";
 import { PageContainer } from "@/components/layout/page-container";
-import { PrefetchWorkoutHistory } from "./prefetch-workout-history";
 import { WorkoutHistory } from "./workout-history";
-import { HistoryAppbar } from "./history-appbar";
+import { PrefetchWorkoutHistory } from "./prefetch-workout-history";
 import { getUser } from "@/server/user";
+import { HistoryAppbar } from "./history-appbar";
+import { getWorkoutHistory } from "@/server/workouts/get-workout-history";
+import { Box } from "@mui/material";
+import { Title } from "@/components/title";
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
 export default async function WorkoutHistoryPage({ params }: Props) {
-  const user = await getUser();
   const { id } = await params;
+  const user = await getUser();
+  const history = await getWorkoutHistory(id);
   return (
     <PageContainer>
       <HistoryAppbar user={user} id={id} />
-      <MainContainer className="px-2 md:px-3 md:py-4">
+      <MainContainer sx={{ px: { xs: 1, md: 2 }, py: { md: 3 } }}>
+        <Box sx={{ px: 1 }}>
+          <Title>{history?.workoutName}</Title>
+        </Box>
         <PrefetchWorkoutHistory workoutId={id}>
           <WorkoutHistory />
         </PrefetchWorkoutHistory>

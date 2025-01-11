@@ -32,7 +32,7 @@ export default function ChatMessage({ className, message, onCreateWorkoutClick }
         message.role === "user" && "bg-transparent px-0 py-2",
         className,
       )}
-      elevation={0}
+      variant="outlined"
     >
       <Box className={cn("flex gap-2 w-full", message.role === "user" && "justify-end")}>
         <Box

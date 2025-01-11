@@ -2,38 +2,47 @@
 
 import { Box, Drawer, IconButton } from "@mui/material";
 import { MenuIcon } from "lucide-react";
+import { useState } from "react";
+import { SidebarWorkspaceDropdown } from "./sidebar-workspace-dropdown";
 import { SidebarNavigation } from "./sidebar-navigation";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import type { SessionData } from "@auth0/nextjs-auth0/types";
 
-export function TopAppbarMenu() {
-  const pathname = usePathname();
+interface Props {
+  user?: SessionData["user"];
+}
+
+export function TopAppbarMenu({ user }: Props) {
   const [isOpen, setIsOpen] = useState(false);
-
-  const handleOpen = () => setIsOpen(true);
-  const handleClose = () => setIsOpen(false);
-
-  useEffect(() => {
-    handleClose();
-  }, [pathname]);
+  const onOpen = () => setIsOpen(true);
+  const onClose = () => setIsOpen(false);
 
   return (
     <>
-      <IconButton onClick={handleOpen}>
+      <IconButton
+        onClick={onOpen}
+        sx={{
+          display: { xs: "flex", md: "none" },
+        }}
+      >
         <MenuIcon size={16} />
       </IconButton>
       <Drawer
-        anchor="left"
+        anchor="right"
         open={isOpen}
-        onClose={handleClose}
-        PaperProps={{
-          className: "bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-stone-900 dark:to-stone-950",
+        onClose={onClose}
+        sx={{
+          display: { xs: "block", md: "none" },
+          "& .MuiDrawer-paper": {
+            width: 280,
+            p: 2,
+          },
         }}
       >
-        <Box sx={{ width: 250 }} className="p-4">
-          <div className="flex justify-center">
-            <SidebarNavigation className="flex flex-col" itemClasses="w-auto" />
-          </div>
+        <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+          {user && <SidebarWorkspaceDropdown name={user.name ?? ""} picture={user.picture} />}
+          <Box sx={{ mt: 4, flexGrow: 1 }}>
+            <SidebarNavigation />
+          </Box>
         </Box>
       </Drawer>
     </>

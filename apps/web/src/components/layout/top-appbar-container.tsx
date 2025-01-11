@@ -1,16 +1,26 @@
-import { cn } from "@/lib/utils";
+import { Box, SxProps, Theme } from "@mui/material";
+import { ReactNode } from "react";
 
 interface Props {
-  children?: React.ReactNode;
-  className?: string;
+  children?: ReactNode;
+  sx?: SxProps<Theme>;
 }
 
-export function TopAppbarContainer({ children, className }: Props) {
+export function TopAppbarContainer({ children, sx }: Props) {
   return (
-    <header
-      className={cn("fixed top-0 w-full z-100 flex items-center", className)}
+    <Box
+      component="header"
+      sx={{
+        position: "fixed",
+        top: 0,
+        width: "100%",
+        zIndex: 100,
+        display: "flex",
+        alignItems: "center",
+        ...sx,
+      }}
     >
       {children}
-    </header>
+    </Box>
   );
 }

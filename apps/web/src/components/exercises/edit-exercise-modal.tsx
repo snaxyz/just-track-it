@@ -1,8 +1,7 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, IconButton } from "@mui/material";
 import { PlusIcon, TrashIcon } from "lucide-react";
 import { ExerciseCategorySelect } from "./exercise-category-select";
 import { useState } from "react";
-import { IconButton } from "../icon-button";
 
 export interface EditExerciseModalProps {
   isOpen: boolean;

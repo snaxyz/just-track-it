@@ -22,13 +22,8 @@ export function TopAppbar({ user, children, className }: Props) {
         </Link>
       </div>
       <Grow />
-      <TopAppbarMenu />
-      {user && (
-        <SidebarWorkspaceDropdown
-          name={user.name ?? ""}
-          picture={user.picture}
-        />
-      )}
+      <TopAppbarMenu user={user} />
+      {user && <SidebarWorkspaceDropdown name={user.name ?? ""} picture={user.picture} />}
     </>
   );
 }

@@ -1,8 +1,7 @@
 "use client";
 
 import { DateTime } from "@/components/date-time";
-import { IconButton } from "@/components/icon-button";
-import { Box, Card, CardContent } from "@mui/material";
+import { Box, Card, CardContent, IconButton } from "@mui/material";
 import { ChevronUpIcon, ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -17,7 +16,7 @@ export function WorkoutSessionHistoryCard({ className, date, children }: Props) 
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <Card className={cn("mb-3 z-0", className)} elevation={0}>
+    <Card className={cn("mb-3 z-0", className)} variant="outlined">
       <CardContent>
         <Box className="flex items-center">
           <DateTime iso={date} />

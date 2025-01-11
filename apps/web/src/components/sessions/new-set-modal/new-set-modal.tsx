@@ -1,5 +1,5 @@
 import { ExerciseModel, WeightUnit } from "@local/db";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
 import { SetSelect, RepSelect, WeightSelect } from "../common";
 import { PlusIcon } from "lucide-react";
 import { ExerciseAutocomplete } from "@/components/exercises";
@@ -46,6 +46,9 @@ export function NewSetModal({
   onRepsChange,
   onWeightChange,
 }: NewSetModalProps) {
+  const title = selectedExercise || customExercise ? "Add set" : "Add exercise set";
+  const isValid = Boolean(selectedExercise || customExercise);
+
   const handleAdd = () => {
     onAdd({
       selectedExercise,
@@ -55,23 +58,17 @@ export function NewSetModal({
       weight,
       unit,
     });
-    onClose?.();
+    onClose();
   };
 
-  const isValid = (selectedExercise || customExercise) && set && reps && weight;
-  const title = set === "1" ? "New Set" : `Set ${set}`;
-
   return (
-    <Dialog
-      open={isOpen}
-      onClose={onClose}
-      PaperProps={{
-        className: "bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-stone-900 dark:to-stone-950",
-      }}
-    >
-      <DialogTitle className="pt-3 px-3">{title}</DialogTitle>
-      <DialogContent className="p-2">
-        <Box className="space-y-4">
+    <Dialog open={isOpen} onClose={onClose} maxWidth="sm" fullWidth>
+      <DialogTitle>{title}</DialogTitle>
+      <DialogContent>
+        <Typography variant="caption" color="text.secondary">
+          Set {set}
+        </Typography>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>
           <ExerciseAutocomplete
             exercises={exercises}
             selectedExercise={selectedExercise}
@@ -84,7 +81,7 @@ export function NewSetModal({
           <WeightSelect unit={unit} weight={weight} onChange={onWeightChange} />
         </Box>
       </DialogContent>
-      <DialogActions className="p-2">
+      <DialogActions>
         <Button
           onClick={handleAdd}
           disabled={!isValid}

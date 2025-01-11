@@ -1,17 +1,17 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { Box, SxProps, Theme } from "@mui/material";
 import { getUserSettings } from "@/server/settings";
 import { useQuery } from "@tanstack/react-query";
 import { SlideIn } from "../animations/slide-in";
 import { useUserId } from "@/lib/hooks/use-user";
 
 interface Props {
-  className?: string;
   children: React.ReactNode;
+  sx?: SxProps<Theme>;
 }
 
-export function SidebarContainer({ className, children }: Props) {
+export function SidebarContainer({ children, sx }: Props) {
   const userId = useUserId();
   const { data } = useQuery({
     queryKey: ["settings"],
@@ -22,10 +22,16 @@ export function SidebarContainer({ className, children }: Props) {
 
   return (
     <SlideIn
-      className={cn(
-        "fixed top-0 left-0 z-100 h-full w-[200px] bg-stone-50 dark:bg-stone-950 overflow-auto",
-        className
-      )}
+      sx={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        zIndex: 100,
+        height: "100%",
+        width: 200,
+        overflow: "auto",
+        ...sx,
+      }}
       visible={!collapsed}
       offset={200}
     >

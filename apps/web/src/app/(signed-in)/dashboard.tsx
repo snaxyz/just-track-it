@@ -1,8 +1,7 @@
 "use client";
 
-import { IconButton } from "@/components/icon-button";
 import { FabContainer } from "@/components/layout/fab-container";
-import { Box, Button, Card, CardContent, Skeleton } from "@mui/material";
+import { Box, Button, Card, CardContent, Skeleton, IconButton } from "@mui/material";
 import { Title } from "@/components/title";
 import { createWorkoutAndSessionAndRedirect } from "@/server/workouts";
 import { startWorkoutSessionAndRedirect } from "@/server/workout-sessions/start-workout";
@@ -52,21 +51,26 @@ export function Dashboard() {
 
   return (
     <>
-      <div className="pb-24">
-        <section className="mb-6">
-          <Box className="px-1">
-            <Title className="text-lg">Recent workouts</Title>
-          </Box>
-          <Box className="space-y-3">
+      <Box sx={{ pb: 24 }}>
+        <Box component="section" sx={{ mb: 6 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
             {workoutSessionsQuery?.pages[0]?.records.length === 0 && (
               <EmptySessionsPlaceholder onAddClick={handleStartTraining} onAskAIClick={onOpenChat} />
             )}
             {workoutSessionsQuery?.pages.map((p) =>
               p.records.map((w) => (
-                <Card key={w.id} className="mb-3 z-0" elevation={0}>
+                <Card key={w.id} variant="outlined" sx={{ mb: 3, zIndex: 0 }}>
                   <CardContent>
-                    <Box className="flex items-center mb-2">
-                      <Box className="text-nowrap text-ellipsis overflow-hidden mr-2" title={w.workout.name}>
+                    <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                      <Box
+                        sx={{
+                          whiteSpace: "nowrap",
+                          textOverflow: "ellipsis",
+                          overflow: "hidden",
+                          mr: 2,
+                        }}
+                        title={w.workout.name}
+                      >
                         {w.workout.name}
                       </Box>
                       <Box sx={{ flexGrow: 1 }} />
@@ -76,7 +80,13 @@ export function Dashboard() {
                         </IconButton>
                       </Link>
                     </Box>
-                    <Box className="text-caption-light dark:text-caption text-xs mb-2">
+                    <Box
+                      sx={{
+                        typography: "caption",
+                        color: "text.secondary",
+                        mb: 2,
+                      }}
+                    >
                       Completed on <DateTime iso={w.completedAt ?? ""} />
                     </Box>
                     <Button
@@ -93,7 +103,7 @@ export function Dashboard() {
               )),
             )}
             {isFetchingNextPage && (
-              <Card className="mb-3 z-0" elevation={0}>
+              <Card variant="outlined" sx={{ mb: 3, zIndex: 0 }}>
                 <CardContent>
                   <Skeleton variant="text" width="60%" height={24} />
                   <Skeleton variant="rectangular" height={48} />
@@ -101,9 +111,9 @@ export function Dashboard() {
               </Card>
             )}
           </Box>
-          <Box className="mt-6">
+          <Box sx={{ mt: 6 }}>
             {hasNextPage && (
-              <Box className="p-2">
+              <Box sx={{ p: 2 }}>
                 <Button
                   variant="outlined"
                   color="secondary"
@@ -116,8 +126,8 @@ export function Dashboard() {
               </Box>
             )}
           </Box>
-        </section>
-      </div>
+        </Box>
+      </Box>
       <ChatModal
         isOpen={isChatOpen}
         onClose={onCloseChat}

@@ -1,12 +1,11 @@
-import { Box, Button, Card, CardContent, Divider } from "@mui/material";
-import { cn } from "@/lib/utils";
+import { Box, Button, Card, CardContent, Divider, IconButton, SxProps, Theme } from "@mui/material";
 import { EditIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { EditWorkoutSessionExerciseModal } from "./edit-workout-session-exercise-modal";
 import { WorkoutSessionExerciseModel, WorkoutSet } from "@local/db";
 
 interface Props {
-  className?: string;
+  sx?: SxProps<Theme>;
   exerciseName: string;
   exerciseId: string;
   children: React.ReactNode;
@@ -19,7 +18,7 @@ interface Props {
 }
 
 export function WorkoutSessionExerciseCard({
-  className,
+  sx,
   exerciseId,
   exerciseName,
   sets,
@@ -58,20 +57,42 @@ export function WorkoutSessionExerciseCard({
 
   return (
     <>
-      <Card className={cn(showUpdateAnimation && "animate-gradient-outline", className)} elevation={0}>
-        <CardContent>
-          <Box className="flex items-center">
-            <Box className="text-nowrap text-ellipsis overflow-hidden mr-2 capitalize" title={exerciseName}>
+      <Card
+        sx={{
+          ...sx,
+          animation: showUpdateAnimation ? "gradient-outline 2s ease-in-out" : undefined,
+        }}
+        variant="outlined"
+      >
+        <CardContent
+          sx={{
+            p: 0,
+            "&:last-child": {
+              pb: 0,
+            },
+          }}
+        >
+          <Box sx={{ display: "flex", alignItems: "center", px: 2, py: 1 }}>
+            <Box
+              sx={{
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+                overflow: "hidden",
+                mr: 2,
+                textTransform: "capitalize",
+              }}
+              title={exerciseName}
+            >
               {exerciseName}
             </Box>
             <Box sx={{ flexGrow: 1 }} />
             {sets.length > 0 && (
-              <Button variant="outlined" onClick={() => setIsOpen(true)} sx={{ minWidth: 0, p: 1 }}>
+              <IconButton onClick={() => setIsOpen(true)} sx={{ minWidth: 0, p: 1 }}>
                 <EditIcon size={16} />
-              </Button>
+              </IconButton>
             )}
           </Box>
-          {sets.length > 0 && <Divider sx={{ my: 1 }} />}
+          {sets.length > 0 && <Divider />}
           {children}
         </CardContent>
       </Card>

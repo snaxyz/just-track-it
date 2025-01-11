@@ -1,7 +1,7 @@
 "use client";
 
 import { FabContainer } from "@/components/layout/fab-container";
-import { Button, TextField } from "@mui/material";
+import { Button, TextField, Box, IconButton, Fab } from "@mui/material";
 import { ListCheckIcon, PlusIcon } from "lucide-react";
 import { redirect, useParams } from "next/navigation";
 import {
@@ -24,7 +24,6 @@ import {
 } from "@local/db";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getWorkoutSession } from "@/app/api/workout-sessions/[id]/get-workout-session";
-import { IconButton } from "@/components/icon-button";
 import { updateWorkoutExercises, updateWorkoutName } from "@/server/workouts";
 import { useDebouncedCallback } from "@/lib/hooks/use-debounced-callback";
 import { getExercises } from "@/app/api/exercises/get-exercises";
@@ -86,9 +85,9 @@ export function WorkoutSession() {
 
   const [selectedExercise, setSelectedExercise] = useState("");
   const [customExercise, setCustomExercise] = useState("");
-  const [set, setSet] = useState("");
-  const [reps, setReps] = useState("");
-  const [weight, setWeight] = useState("");
+  const [set, setSet] = useState("1");
+  const [reps, setReps] = useState("8");
+  const [weight, setWeight] = useState("40");
 
   const workoutExercises = workoutSession?.exercises ?? [];
 
@@ -298,25 +297,21 @@ export function WorkoutSession() {
 
   return (
     <>
-      {workoutSession && (
-        <div className="mb-2 text-caption-light dark:text-caption text-xs">
-          <DateTime iso={workoutSession.startedAt ?? ""} />
-        </div>
-      )}
       <TextField
-        className="text-xl my-3"
+        sx={{ typography: "h6", my: 3 }}
         label="Workout"
         variant="outlined"
         value={workoutSession?.workout.name ?? ""}
         onChange={(e) => handleNameChange(e.target.value)}
-        disabled={workoutSession?.isNew ?? false}
+        disabled={!workoutSession?.isNew ?? true}
+        fullWidth
       />
-      <div className="pb-24">
+      <Box sx={{ pb: 24 }}>
         {workoutExercises.length === 0 && <EmptySessionExercisePlaceholder onAddClick={onOpen} />}
         {workoutExercises.map((e) => (
           <WorkoutSessionExerciseCard
             key={e.exerciseId}
-            className="mb-3 z-0"
+            sx={{ mb: 3 }}
             exerciseName={e.exercise.name}
             exerciseId={e.exerciseId}
             showUpdateAnimation={e.exerciseId === lastUpdatedExercise}
@@ -336,10 +331,17 @@ export function WorkoutSession() {
                 onPress={handleWorkoutExerciseClick}
               />
             ) : (
-              <div className="p-2">
-                <div className="text-caption-light dark:text-caption text-xs mb-2 italic">
+              <Box sx={{ p: 2 }}>
+                <Box
+                  sx={{
+                    color: "text.secondary",
+                    typography: "caption",
+                    fontStyle: "italic",
+                    mb: 2,
+                  }}
+                >
                   No sets yet. Add one to start tracking.
-                </div>
+                </Box>
                 <Button
                   variant="outlined"
                   startIcon={<PlusIcon size={16} />}
@@ -349,44 +351,36 @@ export function WorkoutSession() {
                 >
                   Add set
                 </Button>
-              </div>
+              </Box>
             )}
           </WorkoutSessionExerciseCard>
         ))}
-        <div className="mt-3">
+        <Box sx={{ mt: 3 }}>
           {workoutExercises.length > 0 && (
-            <div className="p-2">
-              <Button
-                variant="outlined"
-                startIcon={<PlusIcon size={16} />}
-                color="secondary"
-                fullWidth
-                onClick={onOpen}
-              >
-                Add exercise set
+            <Box sx={{ p: 2 }}>
+              <Button variant="contained" startIcon={<PlusIcon size={16} />} color="primary" fullWidth onClick={onOpen}>
+                Add exercise
               </Button>
-              <div className="mt-6">
+              <Box sx={{ mt: 3 }}>
                 <Button
-                  variant="contained"
-                  color="primary"
+                  variant="outlined"
+                  color="secondary"
                   fullWidth
                   startIcon={<ListCheckIcon size={16} />}
                   onClick={handleComplete}
                 >
                   Complete workout
                 </Button>
-              </div>
-            </div>
+              </Box>
+            </Box>
           )}
-          {/* <IconButton variant="bordered">
-                <MoreVerticalIcon size={16} />
-              </IconButton> */}
-        </div>
-      </div>
+        </Box>
+      </Box>
       <FabContainer>
-        <IconButton color="secondary" onClick={onOpen}>
+        <Fab color="primary" onClick={onOpen} variant="extended">
           <PlusIcon size={16} />
-        </IconButton>
+          Add exercise
+        </Fab>
       </FabContainer>
       <NewSetModal
         isOpen={isOpen}

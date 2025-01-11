@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@mui/material";
 import { ChartSplineIcon, DumbbellIcon, HomeIcon, SettingsIcon, SquareLibraryIcon } from "lucide-react";
-import Link from "next/link";
+import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 
 const navItems = [
@@ -51,16 +51,19 @@ export function SidebarNavigation({ className, itemClasses }: Props) {
       {navItems.map((nav) => (
         <Button
           key={nav.title}
-          className={cn(
-            "justify-start px-2 py-1 mb-1 text-foreground/60",
-            isLinkActive(pathname, nav.href, nav.exactMatch, nav.matchingHrefs) && "text-foreground",
-            itemClasses,
-          )}
+          sx={{
+            textTransform: "none",
+            fontWeight: "normal",
+            fontSize: "14px",
+            justifyContent: "flex-start",
+            paddingX: 4,
+          }}
           variant="text"
           startIcon={<nav.Icon size={20} />}
           fullWidth
-          component={Link}
+          component={NextLink}
           href={nav.href}
+          color={isLinkActive(pathname, nav.href, nav.exactMatch, nav.matchingHrefs) ? "primary" : "inherit"}
         >
           {nav.title}
         </Button>

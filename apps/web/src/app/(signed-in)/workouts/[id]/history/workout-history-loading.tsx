@@ -8,7 +8,7 @@ export function WorkoutHistoryLoading() {
       </Box>
 
       {[...Array(3)].map((_, i) => (
-        <Card key={i} className="p-4 mx-3" elevation={0}>
+        <Card key={i} className="p-4 mx-3" variant="outlined">
           <Box className="space-y-4">
             <Skeleton variant="text" width={96} height={16} />
 

@@ -84,10 +84,5 @@ export function WorkoutFrequencyChart() {
     };
   }, [theme]);
 
-  return (
-    <div
-      ref={chartRef}
-      className="w-full h-full min-h-[300px] bg-zinc-100 dark:bg-stone-900"
-    />
-  );
+  return <div ref={chartRef} className="w-full h-full min-h-[300px]" />;
 }

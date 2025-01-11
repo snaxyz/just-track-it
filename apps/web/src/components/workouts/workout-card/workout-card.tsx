@@ -13,7 +13,7 @@ interface Props {
 
 export function WorkoutCard({ id, name, description, children, onStartWorkout, onEditClick }: Props) {
   return (
-    <Card className="mb-3 z-0" elevation={0}>
+    <Card className="mb-3 z-0" variant="outlined">
       <CardContent>
         <Box className="flex items-center mb-2">
           <Box>{name}</Box>

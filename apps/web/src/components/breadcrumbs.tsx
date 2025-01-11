@@ -1,22 +1,51 @@
 import { Breadcrumbs as MuiBreadcrumbs, Link as MuiLink } from "@mui/material";
+import { ChevronRightIcon } from "lucide-react";
 import Link from "next/link";
 import { ReactNode } from "react";
 
 interface BreadcrumbItemProps {
   href: string;
-  startContent?: ReactNode;
   children: ReactNode;
+  startContent?: ReactNode;
 }
 
-export function BreadcrumbItem({ href, startContent, children }: BreadcrumbItemProps) {
+export function BreadcrumbItem({ href, children, startContent }: BreadcrumbItemProps) {
   return (
-    <MuiLink component={Link} href={href} className="flex items-center gap-2 no-underline">
+    <MuiLink
+      component={Link}
+      href={href}
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+        textDecoration: "none",
+        color: "text.primary",
+        "&:hover": {
+          color: "primary.main",
+        },
+      }}
+    >
       {startContent}
       {children}
     </MuiLink>
   );
 }
 
-export function Breadcrumbs({ children }: { children: ReactNode }) {
-  return <MuiBreadcrumbs>{children}</MuiBreadcrumbs>;
+interface BreadcrumbsProps {
+  children: ReactNode;
+}
+
+export function Breadcrumbs({ children }: BreadcrumbsProps) {
+  return (
+    <MuiBreadcrumbs
+      separator={<ChevronRightIcon size={16} />}
+      sx={{
+        "& .MuiBreadcrumbs-separator": {
+          color: "text.secondary",
+        },
+      }}
+    >
+      {children}
+    </MuiBreadcrumbs>
+  );
 }

@@ -3,6 +3,7 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { getUser } from "@/server/user";
 import { TopAppbarContainer } from "@/components/layout/top-appbar-container";
 import { TopAppbar } from "@/components/layout/top-appbar";
+import { Box } from "@mui/material";
 
 interface Props {
   children: React.ReactNode;
@@ -12,14 +13,31 @@ export default async function Layout({ children }: Props) {
   const user = await getUser();
 
   return (
-    <div className="flex h-dvh w-full text-foreground bg-stone-50 dark:bg-stone-950 overflow-hidden">
+    <Box
+      sx={{
+        display: "flex",
+        height: "100dvh",
+        width: "100%",
+        overflow: "hidden",
+      }}
+    >
       {children}
-      <TopAppbarContainer className="flex py-1 px-2 md:hidden">
-        <TopAppbar user={user}></TopAppbar>
+      <TopAppbarContainer
+        sx={{
+          py: 1,
+          px: 2,
+          display: { xs: "flex", md: "none" },
+        }}
+      >
+        <TopAppbar user={user} />
       </TopAppbarContainer>
-      <SidebarContainer className="border-r border-divider hidden md:block">
-        <Sidebar user={user}></Sidebar>
+      <SidebarContainer
+        sx={{
+          display: { xs: "none", md: "block" },
+        }}
+      >
+        <Sidebar user={user} />
       </SidebarContainer>
-    </div>
+    </Box>
   );
 }

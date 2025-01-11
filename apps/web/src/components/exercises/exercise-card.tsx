@@ -1,5 +1,4 @@
-import { IconButton } from "@/components/icon-button";
-import { Box, Card, CardContent, Chip, Typography } from "@mui/material";
+import { Box, Card, CardContent, Chip, IconButton, Typography } from "@mui/material";
 import { PencilIcon } from "lucide-react";
 import { EditExerciseModal } from "./edit-exercise-modal";
 import { cn } from "@/lib/utils";
@@ -29,7 +28,7 @@ export function ExerciseCard({ className, id, name, categories, onUpdate, onDele
 
   return (
     <>
-      <Card className={cn("mb-3 z-0", className)} elevation={0}>
+      <Card className={cn("mb-3 z-0", className)} variant="outlined">
         <CardContent>
           <Box className="flex items-center">
             <Typography className="text-nowrap text-ellipsis overflow-hidden mr-2 capitalize" title={name}>
