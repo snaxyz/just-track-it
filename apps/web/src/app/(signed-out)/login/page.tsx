@@ -1,62 +1,85 @@
 "use client";
 
-import { Box, Card, CardContent } from "@mui/material";
-import { DumbbellIcon, LogInIcon } from "lucide-react";
+import { Box, Container, CssBaseline, Typography, Link, Card } from "@mui/material";
+import { LogInIcon } from "lucide-react";
 import { Logo } from "@/components/logo";
+
+function Copyright(props: any) {
+  return (
+    <Typography variant="body2" color="text.secondary" align="center" {...props}>
+      {"Copyright © "}
+      <Link color="inherit" href="https://justtrackitapp.com/">
+        Just track it
+      </Link>{" "}
+      {new Date().getFullYear()}
+    </Typography>
+  );
+}
 
 export default function LoginPage() {
   return (
     <Box
-      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-stone-900"
-      component="div"
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
     >
-      <Card
-        sx={{
-          width: "100%",
-          maxWidth: "md",
-          mx: 4,
-          bgcolor: "transparent",
-          backgroundImage: "none",
-          boxShadow: "none",
-          borderRadius: 4,
-        }}
-      >
-        <CardContent sx={{ py: 8, px: 6 }}>
-          <Box className="flex flex-col items-center gap-8">
-            {/* Logo & Title */}
-            <Box className="text-center space-y-2">
-              <Box className="inline-block p-2 rounded-xl bg-primary/10 my-3">
-                <DumbbellIcon className="w-8 h-8 text-primary" />
-              </Box>
-              <Box component="h1" className="text font-semibold p-3">
-                Welcome to <Logo className="text-2xl mt-2" />
-              </Box>
-            </Box>
-
-            {/* Login Button */}
-            <Box
-              component="a"
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Card variant="outlined" sx={{ p: 4 }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Typography component="h1" variant="h5">
+              Welcome to
+            </Typography>
+            <Logo sx={{ fontSize: "2rem", mt: 2 }} />
+            <Typography variant="body1" sx={{ mt: 2, textAlign: "center", color: "text.secondary" }}>
+              Your AI-powered fitness companion.
+            </Typography>
+            <Link
               href="/auth/login?prompt=login"
-              className="flex items-center gap-3 px-6 py-3 rounded-xl bg-primary text-white hover:opacity-90 transition-opacity w-full justify-center font-medium"
+              sx={{
+                mt: 6,
+                mb: 2,
+                display: "flex",
+                alignItems: "center",
+                gap: 2,
+                px: 2,
+                py: 1,
+                borderRadius: 3,
+                bgcolor: "primary.main",
+                color: "primary.contrastText",
+                textDecoration: "none",
+                "&:hover": {
+                  opacity: 0.9,
+                },
+              }}
             >
               <LogInIcon size={18} />
               Sign in to continue
-            </Box>
-
-            {/* Terms */}
-            <Box component="p" className="text-center text-xs text-default-500">
+            </Link>
+            <Typography variant="body2" color="text.secondary" align="center">
               By continuing, you agree to our{" "}
-              <Box component="a" href="/terms" className="text-primary hover:underline">
+              <Link href="/terms" color="primary">
                 Terms of Service
-              </Box>{" "}
+              </Link>{" "}
               and{" "}
-              <Box component="a" href="/privacy" className="text-primary hover:underline">
+              <Link href="/privacy" color="primary">
                 Privacy Policy
-              </Box>
-            </Box>
+              </Link>
+            </Typography>
           </Box>
-        </CardContent>
-      </Card>
+        </Card>
+        <Copyright sx={{ mt: 4 }} />
+      </Container>
     </Box>
   );
 }

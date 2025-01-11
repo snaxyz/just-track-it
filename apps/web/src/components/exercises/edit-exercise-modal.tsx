@@ -28,21 +28,15 @@ export function EditExerciseModal({
   };
 
   return (
-    <Dialog
-      open={isOpen}
-      onClose={onClose}
-      PaperProps={{
-        className: "bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-stone-900 dark:to-stone-950",
-      }}
-    >
-      <DialogTitle className="pt-3 px-3">Edit Exercise</DialogTitle>
-      <DialogContent className="p-2">
-        <Box className="space-y-4">
+    <Dialog open={isOpen} onClose={onClose} fullWidth maxWidth="xs">
+      <DialogTitle sx={{ pt: 3, px: 3 }}>Edit Exercise</DialogTitle>
+      <DialogContent sx={{ p: 2 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
           <TextField fullWidth label="Exercise" value={name} onChange={(e) => setName(e.target.value)} />
           <ExerciseCategorySelect selectedCategories={categories} onCategoriesChange={setCategories} fullWidth />
         </Box>
       </DialogContent>
-      <DialogActions className="p-2">
+      <DialogActions sx={{ p: 2 }}>
         <IconButton onClick={onDelete} color="error">
           <TrashIcon size={16} />
         </IconButton>

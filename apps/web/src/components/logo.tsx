@@ -1,15 +1,22 @@
-import { Box } from "@mui/material";
-import { kalam } from "@/app/fonts";
-import { cn } from "@/lib/utils";
+import { Box, Typography } from "@mui/material";
+import { SxProps, Theme } from "@mui/material/styles";
 
 interface Props {
-  className?: string;
+  sx?: SxProps<Theme>;
 }
 
-export function Logo({ className }: Props) {
+export function Logo({ sx }: Props) {
   return (
-    <Box component="span" className={cn(kalam.className, "md:text-2xl", className)}>
-      Just Track It
-    </Box>
+    <Typography
+      component="span"
+      sx={{
+        fontFamily: "Kalam",
+        fontWeight: 500,
+        letterSpacing: "-0.05em",
+        ...sx,
+      }}
+    >
+      Just track it
+    </Typography>
   );
 }
