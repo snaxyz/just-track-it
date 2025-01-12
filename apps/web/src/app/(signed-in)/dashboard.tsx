@@ -93,7 +93,7 @@ export function Dashboard() {
                       fullWidth
                       variant="outlined"
                       startIcon={<ActivityIcon size={16} />}
-                      color="secondary"
+                      color="primary"
                       onClick={() => handleStartWorkout(w.workoutId!)}
                     >
                       Start workout

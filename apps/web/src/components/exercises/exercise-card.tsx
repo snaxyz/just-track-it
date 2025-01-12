@@ -1,11 +1,11 @@
-import { Box, Card, CardContent, Chip, IconButton, Typography } from "@mui/material";
+import { Box, Card, CardContent, CardHeader, Chip, IconButton, Typography } from "@mui/material";
 import { PencilIcon } from "lucide-react";
 import { EditExerciseModal } from "./edit-exercise-modal";
-import { cn } from "@/lib/utils";
+import { SxProps, Theme } from "@mui/material/styles";
 import { useState } from "react";
 
 interface Props {
-  className?: string;
+  sx?: SxProps<Theme>;
   id: string;
   name: string;
   categories: string[];
@@ -13,7 +13,7 @@ interface Props {
   onDelete: (id: string) => void;
 }
 
-export function ExerciseCard({ className, id, name, categories, onUpdate, onDelete }: Props) {
+export function ExerciseCard({ sx, id, name, categories, onUpdate, onDelete }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSave = (updatedName: string, updatedCategories: string[]) => {
@@ -28,30 +28,30 @@ export function ExerciseCard({ className, id, name, categories, onUpdate, onDele
 
   return (
     <>
-      <Card className={cn("mb-3 z-0", className)} variant="outlined">
-        <CardContent>
-          <Box className="flex items-center">
-            <Typography className="text-nowrap text-ellipsis overflow-hidden mr-2 capitalize" title={name}>
-              {name}
-            </Typography>
-            <Box sx={{ flexGrow: 1 }} />
-            <IconButton onClick={() => setIsOpen(true)}>
+      <Card variant="outlined" sx={{ ...sx }}>
+        <CardHeader
+          title={name}
+          action={
+            <IconButton onClick={() => setIsOpen(true)} size="small">
               <PencilIcon size={16} />
             </IconButton>
-          </Box>
-          <Box>
-            <Typography variant="caption" className="text-default-500 mb-2">
-              {categories.length === 0 ? "No categories" : "Categories"}
-            </Typography>
-            {categories.length > 0 && (
-              <Box className="flex capitalize gap-2 flex-wrap items-center">
-                {categories.map((c) => (
-                  <Chip key={c} label={c} size="small" />
-                ))}
-              </Box>
-            )}
-          </Box>
-        </CardContent>
+          }
+          sx={{
+            "& .MuiCardHeader-title": {
+              typography: "subtitle1",
+              fontWeight: 500,
+            },
+          }}
+        />
+        {categories.length > 0 && (
+          <CardContent>
+            <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+              {categories.map((c) => (
+                <Chip key={c} label={c} size="small" />
+              ))}
+            </Box>
+          </CardContent>
+        )}
       </Card>
       <EditExerciseModal
         key={id}

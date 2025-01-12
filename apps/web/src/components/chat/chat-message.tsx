@@ -18,7 +18,7 @@ export default function ChatMessage({ className, message, onCreateWorkoutClick }
 
   // const components = {
   //   create_workout_button: () => (
-  //     <Button variant="contained" startIcon={<PlusIcon size={16} />} color="primary" onClick={onCreateWorkoutClick}>
+  //     <Button variant="outlined" startIcon={<PlusIcon size={16} />} color="primary" onClick={onCreateWorkoutClick}>
   //       Create Workout
   //     </Button>
   //   ),

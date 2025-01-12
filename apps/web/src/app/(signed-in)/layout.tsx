@@ -1,4 +1,3 @@
-import { SidebarContainer } from "@/components/layout/sidebar-container";
 import { Sidebar } from "@/components/layout/sidebar";
 import { getUser } from "@/server/user";
 import { TopAppbarContainer } from "@/components/layout/top-appbar-container";
@@ -21,6 +20,7 @@ export default async function Layout({ children }: Props) {
         overflow: "hidden",
       }}
     >
+      <Sidebar />
       {children}
       <TopAppbarContainer
         sx={{
@@ -31,13 +31,6 @@ export default async function Layout({ children }: Props) {
       >
         <TopAppbar user={user} />
       </TopAppbarContainer>
-      <SidebarContainer
-        sx={{
-          display: { xs: "none", md: "block" },
-        }}
-      >
-        <Sidebar user={user} />
-      </SidebarContainer>
     </Box>
   );
 }

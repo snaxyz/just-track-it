@@ -358,7 +358,7 @@ export function WorkoutSession() {
         <Box sx={{ mt: 3 }}>
           {workoutExercises.length > 0 && (
             <Box sx={{ p: 2 }}>
-              <Button variant="contained" startIcon={<PlusIcon size={16} />} color="primary" fullWidth onClick={onOpen}>
+              <Button variant="outlined" startIcon={<PlusIcon size={16} />} color="primary" fullWidth onClick={onOpen}>
                 Add exercise
               </Button>
               <Box sx={{ mt: 3 }}>

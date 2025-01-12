@@ -16,12 +16,7 @@ export function EmptyWorkoutHistoryPlaceholder({ onStartWorkoutClick }: Props) {
           <h3 className="text-xl font-medium">No workout history</h3>
           <p className="text-default-500">You haven't completed any sessions for this workout.</p>
         </div>
-        <Button
-          variant="contained"
-          startIcon={<ActivityIcon size={16} />}
-          color="primary"
-          onClick={onStartWorkoutClick}
-        >
+        <Button variant="outlined" startIcon={<ActivityIcon size={16} />} color="primary" onClick={onStartWorkoutClick}>
           Start workout
         </Button>
       </div>

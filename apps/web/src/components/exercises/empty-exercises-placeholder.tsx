@@ -14,7 +14,7 @@ export function EmptyExercisesPlaceholder({ onAddClick, onAskAIClick }: Props) {
       title="No exercises"
       message="Create your first exercise to get started"
     >
-      <Button variant="contained" startIcon={<PlusIcon size={16} />} color="primary" onClick={onAddClick}>
+      <Button variant="outlined" startIcon={<PlusIcon size={16} />} color="primary" onClick={onAddClick}>
         Create exercise
       </Button>
       <Button variant="outlined" startIcon={<MessageSquarePlusIcon size={16} />} color="primary" onClick={onAskAIClick}>

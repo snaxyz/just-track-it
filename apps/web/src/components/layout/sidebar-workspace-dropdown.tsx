@@ -9,7 +9,7 @@ interface Props {
 
 export function SidebarWorkspaceDropdown({ name, picture }: Props) {
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+    <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
       <Avatar
         src={picture ?? undefined}
         alt={name}

@@ -14,7 +14,7 @@ export function EmptySessionsPlaceholder({ onAddClick, onAskAIClick }: Props) {
       title="No recent workouts"
       message="Start a new workout to track your progress"
     >
-      <Button variant="contained" startIcon={<ActivityIcon size={16} />} color="primary" onClick={onAddClick}>
+      <Button variant="outlined" startIcon={<ActivityIcon size={16} />} color="primary" onClick={onAddClick}>
         Start new workout
       </Button>
       <Button variant="outlined" startIcon={<MessageSquarePlusIcon size={16} />} color="primary" onClick={onAskAIClick}>

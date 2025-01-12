@@ -39,7 +39,7 @@ export function NewExerciseModal({ isOpen, onClose, onAdd, error }: NewExerciseM
       </DialogContent>
       <DialogActions sx={{ p: 2 }}>
         <Button
-          variant="contained"
+          variant="outlined"
           color="primary"
           startIcon={<PlusIcon size={16} />}
           disabled={!name}

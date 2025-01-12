@@ -1,40 +1,39 @@
 "use client";
 
-import { Divider } from "@mui/material";
-import { SidebarNavigation } from "./sidebar-navigation";
-import { cn } from "@/lib/utils";
-import { ReactNode } from "react";
-import type { SessionData } from "@auth0/nextjs-auth0/types";
+import { Box, Drawer } from "@mui/material";
 import { Logo } from "../logo";
+import { SidebarNavigation } from "./sidebar-navigation";
 import Link from "next/link";
 
-interface Props {
-  className?: string;
-  children?: ReactNode;
-  user?: SessionData["user"];
-}
+const drawerWidth = 200;
 
-export function Sidebar({ className, children, user }: Props) {
-  if (!user) {
-    return null;
-  }
-
+export function Sidebar() {
   return (
-    <>
-      <div className={cn("sticky top-0 z-10", className)}>
-        <div className="flex items-center py-1 px-2">
-          <div className={cn("p-4 capitalize flex mb-2 items-center w-full")}>
-            <Link href="/">
-              <Logo />
-            </Link>
-          </div>
-        </div>
-        <div className="py-1">
-          <SidebarNavigation className="py-1" />
-        </div>
-        {Boolean(children) && <Divider />}
-      </div>
-      {children}
-    </>
+    <Drawer
+      variant="permanent"
+      sx={{
+        width: drawerWidth,
+        flexShrink: 0,
+        display: { xs: "none", md: "block" },
+        "& .MuiDrawer-paper": {
+          width: drawerWidth,
+          boxSizing: "border-box",
+          bgcolor: "background.paper",
+          borderRight: 1,
+          borderColor: "divider",
+        },
+      }}
+    >
+      <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+        <Box sx={{ p: 1, display: "flex", justifyContent: "center" }}>
+          <Link href="/">
+            <Logo sx={{ fontSize: 20 }} />
+          </Link>
+        </Box>
+        <Box sx={{ flexGrow: 1, overflow: "auto" }}>
+          <SidebarNavigation />
+        </Box>
+      </Box>
+    </Drawer>
   );
 }

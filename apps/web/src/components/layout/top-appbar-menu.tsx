@@ -38,7 +38,7 @@ export function TopAppbarMenu({ user }: Props) {
           },
         }}
       >
-        <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+        <Box sx={{ display: "flex", flexDirection: "column", height: "100%", aligntItems: "center" }}>
           {user && <SidebarWorkspaceDropdown name={user.name ?? ""} picture={user.picture} />}
           <Box sx={{ mt: 4, flexGrow: 1 }}>
             <SidebarNavigation />

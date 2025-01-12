@@ -127,7 +127,7 @@ export function Workouts() {
         {isCreating && <WorkoutCardSkeleton />}
         {!noWorkouts && (
           <Box sx={{ p: 2 }}>
-            <Button variant="contained" startIcon={<PlusIcon size={16} />} onClick={onOpen} color="primary" fullWidth>
+            <Button variant="outlined" startIcon={<PlusIcon size={16} />} onClick={onOpen} color="primary" fullWidth>
               Create new workout
             </Button>
           </Box>

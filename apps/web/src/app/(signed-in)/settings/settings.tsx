@@ -1,6 +1,8 @@
 "use client";
 
-import { Box, Card, CardContent, Typography, RadioGroup, FormControlLabel, Radio, useColorScheme } from "@mui/material";
+import { Box, Card, CardContent, Typography, ButtonGroup, Button } from "@mui/material";
+import { useColorScheme } from "@mui/material/styles";
+import { SunIcon, MonitorIcon, MoonIcon } from "lucide-react";
 
 export function Settings() {
   const { mode, setMode } = useColorScheme();
@@ -18,11 +20,29 @@ export function Settings() {
               Theme
             </Typography>
             <Typography sx={{ color: "text.secondary", mb: 2 }}>Select your preferred color theme</Typography>
-            <RadioGroup value={mode} onChange={(e) => setMode(e.target.value as "light" | "dark" | "system")}>
-              <FormControlLabel value="light" control={<Radio />} label="Light" />
-              <FormControlLabel value="dark" control={<Radio />} label="Dark" />
-              <FormControlLabel value="system" control={<Radio />} label="System" />
-            </RadioGroup>
+            <ButtonGroup variant="outlined" fullWidth>
+              <Button
+                onClick={() => setMode("light")}
+                startIcon={<SunIcon size={16} />}
+                color={mode === "light" ? "primary" : "inherit"}
+              >
+                Light
+              </Button>
+              <Button
+                onClick={() => setMode("system")}
+                startIcon={<MonitorIcon size={16} />}
+                color={mode === "system" ? "primary" : "inherit"}
+              >
+                System
+              </Button>
+              <Button
+                onClick={() => setMode("dark")}
+                startIcon={<MoonIcon size={16} />}
+                color={mode === "dark" ? "primary" : "inherit"}
+              >
+                Dark
+              </Button>
+            </ButtonGroup>
           </Box>
         </CardContent>
       </Card>

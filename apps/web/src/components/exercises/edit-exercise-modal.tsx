@@ -42,7 +42,7 @@ export function EditExerciseModal({
         </IconButton>
         <Box sx={{ flexGrow: 1 }} />
         <Button
-          variant="contained"
+          variant="outlined"
           color="primary"
           startIcon={<PlusIcon size={16} />}
           disabled={!name}

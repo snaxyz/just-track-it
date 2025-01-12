@@ -10,7 +10,7 @@ interface Props {
 export function EmptyWorkoutsPlaceholder({ onAddClick, onAskAIClick }: Props) {
   return (
     <EmptyPlaceholderCard Icon={DumbbellIcon} title="No workouts" message="Create your first workout to get started">
-      <Button variant="contained" startIcon={<PlusIcon size={16} />} color="primary" onClick={onAddClick}>
+      <Button variant="outlined" startIcon={<PlusIcon size={16} />} color="primary" onClick={onAddClick}>
         Create workout
       </Button>
       <Button variant="outlined" startIcon={<MessageSquarePlusIcon size={16} />} color="primary" onClick={onAskAIClick}>

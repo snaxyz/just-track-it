@@ -3,17 +3,14 @@
 import { getExercises } from "@/app/api/exercises/get-exercises";
 import { ExerciseModel, QueryResponse } from "@local/db";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { MessageSquarePlusIcon, PlusIcon } from "lucide-react";
-import { FabContainer } from "@/components/layout/fab-container";
+import { PlusIcon } from "lucide-react";
 import { NewExerciseModal, ExerciseCard, EmptyExercisesPlaceholder } from "@/components/exercises";
-import { Button } from "@mui/material";
+import { Button, Box } from "@mui/material";
 import { createExercise } from "@/server/exercises/create-exercise";
 import { deleteExercise } from "@/server/exercises/delete-exercise";
 import { updateExercise } from "@/server/exercises/update-exercise";
 import { useState } from "react";
-import { Title } from "@/components/title";
 import { ExercisesLoading } from "./exercises-loading";
-import { Box, IconButton } from "@mui/material";
 
 export function Exercises() {
   const queryClient = useQueryClient();
@@ -83,18 +80,13 @@ export function Exercises() {
           <ExerciseCard key={e.id} {...e} onUpdate={handleUpdateExercise} onDelete={handleDeleteExercise} />
         ))}
         {!noExercises && (
-          <Box sx={{ p: 2 }}>
-            <Button variant="contained" startIcon={<PlusIcon size={16} />} onClick={onOpen} color="primary" fullWidth>
+          <Box sx={{ mt: 2 }}>
+            <Button variant="outlined" startIcon={<PlusIcon size={16} />} onClick={onOpen} color="primary" fullWidth>
               Create new exercise
             </Button>
           </Box>
         )}
       </Box>
-      <FabContainer>
-        <IconButton color="primary" onClick={onOpen}>
-          <MessageSquarePlusIcon size={16} />
-        </IconButton>
-      </FabContainer>
       <NewExerciseModal isOpen={isOpen} onClose={onClose} onAdd={handleAddExercise} error={addError} />
     </>
   );

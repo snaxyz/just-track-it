@@ -1,26 +1,28 @@
 "use client";
 
+import { Box } from "@mui/material";
 import { SidebarWorkspaceDropdown } from "./sidebar-workspace-dropdown";
 import { Grow } from "./grow";
 import { TopAppbarMenu } from "./top-appbar-menu";
 import Link from "next/link";
 import { Logo } from "../logo";
 import type { SessionData } from "@auth0/nextjs-auth0/types";
+import { SxProps, Theme } from "@mui/material/styles";
 
 interface Props {
-  className?: string;
+  sx?: SxProps<Theme>;
   children?: React.ReactNode;
   user?: SessionData["user"];
 }
 
-export function TopAppbar({ user, children, className }: Props) {
+export function TopAppbar({ user, children, sx }: Props) {
   return (
     <>
-      <div className="p-1">
+      <Box sx={{ p: 1 }}>
         <Link href="/">
           <Logo />
         </Link>
-      </div>
+      </Box>
       <Grow />
       <TopAppbarMenu user={user} />
       {user && <SidebarWorkspaceDropdown name={user.name ?? ""} picture={user.picture} />}

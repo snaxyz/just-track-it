@@ -13,9 +13,7 @@ export default async function ExercisesPage() {
     <PageContainer>
       <ExercisesAppbar user={user} />
       <MainContainer sx={{ px: { xs: 1, md: 2 }, py: { md: 3 } }}>
-        <Box sx={{ px: 1 }}>
-          <Title>Exercises</Title>
-        </Box>
+        <Title>Exercises</Title>
         <PrefetchExercises>
           <Exercises />
         </PrefetchExercises>

@@ -112,7 +112,7 @@ export function CreateWorkoutModal({ isOpen, onClose, exercises, onCreate }: Cre
           onClick={handleCreate}
           disabled={!isValid}
           startIcon={<PlusIcon size={16} />}
-          variant="contained"
+          variant="outlined"
           color="primary"
         >
           Create

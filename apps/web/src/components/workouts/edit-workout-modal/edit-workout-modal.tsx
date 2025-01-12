@@ -123,7 +123,7 @@ export function EditWorkoutModal({ isOpen, onClose, workout, exercises, onSave }
           onClick={handleSave}
           disabled={!isValid}
           startIcon={<SaveIcon size={16} />}
-          variant="contained"
+          variant="outlined"
           color="primary"
         >
           Save
