@@ -74,14 +74,14 @@ export function Exercises() {
 
   return (
     <>
-      {noExercises && <EmptyExercisesPlaceholder onAddClick={onOpen} onAskAIClick={handleAskAI} />}
-      <Box sx={{ pb: 24 }}>
+      {noExercises && <EmptyExercisesPlaceholder onAddClick={onOpen} />}
+      <Box sx={{ pb: 3 }}>
         {exercisesQuery?.records.map((e) => (
           <ExerciseCard key={e.id} {...e} onUpdate={handleUpdateExercise} onDelete={handleDeleteExercise} />
         ))}
         {!noExercises && (
           <Box sx={{ mt: 2 }}>
-            <Button variant="outlined" startIcon={<PlusIcon size={16} />} onClick={onOpen} color="primary" fullWidth>
+            <Button variant="contained" startIcon={<PlusIcon size={16} />} onClick={onOpen} color="primary" fullWidth>
               Create new exercise
             </Button>
           </Box>

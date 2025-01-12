@@ -1,15 +1,37 @@
 "use client";
 
-import { Box, Card, CardContent, Typography, ButtonGroup, Button } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  ButtonGroup,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
 import { useColorScheme } from "@mui/material/styles";
-import { SunIcon, MonitorIcon, MoonIcon } from "lucide-react";
+import { SunIcon, MonitorIcon, MoonIcon, TrashIcon } from "lucide-react";
+import { useState } from "react";
+import { deleteUserData } from "@/server/settings/delete-user-data";
+import { useRouter } from "next/navigation";
 
 export function Settings() {
   const { mode, setMode } = useColorScheme();
+  const router = useRouter();
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   if (!mode) {
     return null;
   }
+
+  const handleDeleteData = async () => {
+    await deleteUserData();
+    setIsDeleteDialogOpen(false);
+    router.refresh();
+  };
 
   return (
     <Box sx={{ p: 2 }}>
@@ -20,7 +42,7 @@ export function Settings() {
               Theme
             </Typography>
             <Typography sx={{ color: "text.secondary", mb: 2 }}>Select your preferred color theme</Typography>
-            <ButtonGroup variant="outlined" fullWidth>
+            <ButtonGroup variant="outlined">
               <Button
                 onClick={() => setMode("light")}
                 startIcon={<SunIcon size={16} />}
@@ -46,6 +68,43 @@ export function Settings() {
           </Box>
         </CardContent>
       </Card>
+
+      <Card variant="outlined" sx={{ mt: 2 }}>
+        <CardContent>
+          <Box>
+            <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 2 }}>
+              Delete All Data
+            </Typography>
+            <Typography sx={{ color: "text.secondary", mb: 2 }}>
+              This will permanently delete all your workouts, exercises, and history. This action cannot be undone.
+            </Typography>
+            <Button
+              variant="outlined"
+              color="error"
+              startIcon={<TrashIcon size={16} />}
+              onClick={() => setIsDeleteDialogOpen(true)}
+            >
+              Delete all data
+            </Button>
+          </Box>
+        </CardContent>
+      </Card>
+
+      <Dialog open={isDeleteDialogOpen} onClose={() => setIsDeleteDialogOpen(false)}>
+        <DialogTitle>Delete All Data?</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Are you sure you want to delete all your data? This includes all your workouts, exercises, and history. This
+            action cannot be undone.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsDeleteDialogOpen(false)}>Cancel</Button>
+          <Button onClick={handleDeleteData} color="error" variant="contained">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

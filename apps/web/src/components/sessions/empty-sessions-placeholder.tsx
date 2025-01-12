@@ -4,7 +4,7 @@ import { EmptyPlaceholderCard } from "../cards";
 
 interface Props {
   onAddClick: () => void;
-  onAskAIClick: () => void;
+  onAskAIClick?: () => void;
 }
 
 export function EmptySessionsPlaceholder({ onAddClick, onAskAIClick }: Props) {
@@ -17,9 +17,16 @@ export function EmptySessionsPlaceholder({ onAddClick, onAskAIClick }: Props) {
       <Button variant="outlined" startIcon={<ActivityIcon size={16} />} color="primary" onClick={onAddClick}>
         Start new workout
       </Button>
-      <Button variant="outlined" startIcon={<MessageSquarePlusIcon size={16} />} color="primary" onClick={onAskAIClick}>
-        Ask AI for workout
-      </Button>
+      {onAskAIClick && (
+        <Button
+          variant="outlined"
+          startIcon={<MessageSquarePlusIcon size={16} />}
+          color="primary"
+          onClick={onAskAIClick}
+        >
+          Ask AI for workout
+        </Button>
+      )}
     </EmptyPlaceholderCard>
   );
 }

@@ -29,7 +29,7 @@ export function WorkoutHistory() {
   const hasHistory = historyQuery?.records.length && historyQuery.records.length > 0;
 
   return (
-    <Box sx={{ pb: 24 }}>
+    <Box sx={{ pb: 3 }}>
       {!hasHistory ? (
         <EmptyWorkoutHistoryPlaceholder onStartWorkoutClick={startWorkout} />
       ) : (

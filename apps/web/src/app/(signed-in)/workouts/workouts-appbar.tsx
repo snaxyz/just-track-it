@@ -15,12 +15,9 @@ export function WorkoutsAppbar({ user }: Props) {
   return (
     <TopAppbarContainer
       sx={{
-        py: 1,
-        px: 2,
         display: { xs: "none", md: "flex" },
         position: "sticky",
         top: 0,
-        zIndex: 50,
       }}
     >
       <Breadcrumbs>

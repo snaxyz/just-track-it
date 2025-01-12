@@ -12,15 +12,8 @@ import Link from "next/link";
 import { DateTime } from "@/components/date-time";
 import { getWorkoutSessions } from "../api/workout-sessions/get-workout-sessions";
 import { EmptySessionsPlaceholder } from "@/components/sessions";
-import { ChatModal } from "@/components/chat/chat-modal";
-import { getChatMessages } from "../api/chat/[id]/messages/get-chat-messages";
-import { useState } from "react";
 
 export function Dashboard() {
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const onOpenChat = () => setIsChatOpen(true);
-  const onCloseChat = () => setIsChatOpen(false);
-
   const {
     data: workoutSessionsQuery,
     fetchNextPage,
@@ -41,25 +34,17 @@ export function Dashboard() {
     createWorkoutAndSessionAndRedirect();
   };
 
-  // TODO: Replace with actual chat ID
-  const chatId = "a19ac188-44df-4c52-8b28-83442ac5f63f";
-
-  const { data: chatMessagesQuery } = useQuery<QueryResponse<ChatMessageModel>>({
-    queryKey: ["chat-messages", chatId],
-    queryFn: () => getChatMessages(chatId),
-  });
-
   return (
     <>
-      <Box sx={{ pb: 24 }}>
+      <Box sx={{ pb: 3 }}>
         <Box component="section" sx={{ mb: 6 }}>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {workoutSessionsQuery?.pages[0]?.records.length === 0 && (
-              <EmptySessionsPlaceholder onAddClick={handleStartTraining} onAskAIClick={onOpenChat} />
+              <EmptySessionsPlaceholder onAddClick={handleStartTraining} />
             )}
             {workoutSessionsQuery?.pages.map((p) =>
               p.records.map((w) => (
-                <Card key={w.id} variant="outlined" sx={{ mb: 3, zIndex: 0 }}>
+                <Card key={w.id} variant="outlined">
                   <CardContent>
                     <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
                       <Box
@@ -128,12 +113,6 @@ export function Dashboard() {
           </Box>
         </Box>
       </Box>
-      <ChatModal
-        isOpen={isChatOpen}
-        onClose={onCloseChat}
-        chatId={chatId}
-        messages={chatMessagesQuery?.records ?? []}
-      />
     </>
   );
 }

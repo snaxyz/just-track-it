@@ -21,7 +21,7 @@ export function PageContainer({ children }: Props) {
         sx={{
           width: "100%",
           display: { xs: "flex", md: "none" },
-          mt: 12,
+          flexGrow: 1,
           overflow: "auto",
         }}
       >

@@ -1,26 +1,28 @@
-import { Box, SxProps, Theme } from "@mui/material";
+import { AppBar, SxProps, Theme } from "@mui/material";
 import { ReactNode } from "react";
 
 interface Props {
   children?: ReactNode;
   sx?: SxProps<Theme>;
+  position?: "fixed" | "sticky";
 }
 
-export function TopAppbarContainer({ children, sx }: Props) {
+export function TopAppbarContainer({ children, sx, position = "fixed" }: Props) {
   return (
-    <Box
-      component="header"
+    <AppBar
+      position={position}
+      color="inherit"
+      elevation={0}
       sx={{
-        position: "fixed",
-        top: 0,
-        width: "100%",
-        zIndex: 100,
+        px: 2,
+        py: 1,
+        flexDirection: "row",
         display: "flex",
         alignItems: "center",
         ...sx,
       }}
     >
       {children}
-    </Box>
+    </AppBar>
   );
 }

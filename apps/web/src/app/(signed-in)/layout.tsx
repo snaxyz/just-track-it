@@ -18,19 +18,20 @@ export default async function Layout({ children }: Props) {
         height: "100dvh",
         width: "100%",
         overflow: "hidden",
+        flexDirection: { xs: "column", md: "row" },
       }}
     >
       <Sidebar />
-      {children}
       <TopAppbarContainer
+        position="sticky"
         sx={{
-          py: 1,
-          px: 2,
+          top: 0,
           display: { xs: "flex", md: "none" },
         }}
       >
         <TopAppbar user={user} />
       </TopAppbarContainer>
+      {children}
     </Box>
   );
 }

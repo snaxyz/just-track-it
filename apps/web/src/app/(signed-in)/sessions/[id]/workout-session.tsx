@@ -306,7 +306,7 @@ export function WorkoutSession() {
         disabled={!workoutSession?.isNew ?? true}
         fullWidth
       />
-      <Box sx={{ pb: 24 }}>
+      <Box sx={{ pb: 3 }}>
         {workoutExercises.length === 0 && <EmptySessionExercisePlaceholder onAddClick={onOpen} />}
         {workoutExercises.map((e) => (
           <WorkoutSessionExerciseCard
