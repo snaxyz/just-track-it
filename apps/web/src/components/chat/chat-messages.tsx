@@ -1,16 +1,16 @@
 import type { ChatMessageModel } from "@local/db";
 import ChatMessage from "./chat-message";
-import { cn } from "@/lib/utils";
 import { Box } from "@mui/material";
+import { SxProps, Theme } from "@mui/material/styles";
 
 interface Props {
-  className?: string;
+  sx?: SxProps<Theme>;
   messages: Omit<ChatMessageModel, "createdAt" | "updatedAt">[];
 }
 
-export function ChatMessages({ className, messages }: Props) {
+export function ChatMessages({ sx, messages }: Props) {
   return (
-    <Box className={cn("px-3 pt-3 flex flex-col", className)}>
+    <Box sx={{ display: "flex", flexDirection: "column", px: 1, pt: 1, ...sx }}>
       {messages.map((message) => (
         <ChatMessage key={message.id} message={message} />
       ))}

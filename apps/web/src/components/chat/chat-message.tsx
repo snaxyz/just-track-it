@@ -1,48 +1,79 @@
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
-import { cn } from "@/lib/utils";
-import { BoxIcon, UserIcon, PlusIcon } from "lucide-react";
-import { Card, Button, Box, Typography } from "@mui/material";
+import { BoxIcon, UserIcon } from "lucide-react";
+import { Card, Box, Typography, SxProps, Theme } from "@mui/material";
 import { ChatMessageModel } from "@local/db";
 
 interface Props {
-  className?: string;
+  sx?: SxProps<Theme>;
   message: Omit<ChatMessageModel, "createdAt" | "updatedAt">;
-  onCreateWorkoutClick?: () => void;
 }
 
-export default function ChatMessage({ className, message, onCreateWorkoutClick }: Props) {
-  const responder = message.role === "user" ? "You" : "AI";
-  const Icon = message.role === "user" ? UserIcon : BoxIcon;
-
-  // const components = {
-  //   create_workout_button: () => (
-  //     <Button variant="outlined" startIcon={<PlusIcon size={16} />} color="primary" onClick={onCreateWorkoutClick}>
-  //       Create Workout
-  //     </Button>
-  //   ),
-  // };
+export default function ChatMessage({ sx, message }: Props) {
+  const isUser = message.role === "user";
+  const responder = isUser ? "You" : "AI";
 
   return (
     <Card
-      className={cn(
-        "mb-2",
-        message.role === "ai" && "bg-zinc-300 dark:bg-zinc-800 p-2",
-        message.role === "user" && "bg-transparent px-0 py-2",
-        className,
-      )}
       variant="outlined"
+      sx={{
+        mb: 1,
+        bgcolor: isUser ? "transparent" : "action.hover",
+        border: "none",
+        ...sx,
+      }}
     >
-      <Box className={cn("flex gap-2 w-full", message.role === "user" && "justify-end")}>
+      <Box
+        sx={{
+          display: "flex",
+          gap: 1,
+          width: "100%",
+          justifyContent: isUser ? "flex-end" : "flex-start",
+        }}
+      >
         <Box
-          className={cn(
-            "rounded-lg",
-            message.role === "user" && "px-3 pt-1 pb-2 bg-zinc-400 dark:bg-zinc-700",
-            message.role === "ai" && "px-1 bg-zinc-300 dark:bg-zinc-800",
-          )}
+          sx={{
+            maxWidth: "85%",
+            borderRadius: 1,
+            px: isUser ? 2 : 1.5,
+            pt: 1,
+            pb: 1.5,
+            bgcolor: isUser ? "primary.main" : "transparent",
+            "& p": {
+              m: 0,
+              typography: "body2",
+              color: isUser ? "primary.contrastText" : "text.primary",
+            },
+            "& p:not(:last-of-type)": {
+              mb: 1,
+            },
+            "& pre": {
+              mx: -1.5,
+              p: 1.5,
+              bgcolor: "background.paper",
+              borderRadius: 1,
+              overflow: "auto",
+            },
+            "& code": {
+              fontFamily: "monospace",
+              fontSize: "0.875rem",
+            },
+            "& ul, & ol": {
+              m: 0,
+              pl: 2.5,
+            },
+          }}
         >
-          <Typography variant="caption" className="font-light mb-2">
+          <Typography
+            variant="caption"
+            sx={{
+              display: "block",
+              mb: 0.5,
+              color: isUser ? "primary.contrastText" : "text.secondary",
+              fontWeight: "light",
+            }}
+          >
             {responder}
           </Typography>
           <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>

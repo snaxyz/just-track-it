@@ -4,7 +4,7 @@ import { Exercises } from "./exercises";
 import { PrefetchExercises } from "./prefetch-exercises";
 import { getUser } from "@/server/user";
 import { ExercisesAppbar } from "./exercises-appbar";
-import { Box } from "@mui/material";
+import { Box, Drawer } from "@mui/material";
 import { Title } from "@/components/title";
 
 export default async function ExercisesPage() {

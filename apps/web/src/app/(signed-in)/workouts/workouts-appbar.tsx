@@ -5,7 +5,7 @@ import { Breadcrumbs, BreadcrumbItem } from "@/components/breadcrumbs";
 import { DumbbellIcon, HomeIcon } from "lucide-react";
 import { Box } from "@mui/material";
 import { User } from "@auth0/nextjs-auth0/types";
-import { SidebarWorkspaceDropdown } from "@/components/layout/sidebar-workspace-dropdown";
+import { AvatarMenu } from "@/components/layout/avatar-menu";
 
 interface Props {
   user: User;
@@ -29,7 +29,7 @@ export function WorkoutsAppbar({ user }: Props) {
         </BreadcrumbItem>
       </Breadcrumbs>
       <Box sx={{ flexGrow: 1 }} />
-      <SidebarWorkspaceDropdown name={user.name ?? ""} picture={user.picture} />
+      <AvatarMenu name={user.name ?? ""} picture={user.picture} />
     </TopAppbarContainer>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { Box } from "@mui/material";
-import { SidebarWorkspaceDropdown } from "./sidebar-workspace-dropdown";
+import { AvatarMenu } from "./avatar-menu";
 import { Grow } from "./grow";
 import { MobileAppbarMenu } from "./mobile-appbar-menu";
 import Link from "next/link";
@@ -18,14 +18,14 @@ interface Props {
 export function MobileAppbar({ user, children, sx }: Props) {
   return (
     <>
-      <Box sx={{ p: 1 }}>
+      <Box sx={{ p: 1, ...sx }}>
         <Link href="/">
           <Logo />
         </Link>
       </Box>
       <Grow />
       <MobileAppbarMenu user={user} />
-      {user && <SidebarWorkspaceDropdown name={user.name ?? ""} picture={user.picture} />}
+      {user && <AvatarMenu name={user.name ?? ""} picture={user.picture} />}
     </>
   );
 }

@@ -11,12 +11,14 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Divider,
 } from "@mui/material";
 import { useColorScheme } from "@mui/material/styles";
-import { SunIcon, MonitorIcon, MoonIcon, TrashIcon } from "lucide-react";
+import { SunIcon, MonitorIcon, MoonIcon, TrashIcon, LogOutIcon } from "lucide-react";
 import { useState } from "react";
 import { deleteUserData } from "@/server/settings/delete-user-data";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export function Settings() {
   const { mode, setMode } = useColorScheme();
@@ -73,11 +75,19 @@ export function Settings() {
         <CardContent>
           <Box>
             <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 2 }}>
-              Delete All Data
+              Account
             </Typography>
-            <Typography sx={{ color: "text.secondary", mb: 2 }}>
-              This will permanently delete all your workouts, exercises, and history. This action cannot be undone.
+            <Typography sx={{ color: "text.secondary", mb: 2 }}>Manage your account settings</Typography>
+            <Button component={Link} href="/auth/logout" variant="outlined" startIcon={<LogOutIcon size={16} />}>
+              Sign out
+            </Button>
+
+            <Divider sx={{ my: 4 }} />
+
+            <Typography variant="subtitle2" sx={{ fontWeight: 500, mb: 2 }}>
+              Advanced
             </Typography>
+            <Typography sx={{ color: "text.secondary", mb: 2 }}>Danger zone: These actions cannot be undone</Typography>
             <Button
               variant="outlined"
               color="error"

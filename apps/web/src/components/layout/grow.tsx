@@ -1,11 +1,11 @@
-import { cn } from "@/lib/utils";
+import { Box } from "@mui/material";
+import { SxProps, Theme } from "@mui/material/styles";
 
-export function Grow({
-  className,
-  children,
-}: {
-  className?: string;
+interface Props {
+  sx?: SxProps<Theme>;
   children?: React.ReactNode;
-}) {
-  return <div className={cn("grow", className)}>{children}</div>;
+}
+
+export function Grow({ sx, children }: Props) {
+  return <Box sx={{ flexGrow: 1, ...sx }}>{children}</Box>;
 }

@@ -63,34 +63,31 @@ export function ChatModal({ chatId, messages, isOpen, onClose }: Props) {
       maxWidth="md"
       fullWidth
       PaperProps={{
-        className: "bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-stone-900 dark:to-stone-950",
+        sx: {
+          background: (theme) =>
+            theme.palette.mode === "dark"
+              ? "linear-gradient(to bottom right, #1c1917, #0c0a09)"
+              : "linear-gradient(to bottom right, #f7f7f7, #e5e5e5)",
+        },
       }}
     >
-      <DialogTitle className="pt-3 px-3">Ask AI</DialogTitle>
-      <DialogContent className="p-0">
-        <Box
-          ref={containerRef}
-          onScroll={onScroll}
-          className="px-0 md:px-3 py-2 flex flex-col gap-2 w-full rounded-lg overflow-y-auto custom-scrollbar"
-          sx={{ maxHeight: "calc(100vh - 200px)" }}
-        >
-          <Box className="px-3 pt-3">
-            <ChatMessage
-              className="mb-0"
-              message={{
-                id: "1",
-                chatId,
-                userId,
-                role: "ai",
-                content:
-                  "Ask me anything about your workout, diet, or health! I can also create personalized workouts—just share a bit about your needs.",
-              }}
-            />
-          </Box>
-          <ChatMessages className="pt-0" messages={messages} />
-          <ActiveChatResponse id={chatId} scrollToBottom={scrollToBottom} />
+      <DialogTitle sx={{ pt: 2, px: 2 }}>Ask AI</DialogTitle>
+      <DialogContent sx={{ p: 0 }} ref={containerRef}>
+        <Box sx={{ px: 2, pt: 2 }}>
+          <ChatMessage
+            message={{
+              id: "1",
+              chatId,
+              userId,
+              role: "ai",
+              content:
+                "Ask me anything about your workout, diet, or health! I can also create personalized workouts—just share a bit about your needs.",
+            }}
+          />
         </Box>
-        <Box className="px-1 md:px-3 py-2">
+        <ChatMessages messages={messages} />
+        <ActiveChatResponse id={chatId} scrollToBottom={scrollToBottom} />
+        <Box sx={{ px: { xs: 1, md: 2 }, py: 2 }}>
           <ChatInput
             placeholder="Build strength with dumbbells or Full-body, 30 minutes"
             onSubmit={handleSendChat}

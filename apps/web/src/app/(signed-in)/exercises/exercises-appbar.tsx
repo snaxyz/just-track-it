@@ -1,11 +1,9 @@
 "use client";
 
-import { TopAppbarContainer } from "@/components/layout/top-appbar-container";
 import { Breadcrumbs, BreadcrumbItem } from "@/components/breadcrumbs";
 import { HomeIcon, LibrarySquareIcon } from "lucide-react";
-import { Box } from "@mui/material";
 import { User } from "@auth0/nextjs-auth0/types";
-import { SidebarWorkspaceDropdown } from "@/components/layout/sidebar-workspace-dropdown";
+import { DesktopAppbar } from "@/components/layout/desktop-appbar";
 
 interface Props {
   user: User;
@@ -13,13 +11,7 @@ interface Props {
 
 export function ExercisesAppbar({ user }: Props) {
   return (
-    <TopAppbarContainer
-      sx={{
-        display: { xs: "none", md: "flex" },
-        position: "sticky",
-        top: 0,
-      }}
-    >
+    <DesktopAppbar user={user}>
       <Breadcrumbs>
         <BreadcrumbItem startContent={<HomeIcon size={16} />} href="/">
           Home
@@ -28,8 +20,6 @@ export function ExercisesAppbar({ user }: Props) {
           Exercises
         </BreadcrumbItem>
       </Breadcrumbs>
-      <Box sx={{ flexGrow: 1 }} />
-      <SidebarWorkspaceDropdown name={user.name ?? ""} picture={user.picture} />
-    </TopAppbarContainer>
+    </DesktopAppbar>
   );
 }

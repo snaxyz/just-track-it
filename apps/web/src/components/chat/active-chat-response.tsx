@@ -85,8 +85,8 @@ export default function ActiveChatResponse({ id, scrollToBottom }: Props) {
 
   return (
     streamedMessage && (
-      <Box className="px-3">
-        <ChatMessage className="p-2" message={message} />
+      <Box sx={{ px: 1 }}>
+        <ChatMessage message={message} />
       </Box>
     )
   );
