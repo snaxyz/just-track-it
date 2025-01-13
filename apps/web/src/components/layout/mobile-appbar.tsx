@@ -3,7 +3,7 @@
 import { Box } from "@mui/material";
 import { SidebarWorkspaceDropdown } from "./sidebar-workspace-dropdown";
 import { Grow } from "./grow";
-import { TopAppbarMenu } from "./top-appbar-menu";
+import { MobileAppbarMenu } from "./mobile-appbar-menu";
 import Link from "next/link";
 import { Logo } from "../logo";
 import type { SessionData } from "@auth0/nextjs-auth0/types";
@@ -15,7 +15,7 @@ interface Props {
   user?: SessionData["user"];
 }
 
-export function TopAppbar({ user, children, sx }: Props) {
+export function MobileAppbar({ user, children, sx }: Props) {
   return (
     <>
       <Box sx={{ p: 1 }}>
@@ -24,7 +24,7 @@ export function TopAppbar({ user, children, sx }: Props) {
         </Link>
       </Box>
       <Grow />
-      <TopAppbarMenu user={user} />
+      <MobileAppbarMenu user={user} />
       {user && <SidebarWorkspaceDropdown name={user.name ?? ""} picture={user.picture} />}
     </>
   );

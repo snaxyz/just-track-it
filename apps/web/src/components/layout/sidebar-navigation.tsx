@@ -1,73 +1,97 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { Button } from "@mui/material";
-import { ChartSplineIcon, DumbbellIcon, HomeIcon, SettingsIcon, SquareLibraryIcon } from "lucide-react";
-import NextLink from "next/link";
+import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider } from "@mui/material";
+import {
+  ActivityIcon,
+  DumbbellIcon,
+  HomeIcon,
+  LibrarySquareIcon,
+  SettingsIcon,
+  InfoIcon,
+  MessageSquareIcon,
+} from "lucide-react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-const navItems = [
-  {
-    title: "Home",
-    Icon: HomeIcon,
-    href: "/",
-    exactMatch: true,
-  },
-  {
-    title: "Workouts",
-    Icon: DumbbellIcon,
-    href: "/workouts",
-    matchingHrefs: ["/sessions"],
-  },
-  {
-    title: "Exercises",
-    Icon: SquareLibraryIcon,
-    href: "/exercises",
-  },
-  {
-    title: "Settings",
-    Icon: SettingsIcon,
-    href: "/settings",
-  },
-];
+import { SxProps, Theme } from "@mui/material/styles";
 
 interface Props {
-  className?: string;
-  itemClasses?: string;
+  sx?: SxProps<Theme>;
 }
 
-function isLinkActive(pathname: string, href: string, exact?: boolean, matchingHrefs?: string[]) {
-  if (exact) {
-    return pathname === href;
-  }
-  return pathname.startsWith(href) || matchingHrefs?.some((h) => pathname.startsWith(h));
-}
-
-export function SidebarNavigation({ className, itemClasses }: Props) {
+export function SidebarNavigation({ sx }: Props) {
   const pathname = usePathname();
 
+  const listItemIconSx = {
+    minWidth: 36,
+    color: "text.secondary",
+  };
+
   return (
-    <div className={className}>
-      {navItems.map((nav) => (
-        <Button
-          key={nav.title}
-          sx={{
-            textTransform: "none",
-            fontWeight: "normal",
-            fontSize: "14px",
-            justifyContent: "flex-start",
-            paddingX: 4,
-          }}
-          variant="text"
-          startIcon={<nav.Icon size={20} />}
-          fullWidth
-          component={NextLink}
-          href={nav.href}
-          color={isLinkActive(pathname, nav.href, nav.exactMatch, nav.matchingHrefs) ? "primary" : "inherit"}
-        >
-          {nav.title}
-        </Button>
-      ))}
-    </div>
+    <Box component="nav" sx={{ display: "flex", flexDirection: "column", height: "100%", ...sx }}>
+      <List dense>
+        <ListItem disablePadding>
+          <ListItemButton component={Link} href="/" selected={pathname === "/"}>
+            <ListItemIcon sx={listItemIconSx}>
+              <HomeIcon size={16} />
+            </ListItemIcon>
+            <ListItemText primary="Home" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton component={Link} href="/workouts" selected={pathname === "/workouts"}>
+            <ListItemIcon sx={listItemIconSx}>
+              <DumbbellIcon size={16} />
+            </ListItemIcon>
+            <ListItemText primary="Workouts" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton component={Link} href="/exercises" selected={pathname === "/exercises"}>
+            <ListItemIcon sx={listItemIconSx}>
+              <LibrarySquareIcon size={16} />
+            </ListItemIcon>
+            <ListItemText primary="Exercises" />
+          </ListItemButton>
+        </ListItem>
+        {/* <ListItem disablePadding>
+          <ListItemButton component={Link} href="/insights" selected={pathname === "/insights"}>
+            <ListItemIcon sx={listItemIconSx}>
+              <ActivityIcon size={16} />
+            </ListItemIcon>
+            <ListItemText primary="Insights" />
+          </ListItemButton>
+        </ListItem> */}
+      </List>
+
+      <Box sx={{ flexGrow: 1 }} />
+
+      <List dense>
+        <ListItem disablePadding>
+          <ListItemButton component={Link} href="/settings" selected={pathname === "/settings"}>
+            <ListItemIcon sx={listItemIconSx}>
+              <SettingsIcon size={16} />
+            </ListItemIcon>
+            <ListItemText primary="Settings" />
+          </ListItemButton>
+        </ListItem>
+        <Divider sx={{ my: 1 }} />
+        <ListItem disablePadding>
+          <ListItemButton component={Link} href="/about">
+            <ListItemIcon sx={listItemIconSx}>
+              <InfoIcon size={16} />
+            </ListItemIcon>
+            <ListItemText primary="About" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton component={Link} href="/feedback">
+            <ListItemIcon sx={listItemIconSx}>
+              <MessageSquareIcon size={16} />
+            </ListItemIcon>
+            <ListItemText primary="Feedback" />
+          </ListItemButton>
+        </ListItem>
+      </List>
+    </Box>
   );
 }

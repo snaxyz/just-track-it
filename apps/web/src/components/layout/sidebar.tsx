@@ -21,18 +21,18 @@ export function Sidebar() {
           bgcolor: "background.paper",
           borderRight: 1,
           borderColor: "divider",
+          display: "flex",
+          flexDirection: "column",
         },
       }}
     >
-      <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-        <Box sx={{ p: 1, display: "flex", justifyContent: "center" }}>
-          <Link href="/">
-            <Logo sx={{ fontSize: 20 }} />
-          </Link>
-        </Box>
-        <Box sx={{ flexGrow: 1, overflow: "auto" }}>
-          <SidebarNavigation />
-        </Box>
+      <Box sx={{ p: 1, display: "flex", justifyContent: "center" }}>
+        <Link href="/">
+          <Logo sx={{ fontSize: 20 }} />
+        </Link>
+      </Box>
+      <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
+        <SidebarNavigation />
       </Box>
     </Drawer>
   );

@@ -1,7 +1,7 @@
 import { Sidebar } from "@/components/layout/sidebar";
 import { getUser } from "@/server/user";
 import { TopAppbarContainer } from "@/components/layout/top-appbar-container";
-import { TopAppbar } from "@/components/layout/top-appbar";
+import { MobileAppbar } from "@/components/layout/mobile-appbar";
 import { Box } from "@mui/material";
 
 interface Props {
@@ -29,7 +29,7 @@ export default async function Layout({ children }: Props) {
           display: { xs: "flex", md: "none" },
         }}
       >
-        <TopAppbar user={user} />
+        <MobileAppbar user={user} />
       </TopAppbarContainer>
       {children}
     </Box>
