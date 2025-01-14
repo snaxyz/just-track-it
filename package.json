@@ -7,10 +7,11 @@
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "migrate": "yarn workspace @local/db generate && yarn workspace @local/db push",
-    "deploy": "bash scripts/localstack.sh && yarn migrate",
+    "deploy": "yarn migrate",
     "predeploy": "cp .env packages/db/.env",
-    "predev": "cp .env apps/web/.env.local",
-    "premigrate": "cp .env packages/db/.env"
+    "predev": "cp .env apps/web/.env.local && cp .env apps/agent/.env",
+    "premigrate": "cp .env packages/db/.env",
+    "logs": "turbo logs"
   },
   "devDependencies": {
     "prettier": "^3.2.5",

@@ -44,7 +44,7 @@ export function Settings() {
               Theme
             </Typography>
             <Typography sx={{ color: "text.secondary", mb: 2 }}>Select your preferred color theme</Typography>
-            <ButtonGroup variant="outlined">
+            <ButtonGroup variant="outlined" fullWidth>
               <Button
                 onClick={() => setMode("light")}
                 startIcon={<SunIcon size={16} />}
@@ -72,8 +72,8 @@ export function Settings() {
       </Card>
 
       <Card variant="outlined" sx={{ mt: 2 }}>
-        <CardContent>
-          <Box>
+        <CardContent sx={{ px: 0 }}>
+          <Box sx={{ px: 2 }}>
             <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 2 }}>
               Account
             </Typography>
@@ -81,9 +81,11 @@ export function Settings() {
             <Button component={Link} href="/auth/logout" variant="outlined" startIcon={<LogOutIcon size={16} />}>
               Sign out
             </Button>
+          </Box>
 
-            <Divider sx={{ my: 4 }} />
+          <Divider sx={{ my: 4 }} />
 
+          <Box sx={{ px: 2 }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 500, mb: 2 }}>
               Advanced
             </Typography>

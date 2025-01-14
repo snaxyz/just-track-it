@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Pusher from "pusher-js";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import ChatMessage from "./chat-message";
 import { useQueryClient } from "@tanstack/react-query";
 import type { ChatMessageModel, QueryResponse } from "@local/db";
@@ -17,7 +17,6 @@ interface Props {
 export default function ActiveChatResponse({ id, scrollToBottom }: Props) {
   const userId = useUserId();
   const pathname = usePathname();
-  const router = useRouter();
   const queryClient = useQueryClient();
   const [streamedMessage, setStreamedMessage] = useState("");
   const streamedMessageRef = useRef("");
@@ -73,7 +72,7 @@ export default function ActiveChatResponse({ id, scrollToBottom }: Props) {
       channel.unbind_all();
       channel.unsubscribe();
     };
-  }, [id, pathname, router, scrollToBottom, queryClient]);
+  }, [id, pathname, scrollToBottom, queryClient]);
 
   const message = {
     chatId: id,

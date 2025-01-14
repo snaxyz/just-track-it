@@ -1,10 +1,10 @@
 "use client";
 
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { ChatInput } from "./chat-input";
 import { ChatMessages } from "./chat-messages";
 import ActiveChatResponse from "./active-chat-response";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChatMessageModel, QueryResponse } from "@local/db";
 import { useUserId } from "@/lib/hooks/use-user";
@@ -35,18 +35,22 @@ export function ChatSidebar() {
     }
   };
 
+  useEffect(() => {
+    scrollToBottom(true, true);
+  }, []);
+
   const handleSubmit = async (value: string) => {
     setMessage("");
     const startStreamAgentRequest = async () => {
       const chatId = await createOrGetChat(CHAT_ID);
-      const messageId = await createUserChatMessage(chatId, value);
+      const { id } = await createUserChatMessage(chatId, value);
       const queryKey = ["chat-messages", CHAT_ID];
       const cache = queryClient.getQueryData<QueryResponse<ChatMessageModel>>(queryKey);
 
       const records = [
         ...(cache?.records ?? []),
         {
-          id: messageId,
+          id,
           userId: userId,
           role: "user",
           content: value,
@@ -68,6 +72,14 @@ export function ChatSidebar() {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <Box sx={{ flexGrow: 1, overflow: "auto" }}>
+        <Box sx={{ p: 3, textAlign: "center" }}>
+          <Typography variant="subtitle2" sx={{ color: "text.secondary", mb: 1 }}>
+            Welcome to Just track it
+          </Typography>
+          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+            Ask me about workouts, exercises, or fitness advice. I'm here to help!
+          </Typography>
+        </Box>
         <ChatMessages messages={messagesQuery?.records ?? []} />
         <ActiveChatResponse id={CHAT_ID} scrollToBottom={scrollToBottom} />
         <div ref={messagesEndRef} />

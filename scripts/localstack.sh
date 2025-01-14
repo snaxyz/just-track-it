@@ -7,7 +7,6 @@ source $ABSOLUTE_PATH/scripts/aws-utils.sh
 
 # LAMBDA
 LAMBDA_AGENT_DIST="$ABSOLUTE_PATH/packages/agent/dist"
-LAMBDA_DATABASE_URL=postgres://postgres:postgres@postgres:5432/workout
 LAMBDA_ENV_VARIABLES="Variables={\
 AWS_REGION=$AWS_REGION,\
 AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID,\
