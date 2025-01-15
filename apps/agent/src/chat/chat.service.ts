@@ -21,20 +21,22 @@ export class ChatService {
         role: c.role as MessageType,
       }))
       .reverse();
+
     const stream = await this.agentService.streamChat({ message, chatHistory, userId });
     const responseChunks: string[] = [];
+    let sequence = 0;
 
-    console.log("streaming back chat");
     for await (const chunk of stream) {
       const content = chunk.message.content.toString();
-      responseChunks.push(content.toString());
+      responseChunks.push(content);
+
       this.eventsGateway.emitChatMessage(chatId, {
         userId,
         chatId,
         messageId: "",
         content,
+        sequence: sequence++,
       });
-      console.log("emitted", content);
     }
 
     const { id } = await db.chatMessage.create({
@@ -49,6 +51,7 @@ export class ChatService {
       chatId,
       messageId: id,
       content: "",
+      sequence: sequence++,
       finishReason: "stop",
     });
   }

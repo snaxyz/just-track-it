@@ -9,7 +9,7 @@ interface Props {
 export function EmptySessionExercisePlaceholder({ onAddClick }: Props) {
   return (
     <EmptyPlaceholderCard Icon={DumbbellIcon} title="No sets" message="Add your first exercise to get started">
-      <Button variant="outlined" startIcon={<PlusIcon size={16} />} color="primary" onClick={onAddClick}>
+      <Button variant="contained" startIcon={<PlusIcon size={16} />} color="primary" onClick={onAddClick}>
         Add set
       </Button>
     </EmptyPlaceholderCard>

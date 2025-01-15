@@ -50,7 +50,7 @@ export function Settings() {
         </CardContent>
       </Card>
 
-      <Card variant="outlined">
+      <Card variant="outlined" sx={{ mt: 2 }}>
         <CardContent>
           <Box>
             <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 2 }}>

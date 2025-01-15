@@ -86,7 +86,7 @@ export function NewSetModal({
           onClick={handleAdd}
           disabled={!isValid}
           startIcon={<PlusIcon size={16} />}
-          variant="outlined"
+          variant="contained"
           color="primary"
         >
           Add

@@ -1,9 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { BaseMemory, ChatMessage, OpenAI, OpenAIAgent } from "llamaindex";
 import { createExerciseTool } from "./tools/create-exercise.tool";
+import { getExercisesTool } from "./tools/get-exercises.tool";
+import { createWorkoutTool } from "./tools/create-workout.tool";
 
 @Injectable()
 export class AgentService {
+  private tools = [createExerciseTool, createWorkoutTool, getExercisesTool];
+
   async streamChat({
     message,
     chatHistory,
@@ -21,7 +25,7 @@ export class AgentService {
     const agent = new OpenAIAgent({
       llm,
       systemPrompt,
-      tools: [createExerciseTool],
+      tools: this.tools,
     });
     const stream = await agent.chat({
       message,

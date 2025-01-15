@@ -3,6 +3,7 @@ import { EditIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { EditWorkoutSessionExerciseModal } from "./edit-workout-session-exercise-modal";
 import { WorkoutSessionExerciseModel, WorkoutSet } from "@local/db";
+import { AnimatedCard } from "./animated-card";
 
 interface Props {
   sx?: SxProps<Theme>;
@@ -57,13 +58,7 @@ export function WorkoutSessionExerciseCard({
 
   return (
     <>
-      <Card
-        sx={{
-          ...sx,
-          animation: showUpdateAnimation ? "gradient-outline 2s ease-in-out" : undefined,
-        }}
-        variant="outlined"
-      >
+      <AnimatedCard variant="outlined" showAnimation={showUpdateAnimation} sx={sx}>
         <CardContent
           sx={{
             p: 0,
@@ -95,7 +90,7 @@ export function WorkoutSessionExerciseCard({
           {sets.length > 0 && <Divider />}
           {children}
         </CardContent>
-      </Card>
+      </AnimatedCard>
       <EditWorkoutSessionExerciseModal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}

@@ -1,7 +1,7 @@
 "use client";
 
 import { FabContainer } from "@/components/layout/fab-container";
-import { Box, Button, Card, CardContent, Skeleton, IconButton } from "@mui/material";
+import { Box, Button, Card, CardContent, Skeleton, IconButton, CardHeader } from "@mui/material";
 import { Title } from "@/components/title";
 import { createWorkoutAndSessionAndRedirect } from "@/server/workouts";
 import { startWorkoutSessionAndRedirect } from "@/server/workout-sessions/start-workout";
@@ -45,26 +45,23 @@ export function Dashboard() {
             {workoutSessionsQuery?.pages.map((p) =>
               p.records.map((w) => (
                 <Card key={w.id} variant="outlined">
-                  <CardContent>
-                    <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                      <Box
-                        sx={{
-                          whiteSpace: "nowrap",
-                          textOverflow: "ellipsis",
-                          overflow: "hidden",
-                          mr: 2,
-                        }}
-                        title={w.workout.name}
-                      >
-                        {w.workout.name}
-                      </Box>
-                      <Box sx={{ flexGrow: 1 }} />
+                  <CardHeader
+                    title={w.workout.name}
+                    action={
                       <Link href={`/workouts/${w.workoutId}/history`}>
                         <IconButton>
                           <HistoryIcon size={16} />
                         </IconButton>
                       </Link>
-                    </Box>
+                    }
+                    sx={{
+                      "& .MuiCardHeader-title": {
+                        typography: "subtitle1",
+                        fontWeight: 500,
+                      },
+                    }}
+                  />
+                  <CardContent>
                     <Box
                       sx={{
                         typography: "caption",

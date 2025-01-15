@@ -20,6 +20,8 @@ const defaultCategories = [
   "Calves",
   "Abs",
   "Obliques",
+  "Core",
+  "Full Body",
 ].map((c) => ({ id: c, name: c }));
 
 interface Props {

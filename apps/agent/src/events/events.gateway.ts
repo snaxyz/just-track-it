@@ -16,6 +16,7 @@ export interface ChatMessageEvent {
   messageId: string;
   content: string;
   finishReason?: string;
+  sequence: number;
 }
 
 @WebSocketGateway({
@@ -74,7 +75,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   emitChatMessage(chatId: string, message: ChatMessageEvent) {
-    console.log(`Emitting to room chat:${chatId}:`, message);
     this.server.to(`chat:${chatId}`).emit("chat:message", message); // Now we can safely use rooms
   }
 }

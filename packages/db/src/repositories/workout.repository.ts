@@ -7,6 +7,7 @@ import {
   workoutExercise,
   WorkoutWithRelations,
   WorkoutExerciseWithRelations,
+  exercise,
 } from "../schema";
 import { QueryResponse, keyToCursor, cursorToKey, QueryOptions } from "../types";
 
@@ -45,24 +46,32 @@ export class WorkoutRepository extends BaseRepository {
       };
     }
 
-    await this.db.insert(workoutExercise).values(
-      exerciseIds.map((exerciseId) => ({
-        userId: data.userId,
-        workoutId: createdWorkout.id,
-        exerciseId,
-      })),
-    );
+    const [result] = await this.db
+      .insert(workoutExercise)
+      .values(
+        exerciseIds.map((exerciseId) => ({
+          userId: data.userId,
+          workoutId: createdWorkout.id,
+          exerciseId,
+        })),
+      )
+      .returning();
 
-    return await this.db.query.workout.findFirst({
-      where: and(eq(workout.id, createdWorkout.id), eq(workout.userId, data.userId)),
-      with: {
-        exercises: {
-          with: {
-            exercise: true,
-          },
+    return {
+      ...createdWorkout,
+      exercises: [
+        {
+          id: result.id,
+          userId: result.userId,
+          workoutId: result.workoutId,
+          exerciseId: result.exerciseId,
+          description: "",
+          exercise: await this.db.query.exercise.findFirst({
+            where: eq(exercise.id, result.exerciseId),
+          }),
         },
-      },
-    });
+      ],
+    };
   }
 
   async get(userId: string, id: string) {

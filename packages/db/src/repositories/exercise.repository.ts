@@ -1,9 +1,14 @@
-import { and, eq, gt, desc } from "drizzle-orm";
+import { and, eq, gt, desc, ilike, or } from "drizzle-orm";
 import { BaseRepository } from "./base.repository";
 import { exercise, ExerciseModel, ExerciseInsertModel } from "../schema";
 import { QueryResponse, keyToCursor, cursorToKey, QueryOptions } from "../types";
+import { sql } from "drizzle-orm";
 
 export type CreateExerciseInput = Omit<ExerciseModel, "id" | "createdAt" | "updatedAt">;
+
+export interface ExerciseQueryOptions extends QueryOptions {
+  search?: string;
+}
 
 export class ExerciseRepository extends BaseRepository {
   async create(data: CreateExerciseInput) {
@@ -32,12 +37,19 @@ export class ExerciseRepository extends BaseRepository {
 
   async query(
     userId: string,
-    options: QueryOptions = { limit: 20, order: "asc" },
+    options: ExerciseQueryOptions = { limit: 20, order: "asc" },
   ): Promise<QueryResponse<ExerciseModel>> {
     const cursorData = options.nextCursor ? cursorToKey<{ name: string }>(options.nextCursor) : undefined;
+    const searchTerm = options.search?.toLowerCase();
 
     const exercises = await this.db.query.exercise.findMany({
-      where: and(eq(exercise.userId, userId), cursorData ? gt(exercise.name, cursorData.name) : undefined),
+      where: and(
+        eq(exercise.userId, userId),
+        cursorData ? gt(exercise.name, cursorData.name) : undefined,
+        searchTerm
+          ? or(ilike(exercise.name, `%${searchTerm}%`), sql`${exercise.categories}::text ilike ${`%${searchTerm}%`}`)
+          : undefined,
+      ),
       orderBy: options.order === "asc" ? exercise.name : desc(exercise.name),
       limit: options.limit + 1,
     });

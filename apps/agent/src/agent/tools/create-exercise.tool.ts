@@ -20,6 +20,8 @@ const categories = [
   "Calves",
   "Abs",
   "Obliques",
+  "Core",
+  "Full Body",
 ];
 
 async function createExercise(input: CreateExercise) {

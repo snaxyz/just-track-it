@@ -37,12 +37,12 @@ export function EditExerciseModal({
         </Box>
       </DialogContent>
       <DialogActions sx={{ p: 2 }}>
-        <IconButton onClick={onDelete} color="error">
+        <IconButton onClick={onDelete}>
           <TrashIcon size={16} />
         </IconButton>
         <Box sx={{ flexGrow: 1 }} />
         <Button
-          variant="outlined"
+          variant="contained"
           color="primary"
           startIcon={<PlusIcon size={16} />}
           disabled={!name}

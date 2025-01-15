@@ -38,7 +38,11 @@ export function SidebarNavigation({ sx }: Props) {
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
-          <ListItemButton component={Link} href="/workouts" selected={pathname === "/workouts"}>
+          <ListItemButton
+            component={Link}
+            href="/workouts"
+            selected={pathname.includes("/workouts") || pathname.includes("/sessions")}
+          >
             <ListItemIcon sx={listItemIconSx}>
               <DumbbellIcon size={16} />
             </ListItemIcon>
@@ -76,7 +80,7 @@ export function SidebarNavigation({ sx }: Props) {
         </ListItem>
         <Divider sx={{ my: 1 }} />
         <ListItem disablePadding>
-          <ListItemButton component={Link} href="/about">
+          <ListItemButton component={Link} href="/about" target="_blank" rel="noopener noreferrer">
             <ListItemIcon sx={listItemIconSx}>
               <InfoIcon size={16} />
             </ListItemIcon>

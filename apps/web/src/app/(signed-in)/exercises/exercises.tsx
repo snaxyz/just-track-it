@@ -77,7 +77,13 @@ export function Exercises() {
       {noExercises && <EmptyExercisesPlaceholder onAddClick={onOpen} />}
       <Box sx={{ pb: 3 }}>
         {exercisesQuery?.records.map((e) => (
-          <ExerciseCard key={e.id} {...e} onUpdate={handleUpdateExercise} onDelete={handleDeleteExercise} />
+          <ExerciseCard
+            key={e.id}
+            {...e}
+            onUpdate={handleUpdateExercise}
+            onDelete={handleDeleteExercise}
+            sx={{ mb: 2 }}
+          />
         ))}
         {!noExercises && (
           <Box sx={{ mt: 2 }}>
