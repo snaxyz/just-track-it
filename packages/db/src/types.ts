@@ -1,3 +1,5 @@
+export { CreateWorkoutInput, CreateExerciseInput } from "./repositories";
+
 export type QueryResponse<T> = {
   cursor: string;
   records: T[];

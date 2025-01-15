@@ -1,15 +1,12 @@
 import { and, eq, gt, desc } from "drizzle-orm";
 import { BaseRepository } from "./base.repository";
 import { exercise, ExerciseModel, ExerciseInsertModel } from "../schema";
-import {
-  QueryResponse,
-  keyToCursor,
-  cursorToKey,
-  QueryOptions,
-} from "../types";
+import { QueryResponse, keyToCursor, cursorToKey, QueryOptions } from "../types";
+
+export type CreateExerciseInput = Omit<ExerciseModel, "id" | "createdAt" | "updatedAt">;
 
 export class ExerciseRepository extends BaseRepository {
-  async create(data: Omit<ExerciseModel, "id" | "createdAt" | "updatedAt">) {
+  async create(data: CreateExerciseInput) {
     const [result] = await this.db
       .insert(exercise)
       .values({
@@ -35,17 +32,12 @@ export class ExerciseRepository extends BaseRepository {
 
   async query(
     userId: string,
-    options: QueryOptions = { limit: 20, order: "asc" }
+    options: QueryOptions = { limit: 20, order: "asc" },
   ): Promise<QueryResponse<ExerciseModel>> {
-    const cursorData = options.nextCursor
-      ? cursorToKey<{ name: string }>(options.nextCursor)
-      : undefined;
+    const cursorData = options.nextCursor ? cursorToKey<{ name: string }>(options.nextCursor) : undefined;
 
     const exercises = await this.db.query.exercise.findMany({
-      where: and(
-        eq(exercise.userId, userId),
-        cursorData ? gt(exercise.name, cursorData.name) : undefined
-      ),
+      where: and(eq(exercise.userId, userId), cursorData ? gt(exercise.name, cursorData.name) : undefined),
       orderBy: options.order === "asc" ? exercise.name : desc(exercise.name),
       limit: options.limit + 1,
     });
@@ -73,8 +65,6 @@ export class ExerciseRepository extends BaseRepository {
   }
 
   async delete(userId: string, id: string) {
-    await this.db
-      .delete(exercise)
-      .where(and(eq(exercise.id, id), eq(exercise.userId, userId)));
+    await this.db.delete(exercise).where(and(eq(exercise.id, id), eq(exercise.userId, userId)));
   }
 }

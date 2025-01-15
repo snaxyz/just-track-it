@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Pusher from "pusher-js";
-import { usePathname } from "next/navigation";
 import ChatMessage from "./chat-message";
 import { useQueryClient } from "@tanstack/react-query";
 import type { ChatMessageModel, QueryResponse } from "@local/db";
 import { useUserId } from "@/lib/hooks/use-user";
 import { Box } from "@mui/material";
+import { getSocketClient } from "@/lib/socket";
+import { Socket } from "socket.io-client";
 
 interface Props {
   id: string;
@@ -16,68 +16,88 @@ interface Props {
 
 export default function ActiveChatResponse({ id, scrollToBottom }: Props) {
   const userId = useUserId();
-  const pathname = usePathname();
   const queryClient = useQueryClient();
   const [streamedMessage, setStreamedMessage] = useState("");
   const streamedMessageRef = useRef("");
+  const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
-    if (!id) {
-      return;
-    }
+    if (!id) return;
 
-    const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY!, {
-      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
-    });
+    let mounted = true;
 
-    const channel = pusher.subscribe(`chat_${id}`);
+    const initSocket = async () => {
+      try {
+        const socket = await getSocketClient();
+        if (!mounted) return;
 
-    channel.bind("messagePosted", (data: any) => {
-      const msgChunk = data.content || "";
-      setStreamedMessage((msg) => msg + msgChunk);
-      if (streamedMessageRef) {
-        streamedMessageRef.current = (streamedMessageRef.current ?? "") + msgChunk;
-      }
-      if (data.finishReason === "stop") {
-        setStreamedMessage("");
+        socketRef.current = socket;
+        console.log("Connecting to chat:", id);
+        socket.emit("join", `chat:${id}`);
 
-        const updateCache = () => {
-          const queryKey = ["chat-messages", id];
-          const cache = queryClient.getQueryData<QueryResponse<ChatMessageModel>>(queryKey);
-          if (!streamedMessageRef.current) {
-            return;
+        const handleChatMessage = (data: {
+          content: string;
+          finishReason?: string;
+          messageId: string;
+          userId: string;
+        }) => {
+          const msgChunk = data.content || "";
+
+          if (data.finishReason === "stop") {
+            const updateCache = () => {
+              const queryKey = ["chat-messages", id];
+              const cache = queryClient.getQueryData<QueryResponse<ChatMessageModel>>(queryKey);
+              if (!streamedMessageRef.current) return;
+
+              const records = [
+                ...(cache?.records ?? []),
+                {
+                  id: data.messageId,
+                  userId: data.userId,
+                  role: "ai",
+                  content: streamedMessageRef.current,
+                  chatId: id,
+                },
+              ];
+              const queryData = { records };
+              queryClient.setQueryData(queryKey, queryData);
+              streamedMessageRef.current = "";
+              setStreamedMessage("");
+            };
+            updateCache();
+          } else {
+            setStreamedMessage((msg) => msg + msgChunk);
+            if (streamedMessageRef.current) {
+              streamedMessageRef.current += msgChunk;
+            } else {
+              streamedMessageRef.current = msgChunk;
+            }
+            scrollToBottom();
           }
-          const records = [
-            ...(cache?.records ?? []),
-            {
-              id: data.messageId,
-              userId: data.userId,
-              role: "ai",
-              content: streamedMessageRef.current,
-              chatId: id,
-            },
-          ];
-          const queryData = { records };
-          queryClient.setQueryData(queryKey, queryData);
-          streamedMessageRef.current = "";
         };
 
-        updateCache();
+        socket.on("chat:message", handleChatMessage);
+        console.log("Subscribed to chat:message events");
+      } catch (error) {
+        console.error("Failed to initialize socket:", error);
       }
+    };
 
-      scrollToBottom();
-    });
+    initSocket();
 
     return () => {
-      channel.unbind_all();
-      channel.unsubscribe();
+      mounted = false;
+      if (socketRef.current) {
+        socketRef.current.off("chat:message");
+        socketRef.current.emit("leave", `chat:${id}`);
+      }
     };
-  }, [id, pathname, scrollToBottom, queryClient]);
+  }, [id]);
 
   const message = {
     chatId: id,
     userId,
-    id: id,
+    id,
     role: "ai",
     content: streamedMessage,
   };

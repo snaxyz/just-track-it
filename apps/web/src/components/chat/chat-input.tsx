@@ -36,12 +36,14 @@ export function ChatInput({ onSubmit, onValueChange, value, disabled, placeholde
       value={value}
       onChange={(e) => onValueChange(e.target.value)}
       onKeyDown={handleKeyDown}
-      InputProps={{
-        endAdornment: (
-          <IconButton size="small" onClick={handleSubmit} sx={{ alignSelf: "flex-end" }}>
-            <SendIcon size={18} />
-          </IconButton>
-        ),
+      slotProps={{
+        input: {
+          endAdornment: (
+            <IconButton size="small" onClick={handleSubmit} sx={{ alignSelf: "flex-end" }}>
+              <SendIcon size={18} />
+            </IconButton>
+          ),
+        },
       }}
     />
   );

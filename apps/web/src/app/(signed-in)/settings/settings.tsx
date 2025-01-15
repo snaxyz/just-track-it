@@ -12,6 +12,7 @@ import {
   DialogContent,
   DialogActions,
   Divider,
+  TextField,
 } from "@mui/material";
 import { useColorScheme } from "@mui/material/styles";
 import { SunIcon, MonitorIcon, MoonIcon, TrashIcon, LogOutIcon } from "lucide-react";
@@ -37,6 +38,18 @@ export function Settings() {
 
   return (
     <Box sx={{ p: 2 }}>
+      <Card variant="outlined">
+        <CardContent>
+          <Box>
+            <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 2 }}>
+              AI Assistant
+            </Typography>
+            <Typography sx={{ color: "text.secondary", mb: 2 }}>Choose a name for your assistant</Typography>
+            <TextField label="Name" value="Brooklyn"></TextField>
+          </Box>
+        </CardContent>
+      </Card>
+
       <Card variant="outlined">
         <CardContent>
           <Box>

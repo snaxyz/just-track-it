@@ -1,10 +1,10 @@
-import { green, indigo, lightBlue, lightGreen, lime, pink, yellow } from "@mui/material/colors";
+import { blue, blueGrey, green, indigo, lightBlue, lightGreen, lime, pink, yellow } from "@mui/material/colors";
 import { createTheme } from "@mui/material/styles";
 
 export const theme = createTheme({
   palette: {
-    primary: pink,
-    secondary: indigo,
+    primary: indigo,
+    secondary: pink,
   },
   colorSchemes: {
     light: {
@@ -13,6 +13,7 @@ export const theme = createTheme({
           default: "#f0f0f0",
           paper: "#f5f5f5",
         },
+        primary: indigo,
       },
     },
     dark: true,

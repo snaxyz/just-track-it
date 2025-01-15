@@ -7,7 +7,6 @@ export function cn(...inputs: ClassValue[]) {
 
 /**
  * Normalize user id to not include characters
- * that cannot be used for pusher channels
  */
 export function normalizeUserId(userId: string) {
   return userId.replace(/\|/g, "");

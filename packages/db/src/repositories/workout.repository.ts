@@ -8,17 +8,12 @@ import {
   WorkoutWithRelations,
   WorkoutExerciseWithRelations,
 } from "../schema";
-import {
-  QueryResponse,
-  keyToCursor,
-  cursorToKey,
-  QueryOptions,
-} from "../types";
+import { QueryResponse, keyToCursor, cursorToKey, QueryOptions } from "../types";
+
+export type CreateWorkoutInput = Omit<WorkoutInsertModel, "id" | "createdAt" | "updatedAt">;
 
 export class WorkoutRepository extends BaseRepository {
-  async create(
-    data: Omit<WorkoutInsertModel, "id" | "createdAt" | "updatedAt">
-  ) {
+  async create(data: CreateWorkoutInput) {
     const [result] = await this.db
       .insert(workout)
       .values({
@@ -31,8 +26,8 @@ export class WorkoutRepository extends BaseRepository {
   }
 
   async createWithExercises(
-    data: Omit<WorkoutInsertModel, "id" | "createdAt" | "updatedAt">,
-    exerciseIds: string[]
+    data: CreateWorkoutInput,
+    exerciseIds: string[],
   ): Promise<Omit<WorkoutWithRelations, "sessions">> {
     const [createdWorkout] = await this.db
       .insert(workout)
@@ -55,14 +50,11 @@ export class WorkoutRepository extends BaseRepository {
         userId: data.userId,
         workoutId: createdWorkout.id,
         exerciseId,
-      }))
+      })),
     );
 
     return await this.db.query.workout.findFirst({
-      where: and(
-        eq(workout.id, createdWorkout.id),
-        eq(workout.userId, data.userId)
-      ),
+      where: and(eq(workout.id, createdWorkout.id), eq(workout.userId, data.userId)),
       with: {
         exercises: {
           with: {
@@ -89,17 +81,12 @@ export class WorkoutRepository extends BaseRepository {
 
   async query(
     userId: string,
-    options: QueryOptions = { limit: 20, order: "asc" }
+    options: QueryOptions = { limit: 20, order: "asc" },
   ): Promise<QueryResponse<WorkoutModel>> {
-    const cursorData = options.nextCursor
-      ? cursorToKey<{ name: string }>(options.nextCursor)
-      : undefined;
+    const cursorData = options.nextCursor ? cursorToKey<{ name: string }>(options.nextCursor) : undefined;
 
     const workouts = await this.db.query.workout.findMany({
-      where: and(
-        eq(workout.userId, userId),
-        cursorData ? gt(workout.name, cursorData.name) : undefined
-      ),
+      where: and(eq(workout.userId, userId), cursorData ? gt(workout.name, cursorData.name) : undefined),
       orderBy: options.order === "asc" ? workout.name : desc(workout.name),
       limit: options.limit + 1,
       with: {
@@ -136,8 +123,6 @@ export class WorkoutRepository extends BaseRepository {
   }
 
   async delete(userId: string, id: string) {
-    await this.db
-      .delete(workout)
-      .where(and(eq(workout.id, id), eq(workout.userId, userId)));
+    await this.db.delete(workout).where(and(eq(workout.id, id), eq(workout.userId, userId)));
   }
 }

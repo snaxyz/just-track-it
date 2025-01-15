@@ -9,7 +9,6 @@
     "dist/**"
   ],
   "scripts": {
-    "dev": "tsup --watch",
     "build": "tsup"
   },
   "dependencies": {},
