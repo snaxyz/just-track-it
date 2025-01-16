@@ -1,17 +1,70 @@
 "use client";
 
-import { FabContainer } from "@/components/layout/fab-container";
-import { Box, Button, Card, CardContent, Skeleton, IconButton, CardHeader } from "@mui/material";
-import { Title } from "@/components/title";
+import { Box, Button, Card, CardContent, Skeleton } from "@mui/material";
 import { createWorkoutAndSessionAndRedirect } from "@/server/workouts";
 import { startWorkoutSessionAndRedirect } from "@/server/workout-sessions/start-workout";
-import { ChatMessageModel, QueryResponse, WorkoutSessionWithRelations } from "@local/db";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { ActivityIcon, DumbbellIcon, HistoryIcon } from "lucide-react";
-import Link from "next/link";
-import { DateTime } from "@/components/date-time";
+import { QueryResponse, WorkoutSessionWithRelations, WorkoutSessionExerciseWithRelations } from "@local/db";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { getWorkoutSessions } from "../api/workout-sessions/get-workout-sessions";
 import { EmptySessionsPlaceholder } from "@/components/sessions";
+import { PersonalBest, RecentWorkoutCard, RecentWorkoutCardProps } from "@/components/workouts/recent-workout-card";
+
+function calculateWorkoutStats(exercises: WorkoutSessionExerciseWithRelations[]) {
+  if (!exercises?.length) return undefined;
+
+  const exerciseCount = exercises.length;
+  let totalVolume = 0;
+  let totalDuration = 0;
+
+  exercises.forEach((exercise) => {
+    exercise.sets.forEach((set) => {
+      // Calculate volume (weight * reps)
+      if (set.weight && set.reps) {
+        const weight = set.unit === "lbs" ? set.weight * 0.453592 : set.weight; // Convert to kg if needed
+        totalVolume += weight * set.reps;
+      }
+
+      // Sum up duration
+      if (set.duration) {
+        totalDuration += set.duration;
+      }
+    });
+  });
+
+  // Estimate intensity based on volume and duration
+  const intensity = Math.min(
+    Math.round((totalVolume / (exerciseCount * 30)) * (totalDuration / (exerciseCount * 180)) * 100),
+    100,
+  );
+
+  // Rough estimate of calories (very simplified)
+  const caloriesBurned = Math.round((totalDuration / 60) * 7); // ~7 calories per minute
+
+  // Find personal best (simplified example)
+  const personalBest = exercises.reduce(
+    (best, ex) => {
+      const maxWeight = Math.max(...ex.sets.map((s) => s.weight || 0));
+      if (maxWeight > (best?.value || 0)) {
+        return {
+          type: "weight" as const,
+          exercise: ex.exercise.name,
+          value: maxWeight,
+        };
+      }
+      return best;
+    },
+    undefined as PersonalBest | undefined,
+  );
+
+  return {
+    exerciseCount,
+    ...(totalVolume > 0 && { totalVolume: Math.round(totalVolume) }),
+    ...(totalDuration > 0 && { duration: Math.round(totalDuration / 60) }),
+    intensity,
+    caloriesBurned,
+    ...(personalBest && { personalBest }),
+  };
+}
 
 export function Dashboard() {
   const {
@@ -19,6 +72,7 @@ export function Dashboard() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isLoading,
   } = useInfiniteQuery<QueryResponse<WorkoutSessionWithRelations>>({
     queryKey: ["workout-sessions"],
     queryFn: getWorkoutSessions,
@@ -34,6 +88,8 @@ export function Dashboard() {
     createWorkoutAndSessionAndRedirect();
   };
 
+  const showLoading = isFetchingNextPage || isLoading;
+
   return (
     <>
       <Box sx={{ pb: 3 }}>
@@ -44,47 +100,17 @@ export function Dashboard() {
             )}
             {workoutSessionsQuery?.pages.map((p) =>
               p.records.map((w) => (
-                <Card key={w.id} variant="outlined">
-                  <CardHeader
-                    title={w.workout.name}
-                    action={
-                      <Link href={`/workouts/${w.workoutId}/history`}>
-                        <IconButton>
-                          <HistoryIcon size={16} />
-                        </IconButton>
-                      </Link>
-                    }
-                    sx={{
-                      "& .MuiCardHeader-title": {
-                        typography: "subtitle1",
-                        fontWeight: 500,
-                      },
-                    }}
-                  />
-                  <CardContent>
-                    <Box
-                      sx={{
-                        typography: "caption",
-                        color: "text.secondary",
-                        mb: 2,
-                      }}
-                    >
-                      Completed on <DateTime iso={w.completedAt ?? ""} />
-                    </Box>
-                    <Button
-                      fullWidth
-                      variant="outlined"
-                      startIcon={<ActivityIcon size={16} />}
-                      color="primary"
-                      onClick={() => handleStartWorkout(w.workoutId!)}
-                    >
-                      Start workout
-                    </Button>
-                  </CardContent>
-                </Card>
+                <RecentWorkoutCard
+                  key={w.id}
+                  workoutId={w.workoutId!}
+                  name={w.workout.name}
+                  completedAt={w.completedAt!}
+                  onStartWorkout={handleStartWorkout}
+                  stats={calculateWorkoutStats(w.exercises)}
+                />
               )),
             )}
-            {isFetchingNextPage && (
+            {showLoading && (
               <Card variant="outlined" sx={{ mb: 3, zIndex: 0 }}>
                 <CardContent>
                   <Skeleton variant="text" width="60%" height={24} />
