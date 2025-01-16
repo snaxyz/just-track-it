@@ -33,10 +33,10 @@ export const theme = createTheme({
     },
     MuiChip: {
       styleOverrides: {
-        root: {
-          paddingLeft: 8,
-          paddingRight: 8,
-        },
+        root: ({ theme }) => ({
+          paddingLeft: theme.spacing(1),
+          paddingRight: theme.spacing(1),
+        }),
       },
     },
   },

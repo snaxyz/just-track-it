@@ -19,8 +19,8 @@ export function MobileAppbar({ user, children, sx }: Props) {
   return (
     <>
       <Box sx={{ p: 1, ...sx }}>
-        <Link href="/">
-          <Logo />
+        <Link href="/" style={{ textDecoration: "none" }}>
+          <Logo sx={{ fontSize: 20, color: "text.primary" }} />
         </Link>
       </Box>
       <Grow />

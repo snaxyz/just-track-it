@@ -1,4 +1,5 @@
 import { Box } from "@mui/material";
+import { MobileChatFab } from "../chat/mobile-chat-fab";
 
 interface Props {
   children: React.ReactNode;
@@ -26,6 +27,7 @@ export function PageContainer({ children }: Props) {
         }}
       >
         {children}
+        <MobileChatFab />
       </Box>
     </>
   );

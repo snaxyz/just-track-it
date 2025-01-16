@@ -15,7 +15,7 @@ import { getChatMessages } from "@/app/api/chat/[id]/messages/get-chat-messages"
 
 const CHAT_ID = "deadbeef-0000-4000-a000-000000000000";
 
-export function ChatSidebar() {
+export function Chat() {
   const userId = useUserId();
   const [message, setMessage] = useState("");
   const queryClient = useQueryClient();
@@ -70,21 +70,57 @@ export function ChatSidebar() {
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <Box sx={{ flexGrow: 1, overflow: "auto" }}>
-        <Box sx={{ p: 3, textAlign: "center" }}>
-          <Typography variant="subtitle2" sx={{ color: "text.secondary", mb: 1 }}>
-            Welcome to Just track it
-          </Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            Ask me about workouts, exercises, or fitness advice. I'm here to help!
-          </Typography>
+    <>
+      <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+        <Box sx={{ flexGrow: 1, overflow: "auto" }}>
+          <Box sx={{ p: 3, textAlign: "center" }}>
+            <Typography variant="subtitle2" sx={{ color: "text.secondary", mb: 1 }}>
+              Welcome to Just track it
+            </Typography>
+            <Typography variant="body2" sx={{ color: "text.secondary" }}>
+              Ask me about workouts, exercises, or fitness advice. I'm here to help!
+            </Typography>
+          </Box>
+          <ChatMessages messages={messagesQuery?.records ?? []} />
+          <ActiveChatResponse id={CHAT_ID} scrollToBottom={scrollToBottom} />
+          <div ref={messagesEndRef} />
         </Box>
-        <ChatMessages messages={messagesQuery?.records ?? []} />
-        <ActiveChatResponse id={CHAT_ID} scrollToBottom={scrollToBottom} />
-        <div ref={messagesEndRef} />
+        <Box
+          sx={{
+            p: 2,
+            borderTop: 1,
+            borderColor: "divider",
+            position: "sticky",
+            bottom: 0,
+            background: "inherit",
+            display: {
+              xs: "none",
+              md: "block",
+            },
+          }}
+        >
+          <ChatInput
+            value={message}
+            onValueChange={setMessage}
+            onSubmit={handleSubmit}
+            placeholder="Ask me anything..."
+          />
+        </Box>
       </Box>
-      <Box sx={{ p: 2, borderTop: 1, borderColor: "divider" }}>
+      <Box
+        sx={{
+          p: 2,
+          borderTop: 1,
+          borderColor: "divider",
+          position: "sticky",
+          bottom: 0,
+          background: "inherit",
+          display: {
+            xs: "block",
+            md: "none",
+          },
+        }}
+      >
         <ChatInput
           value={message}
           onValueChange={setMessage}
@@ -92,6 +128,6 @@ export function ChatSidebar() {
           placeholder="Ask me anything..."
         />
       </Box>
-    </Box>
+    </>
   );
 }

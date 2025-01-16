@@ -3,7 +3,7 @@ import { getUser } from "@/server/user";
 import { TopAppbarContainer } from "@/components/layout/top-appbar-container";
 import { MobileAppbar } from "@/components/layout/mobile-appbar";
 import { Box, Drawer } from "@mui/material";
-import { ChatSidebar } from "@/components/chat/chat-sidebar";
+import { Chat } from "@/components/chat/chat";
 
 interface Props {
   children: React.ReactNode;
@@ -49,7 +49,7 @@ export default async function Layout({ children }: Props) {
           },
         }}
       >
-        <ChatSidebar />
+        <Chat />
       </Drawer>
     </Box>
   );
