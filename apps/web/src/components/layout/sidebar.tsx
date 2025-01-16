@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Drawer } from "@mui/material";
+import { Box, Drawer, Link as MuiLink } from "@mui/material";
 import { Logo } from "../logo";
 import { SidebarNavigation } from "./sidebar-navigation";
 import Link from "next/link";
@@ -27,8 +27,8 @@ export function Sidebar() {
       }}
     >
       <Box sx={{ p: 1, display: "flex", justifyContent: "center" }}>
-        <Link href="/">
-          <Logo sx={{ fontSize: 20 }} />
+        <Link href="/" style={{ textDecoration: "none" }}>
+          <Logo sx={{ fontSize: 20, color: "text.primary" }} />
         </Link>
       </Box>
       <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>

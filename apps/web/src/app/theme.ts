@@ -10,7 +10,7 @@ export const theme = createTheme({
     light: {
       palette: {
         background: {
-          default: "#f0f0f0",
+          default: "#f5f5f5",
           paper: "#f5f5f5",
         },
         primary: indigo,
@@ -22,6 +22,21 @@ export const theme = createTheme({
     MuiTextField: {
       defaultProps: {
         variant: "outlined",
+      },
+    },
+    MuiCardHeader: {
+      styleOverrides: {
+        root: {
+          paddingBottom: 0,
+        },
+      },
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          paddingLeft: 8,
+          paddingRight: 8,
+        },
       },
     },
   },

@@ -52,7 +52,7 @@ export function RecentWorkoutCard({ workoutId, name, completedAt, onStartWorkout
           stats?.personalBest && (
             <Chip
               size="small"
-              color="secondary"
+              variant="outlined"
               icon={<TrophyIcon size={14} />}
               label={`${stats.personalBest.value}${stats.personalBest.type === "weight" ? "kg" : ""} ${stats.personalBest.exercise}`}
               sx={{ mt: 1 }}

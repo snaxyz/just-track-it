@@ -75,16 +75,10 @@ export function EditWorkoutModal({ isOpen, onClose, workout, exercises, onSave }
   const isValid = name && selectedExercises.length > 0;
 
   return (
-    <Dialog
-      open={isOpen && Boolean(workout)}
-      onClose={onClose}
-      PaperProps={{
-        className: "bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-stone-900 dark:to-stone-950",
-      }}
-    >
-      <DialogTitle className="pt-3 px-3">Edit Workout</DialogTitle>
-      <DialogContent className="p-2">
-        <Box className="space-y-4">
+    <Dialog open={isOpen && Boolean(workout)} onClose={onClose} fullWidth maxWidth="xs">
+      <DialogTitle sx={{ pt: 3, px: 3 }}>Edit Workout</DialogTitle>
+      <DialogContent sx={{ p: 2 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
           <TextField
             label="Name"
             placeholder="Workout name"
@@ -118,12 +112,12 @@ export function EditWorkoutModal({ isOpen, onClose, workout, exercises, onSave }
           />
         </Box>
       </DialogContent>
-      <DialogActions className="p-2">
+      <DialogActions sx={{ p: 2 }}>
         <Button
           onClick={handleSave}
           disabled={!isValid}
           startIcon={<SaveIcon size={16} />}
-          variant="outlined"
+          variant="contained"
           color="primary"
         >
           Save
