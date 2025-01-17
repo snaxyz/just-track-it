@@ -10,16 +10,16 @@ import { Box } from "@mui/material";
 export default async function WorkoutsPage() {
   const user = await getUser();
   return (
-    <PageContainer>
-      <WorkoutsAppbar user={user} />
-      <MainContainer sx={{ px: { xs: 1, md: 2 }, py: { md: 3 } }}>
-        <Box sx={{ px: 1 }}>
-          <Title>Workouts</Title>
-        </Box>
-        <PrefetchWorkouts>
+    <PrefetchWorkouts>
+      <PageContainer>
+        <WorkoutsAppbar user={user} />
+        <MainContainer sx={{ px: { xs: 1, md: 2 }, py: { md: 3 } }}>
+          <Box sx={{ px: 1 }}>
+            <Title>Workouts</Title>
+          </Box>
           <Workouts />
-        </PrefetchWorkouts>
-      </MainContainer>
-    </PageContainer>
+        </MainContainer>
+      </PageContainer>
+    </PrefetchWorkouts>
   );
 }

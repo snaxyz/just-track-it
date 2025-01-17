@@ -87,14 +87,14 @@ export function SidebarNavigation({ sx }: Props) {
             <ListItemText primary="About" />
           </ListItemButton>
         </ListItem>
-        <ListItem disablePadding>
+        {/* <ListItem disablePadding>
           <ListItemButton component={Link} href="/feedback">
             <ListItemIcon sx={listItemIconSx}>
               <MessageSquareIcon size={16} />
             </ListItemIcon>
             <ListItemText primary="Feedback" />
           </ListItemButton>
-        </ListItem>
+        </ListItem> */}
       </List>
     </Box>
   );

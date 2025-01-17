@@ -8,7 +8,7 @@ interface Props {
 
 export function ChatDrawerToolbar({ onClose }: Props) {
   return (
-    <Toolbar sx={{ position: "sticky", top: 0, background: "inherit" }}>
+    <Toolbar sx={{ position: "sticky", top: 0, background: "inherit", px: (theme) => theme.spacing(1) }} disableGutters>
       <Typography>Chat</Typography>
       <Grow />
       <IconButton onClick={onClose}>

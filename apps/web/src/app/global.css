@@ -1,11 +1,10 @@
 /* Hide scrollbar by default but maintain functionality */
 :root {
-  --scrollbar-width: 4px;
+  --scrollbar-width: 2px;
 }
 
 * {
-  scrollbar-width: thin;
-  scrollbar-color: transparent transparent;
+  scrollbar-color: inherit transparent;
 }
 
 /* Webkit browsers (Chrome, Safari, etc) */

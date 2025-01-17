@@ -39,6 +39,13 @@ export const theme = createTheme({
         }),
       },
     },
+    MuiDrawer: {
+      styleOverrides: {
+        paper: ({ theme }) => ({
+          background: theme.palette.background.paper,
+        }),
+      },
+    },
   },
   typography: {
     fontFamily: "var(--font-roboto)",
