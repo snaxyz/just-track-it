@@ -71,7 +71,7 @@ export function Chat() {
 
   return (
     <>
-      <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      <Box sx={{ height: "100%" }}>
         <Box sx={{ flexGrow: 1, overflow: "auto" }}>
           <Box sx={{ p: 3, textAlign: "center" }}>
             <Typography variant="subtitle2" sx={{ color: "text.secondary", mb: 1 }}>
@@ -92,11 +92,7 @@ export function Chat() {
             borderColor: "divider",
             position: "sticky",
             bottom: 0,
-            background: "inherit",
-            display: {
-              xs: "none",
-              md: "block",
-            },
+            backgroundColor: (theme) => theme.palette.background.paper,
           }}
         >
           <ChatInput
@@ -106,27 +102,6 @@ export function Chat() {
             placeholder="Ask me anything..."
           />
         </Box>
-      </Box>
-      <Box
-        sx={{
-          p: 2,
-          borderTop: 1,
-          borderColor: "divider",
-          position: "sticky",
-          bottom: 0,
-          background: "inherit",
-          display: {
-            xs: "block",
-            md: "none",
-          },
-        }}
-      >
-        <ChatInput
-          value={message}
-          onValueChange={setMessage}
-          onSubmit={handleSubmit}
-          placeholder="Ask me anything..."
-        />
       </Box>
     </>
   );

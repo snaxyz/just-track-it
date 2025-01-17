@@ -1,7 +1,6 @@
-import { Drawer, IconButton, Toolbar, Typography } from "@mui/material";
+import { Drawer } from "@mui/material";
 import { Chat } from "./chat";
-import { XIcon } from "lucide-react";
-import { Grow } from "../layout/grow";
+import { ChatDrawerToolbar } from "./chat-drawer-toolbar";
 
 interface Props {
   isOpen: boolean;
@@ -21,13 +20,7 @@ export function MobileChatDrawer({ isOpen, onClose }: Props) {
         },
       }}
     >
-      <Toolbar sx={{ position: "sticky", top: 0, background: "inherit" }}>
-        <Typography>Chat</Typography>
-        <Grow />
-        <IconButton onClick={onClose}>
-          <XIcon size={16} />
-        </IconButton>
-      </Toolbar>
+      <ChatDrawerToolbar onClose={onClose} />
       <Chat />
     </Drawer>
   );
