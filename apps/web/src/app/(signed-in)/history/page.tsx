@@ -1,17 +1,19 @@
 import { MainContainer } from "@/components/layout/main-container";
 import { PageContainer } from "@/components/layout/page-container";
 import { getUser } from "@/server/user";
-import { SettingsAppbar } from "./settings.appbar";
-import { Settings } from "./settings";
+import { HistoryAppbar } from "./history-appbar";
+import { PrefetchHistory } from "./prefetch-history";
+import { History } from "./history";
 
-export default async function SettingsPage() {
+export default async function Page() {
   const user = await getUser();
-
   return (
     <PageContainer>
-      {user && <SettingsAppbar user={user} />}
+      <HistoryAppbar user={user} />
       <MainContainer sx={{ px: { xs: 1, md: 2 }, py: { md: 3 } }}>
-        <Settings />
+        <PrefetchHistory>
+          <History />
+        </PrefetchHistory>
       </MainContainer>
     </PageContainer>
   );

@@ -1,11 +1,18 @@
 import { ExerciseModel } from "@local/db";
-import { Autocomplete, Chip, TextField } from "@mui/material";
+import { Autocomplete, AutocompleteRenderGetTagProps, Chip, TextField } from "@mui/material";
 
 interface Props {
   exercises: Partial<ExerciseModel>[];
   selectedExercises: string[];
   onExercisesChange: (exercises: string[]) => void;
   fullWidth?: boolean;
+}
+
+function renderTags(value: Partial<ExerciseModel>[], getTagProps: AutocompleteRenderGetTagProps) {
+  return value.map((option, index) => {
+    const { key, ...props } = getTagProps({ index });
+    return <Chip key={key} label={option.name} {...props} />;
+  });
 }
 
 export function ExerciseSelect({ exercises, selectedExercises, onExercisesChange, fullWidth }: Props) {
@@ -19,9 +26,7 @@ export function ExerciseSelect({ exercises, selectedExercises, onExercisesChange
         onExercisesChange(newValue.map((v) => v.id!));
       }}
       renderInput={(params) => <TextField {...params} label="Exercises" fullWidth={fullWidth} />}
-      renderTags={(value, getTagProps) =>
-        value.map((option, index) => <Chip label={option.name} {...getTagProps({ index })} />)
-      }
+      renderTags={renderTags}
     />
   );
 }

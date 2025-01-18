@@ -25,7 +25,7 @@ export function DesktopAppbar({ user, children }: Props) {
     >
       {children}
       <Box sx={{ flexGrow: 1 }} />
-      <IconButton onClick={toggleDrawer} size="small" sx={{ mr: 1 }} aria-label="Open AI chat">
+      <IconButton onClick={toggleDrawer} sx={{ mr: 1 }} aria-label="Open AI chat">
         <MessageSquareIcon size={16} />
       </IconButton>
       <AvatarMenu name={user.name ?? ""} picture={user.picture} />

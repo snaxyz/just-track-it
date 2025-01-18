@@ -1,13 +1,25 @@
 "use client";
 
-import { Box, Button, Card, CardContent, Skeleton } from "@mui/material";
-import { createWorkoutAndSessionAndRedirect } from "@/server/workouts";
+import { Box, Button, Card, CardContent, Skeleton, Typography, Divider } from "@mui/material";
+import { createWorkoutAndSessionAndRedirect, updateWorkout } from "@/server/workouts";
 import { startWorkoutSessionAndRedirect } from "@/server/workout-sessions/start-workout";
-import { QueryResponse, WorkoutSessionWithRelations, WorkoutSessionExerciseWithRelations } from "@local/db";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import {
+  QueryResponse,
+  WorkoutSessionWithRelations,
+  WorkoutSessionExerciseWithRelations,
+  WorkoutWithRelations,
+  ExerciseModel,
+} from "@local/db";
+import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getWorkoutSessions } from "../api/workout-sessions/get-workout-sessions";
 import { EmptySessionsPlaceholder } from "@/components/sessions";
-import { PersonalBest, RecentWorkoutCard, RecentWorkoutCardProps } from "@/components/workouts/recent-workout-card";
+import { PersonalBest, RecentWorkoutCard } from "@/components/workouts/recent-workout-card";
+import { WorkoutCard } from "@/components/workouts/workout-card/workout-card";
+import { getWorkouts } from "@/app/api/workouts/get-workouts";
+import { EditWorkoutModal, EditWorkoutModalProps } from "@/components/workouts/edit-workout-modal";
+import { useState } from "react";
+import { getExercises } from "../api/exercises/get-exercises";
+import { WorkoutHistoryCard } from "@/components/workouts/workout-history-card";
 
 function calculateWorkoutStats(exercises: WorkoutSessionExerciseWithRelations[]) {
   if (!exercises?.length) return undefined;
@@ -67,17 +79,28 @@ function calculateWorkoutStats(exercises: WorkoutSessionExerciseWithRelations[])
 }
 
 export function Dashboard() {
+  const queryClient = useQueryClient();
   const {
     data: workoutSessionsQuery,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    isLoading,
+    isLoading: isLoadingSessions,
   } = useInfiniteQuery<QueryResponse<WorkoutSessionWithRelations>>({
     queryKey: ["workout-sessions"],
     queryFn: getWorkoutSessions,
     initialPageParam: undefined,
     getNextPageParam: (lastRes) => lastRes.cursor,
+  });
+
+  const { data: workoutsQuery, isLoading: isLoadingWorkouts } = useQuery<QueryResponse<WorkoutWithRelations>>({
+    queryKey: ["workouts"],
+    queryFn: () => getWorkouts(),
+  });
+
+  const { data: exercisesQuery } = useQuery<QueryResponse<ExerciseModel>>({
+    queryKey: ["exercises"],
+    queryFn: () => getExercises(),
   });
 
   const handleStartWorkout = (workoutId: string) => {
@@ -88,19 +111,59 @@ export function Dashboard() {
     createWorkoutAndSessionAndRedirect();
   };
 
-  const showLoading = isFetchingNextPage || isLoading;
+  const [selectedWorkout, setSelectedWorkout] =
+    useState<Pick<WorkoutWithRelations, "id" | "name" | "description" | "exercises">>();
+
+  const handleEditWorkout = (id: string) => {
+    setSelectedWorkout(workoutsQuery?.records?.find((w) => w.id === id));
+  };
+  const onCloseEditWorkout = () => setSelectedWorkout(undefined);
+
+  const handleSaveWorkout: EditWorkoutModalProps["onSave"] = async (input) => {
+    const workoutId = selectedWorkout?.id ?? "";
+    queryClient.setQueryData(["workouts"], {
+      ...(workoutsQuery ?? { cursor: "" }),
+      records: workoutsQuery?.records.map((w) =>
+        w.id === workoutId
+          ? {
+              ...w,
+              name: input.name,
+              description: input.description,
+              exercises: input.selectedExercises.map((e) => ({
+                exerciseId: e.id,
+                exercise: { name: e.name },
+              })),
+            }
+          : w,
+      ),
+    });
+    const workout = await updateWorkout(workoutId, input.name, input.description ?? "", input.selectedExercises);
+
+    queryClient.setQueryData<QueryResponse<WorkoutWithRelations>>(["workouts"], {
+      ...(workoutsQuery ?? { cursor: "" }),
+      records: workoutsQuery?.records.map((w) => (w.id === workoutId ? { ...w, ...workout } : w)) ?? [],
+    });
+
+    onCloseEditWorkout();
+  };
+
+  const showLoadingSessions = isFetchingNextPage || isLoadingSessions;
 
   return (
     <>
       <Box sx={{ pb: 3 }}>
+        {/* Recent Workouts Section */}
         <Box component="section" sx={{ mb: 6 }}>
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Recent Workouts
+          </Typography>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {workoutSessionsQuery?.pages[0]?.records.length === 0 && (
               <EmptySessionsPlaceholder onAddClick={handleStartTraining} />
             )}
             {workoutSessionsQuery?.pages.map((p) =>
               p.records.map((w) => (
-                <RecentWorkoutCard
+                <WorkoutHistoryCard
                   key={w.id}
                   workoutId={w.workoutId!}
                   name={w.workout.name}
@@ -110,7 +173,7 @@ export function Dashboard() {
                 />
               )),
             )}
-            {showLoading && (
+            {showLoadingSessions && (
               <Card variant="outlined" sx={{ mb: 3, zIndex: 0 }}>
                 <CardContent>
                   <Skeleton variant="text" width="60%" height={24} />
@@ -119,23 +182,55 @@ export function Dashboard() {
               </Card>
             )}
           </Box>
-          <Box sx={{ mt: 6 }}>
-            {hasNextPage && (
-              <Box sx={{ p: 2 }}>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  fullWidth
-                  disabled={isFetchingNextPage}
-                  onClick={() => fetchNextPage()}
-                >
-                  View more
-                </Button>
-              </Box>
+          {hasNextPage && (
+            <Box sx={{ p: 2 }}>
+              <Button
+                variant="outlined"
+                color="secondary"
+                fullWidth
+                disabled={isFetchingNextPage}
+                onClick={() => fetchNextPage()}
+              >
+                View more
+              </Button>
+            </Box>
+          )}
+        </Box>
+
+        {/* Existing Workouts Section */}
+        <Box component="section">
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Your Workouts
+          </Typography>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {workoutsQuery?.records.map((workout) => (
+              <WorkoutCard
+                key={workout.id}
+                id={workout.id}
+                name={workout.name}
+                description={workout.description ?? ""}
+                onStartWorkout={handleStartWorkout}
+                onEditClick={handleEditWorkout}
+              />
+            ))}
+            {isLoadingWorkouts && (
+              <Card variant="outlined" sx={{ mb: 3, zIndex: 0 }}>
+                <CardContent>
+                  <Skeleton variant="text" width="60%" height={24} />
+                  <Skeleton variant="rectangular" height={48} />
+                </CardContent>
+              </Card>
             )}
           </Box>
         </Box>
       </Box>
+      <EditWorkoutModal
+        isOpen={Boolean(selectedWorkout)}
+        onClose={onCloseEditWorkout}
+        workout={selectedWorkout}
+        exercises={exercisesQuery?.records ?? []}
+        onSave={handleSaveWorkout}
+      />
     </>
   );
 }

@@ -4,6 +4,8 @@ import { Box, Drawer } from "@mui/material";
 import { SidebarNavigation } from "./sidebar-navigation";
 import { AvatarMenu } from "./avatar-menu";
 import type { SessionData } from "@auth0/nextjs-auth0/types";
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 
 interface Props {
   isOpen: boolean;
@@ -12,6 +14,12 @@ interface Props {
 }
 
 export function MobileDrawer({ isOpen, onClose, user }: Props) {
+  const pathname = usePathname();
+
+  useEffect(() => {
+    onClose();
+  }, [pathname]);
+
   return (
     <Drawer
       anchor="right"

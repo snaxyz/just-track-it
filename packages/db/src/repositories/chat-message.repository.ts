@@ -1,21 +1,10 @@
 import { and, eq, gt, desc } from "drizzle-orm";
-import {
-  chatMessage,
-  ChatMessageInsertModel,
-  ChatMessageModel,
-} from "../schema/chat-message";
+import { chatMessage, ChatMessageInsertModel, ChatMessageModel } from "../schema/chat-message";
 import { BaseRepository } from "./base.repository";
-import {
-  QueryResponse,
-  keyToCursor,
-  cursorToKey,
-  QueryOptions,
-} from "../types";
+import { QueryResponse, keyToCursor, cursorToKey, QueryOptions } from "../types";
 
 export class ChatMessageRepository extends BaseRepository {
-  async create(
-    data: Omit<ChatMessageInsertModel, "id" | "createdAt" | "updatedAt">
-  ): Promise<ChatMessageModel> {
+  async create(data: Omit<ChatMessageInsertModel, "id" | "createdAt" | "updatedAt">): Promise<ChatMessageModel> {
     const [result] = await this.db.insert(chatMessage).values(data).returning();
     return result;
   }
@@ -29,21 +18,13 @@ export class ChatMessageRepository extends BaseRepository {
   async query(
     userId: string,
     chatId: string,
-    options: QueryOptions = { limit: 20, order: "asc" }
+    options: QueryOptions = { limit: 20, order: "desc" },
   ): Promise<QueryResponse<ChatMessageModel>> {
-    const cursorData = options.nextCursor
-      ? cursorToKey<{ createdAt: string }>(options.nextCursor)
-      : undefined;
+    const cursorData = options.nextCursor ? cursorToKey<{ createdAt: string }>(options.nextCursor) : undefined;
 
     const messages = await this.db.query.chatMessage.findMany({
-      where: and(
-        eq(chatMessage.chatId, chatId),
-        eq(chatMessage.userId, userId)
-      ),
-      orderBy:
-        options.order === "asc"
-          ? chatMessage.createdAt
-          : desc(chatMessage.createdAt),
+      where: and(eq(chatMessage.chatId, chatId), eq(chatMessage.userId, userId)),
+      orderBy: options.order === "asc" ? chatMessage.createdAt : desc(chatMessage.createdAt),
       limit: options.limit + 1,
     });
 
@@ -57,11 +38,7 @@ export class ChatMessageRepository extends BaseRepository {
     };
   }
 
-  async update(
-    userId: string,
-    id: string,
-    data: Partial<ChatMessageInsertModel>
-  ): Promise<ChatMessageModel> {
+  async update(userId: string, id: string, data: Partial<ChatMessageInsertModel>): Promise<ChatMessageModel> {
     const [result] = await this.db
       .update(chatMessage)
       .set(data)
@@ -71,8 +48,6 @@ export class ChatMessageRepository extends BaseRepository {
   }
 
   async delete(userId: string, id: string): Promise<void> {
-    await this.db
-      .delete(chatMessage)
-      .where(and(eq(chatMessage.id, id), eq(chatMessage.userId, userId)));
+    await this.db.delete(chatMessage).where(and(eq(chatMessage.id, id), eq(chatMessage.userId, userId)));
   }
 }

@@ -1,32 +1,48 @@
 "use client";
 
 import { DateTime } from "@/components/date-time";
-import { Box, Card, CardContent, IconButton } from "@mui/material";
-import { ChevronUpIcon, ChevronDownIcon } from "lucide-react";
+import { Box, Card, CardContent, CardHeader, IconButton } from "@mui/material";
+import { ChevronUpIcon, ChevronDownIcon, PencilIcon } from "lucide-react";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 interface Props {
-  className?: string;
+  id: string;
   date: string;
   children: React.ReactNode;
 }
 
-export function WorkoutSessionHistoryCard({ className, date, children }: Props) {
+export function WorkoutSessionHistoryCard({ id, date, children }: Props) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const router = useRouter();
+
+  const handleEditClick = () => {
+    router.push(`/sessions/${id}`);
+  };
 
   return (
-    <Card className={cn("mb-3 z-0", className)} variant="outlined">
-      <CardContent>
-        <Box className="flex items-center">
-          <DateTime iso={date} />
-          <Box sx={{ flexGrow: 1 }} />
-          <IconButton onClick={() => setIsExpanded((e) => !e)}>
-            {isExpanded ? <ChevronUpIcon size={16} /> : <ChevronDownIcon size={16} />}
-          </IconButton>
-        </Box>
-        {isExpanded && <Box>{children}</Box>}
-      </CardContent>
+    <Card
+      variant="outlined"
+      sx={{
+        mb: 3,
+      }}
+    >
+      <CardHeader
+        action={
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <IconButton size="small" onClick={handleEditClick}>
+              <PencilIcon size={16} />
+            </IconButton>
+            <IconButton size="small" onClick={() => setIsExpanded((e) => !e)}>
+              {isExpanded ? <ChevronUpIcon size={16} /> : <ChevronDownIcon size={16} />}
+            </IconButton>
+          </Box>
+        }
+        title={<DateTime iso={date} />}
+        titleTypographyProps={{ variant: "body2", color: "text.secondary" }}
+        sx={{ pb: 2 }}
+      />
+      {isExpanded && <CardContent>{children}</CardContent>}
     </Card>
   );
 }

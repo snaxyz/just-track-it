@@ -1,12 +1,22 @@
 import { Injectable } from "@nestjs/common";
-import { BaseMemory, ChatMessage, OpenAI, OpenAIAgent } from "llamaindex";
+import { BaseMemory, ChatMessage, OpenAI, OpenAIAgent, Settings } from "llamaindex";
 import { createExerciseTool } from "./tools/create-exercise.tool";
 import { getExercisesTool } from "./tools/get-exercises.tool";
 import { createWorkoutTool } from "./tools/create-workout.tool";
+import { systemPrompt } from "./prompts/system.prompt";
 
 @Injectable()
 export class AgentService {
   private tools = [createExerciseTool, createWorkoutTool, getExercisesTool];
+
+  constructor() {
+    Settings.callbackManager.on("llm-tool-call", (event) => {
+      console.log(event.detail);
+    });
+    Settings.callbackManager.on("llm-tool-result", (event) => {
+      console.log(event.detail);
+    });
+  }
 
   async streamChat({
     message,
@@ -17,15 +27,14 @@ export class AgentService {
     chatHistory: ChatMessage<object>[] | BaseMemory<object>;
     userId: string;
   }) {
-    const systemPrompt = `You are a fitness guru with expertise in building workouts for your clients.
-    The following chat history is the the userId "${userId}".
-    Refrain from asking any questions related to PII.
-    You speak in a professional and friendly manner.`;
     const llm = new OpenAI();
     const agent = new OpenAIAgent({
       llm,
-      systemPrompt,
+      systemPrompt: systemPrompt(userId),
       tools: this.tools,
+      additionalChatOptions: {
+        max_completion_tokens: 4000,
+      },
     });
     const stream = await agent.chat({
       message,

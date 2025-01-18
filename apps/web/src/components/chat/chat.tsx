@@ -70,7 +70,7 @@ export function Chat() {
   };
 
   return (
-    <Box sx={{ height: "100%" }}>
+    <Box sx={{ height: "100%", display: "flex", flexDirection: "column", overflow: "auto" }}>
       <Box sx={{ flexGrow: 1, overflow: "auto" }}>
         <Box sx={{ p: 3, textAlign: "center" }}>
           <Typography variant="subtitle2" sx={{ color: "text.secondary", mb: 1 }}>

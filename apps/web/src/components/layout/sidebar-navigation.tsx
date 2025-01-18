@@ -9,6 +9,7 @@ import {
   SettingsIcon,
   InfoIcon,
   MessageSquareIcon,
+  HistoryIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -65,6 +66,14 @@ export function SidebarNavigation({ sx }: Props) {
             <ListItemText primary="Insights" />
           </ListItemButton>
         </ListItem> */}
+        <ListItem disablePadding>
+          <ListItemButton component={Link} href="/history" selected={pathname.includes("/history")}>
+            <ListItemIcon sx={listItemIconSx}>
+              <HistoryIcon size={16} />
+            </ListItemIcon>
+            <ListItemText primary="History" />
+          </ListItemButton>
+        </ListItem>
       </List>
 
       <Box sx={{ flexGrow: 1 }} />

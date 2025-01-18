@@ -28,7 +28,7 @@ export interface PersonalBest {
   value: number;
 }
 
-export interface RecentWorkoutCardProps {
+export interface WorkoutHistoryCardProps {
   workoutId: string;
   name: string;
   completedAt: string;
@@ -43,7 +43,7 @@ export interface RecentWorkoutCardProps {
   };
 }
 
-export function RecentWorkoutCard({ workoutId, name, completedAt, onStartWorkout, stats }: RecentWorkoutCardProps) {
+export function WorkoutHistoryCard({ workoutId, name, completedAt, onStartWorkout, stats }: WorkoutHistoryCardProps) {
   return (
     <Card variant="outlined">
       <CardHeader
@@ -60,7 +60,7 @@ export function RecentWorkoutCard({ workoutId, name, completedAt, onStartWorkout
           )
         }
         action={
-          <Link href={`/workouts/${workoutId}/history`}>
+          <Link href={`/history/${workoutId}`}>
             <IconButton>
               <HistoryIcon size={16} />
             </IconButton>

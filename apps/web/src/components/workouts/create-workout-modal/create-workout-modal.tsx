@@ -98,13 +98,13 @@ export function CreateWorkoutModal({ isOpen, onClose, exercises, onCreate }: Cre
               fullWidth
             />
           )}
-          <TextField
+          {/* <TextField
             label="New exercise"
             placeholder="Add a new exercise"
             onKeyDown={handleNewExerciseKeyDown}
             value={newExercise}
             onChange={(e) => setNewExercise(e.target.value)}
-          />
+          /> */}
         </Box>
       </DialogContent>
       <DialogActions sx={{ p: 2 }}>

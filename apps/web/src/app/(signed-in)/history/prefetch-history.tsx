@@ -5,11 +5,11 @@ interface Props {
   children: React.ReactNode;
 }
 
-export async function PrefetchRecentWorkouts({ children }: Props) {
+export async function PrefetchHistory({ children }: Props) {
   const queryClient = new QueryClient();
   await queryClient.prefetchInfiniteQuery({
     queryKey: ["workout-sessions"],
-    queryFn: () => getWorkoutSessionsServer(),
+    queryFn: () => getWorkoutSessionsServer({ limit: 50 }),
     initialPageParam: null,
   });
 

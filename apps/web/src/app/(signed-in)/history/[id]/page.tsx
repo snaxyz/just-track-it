@@ -3,7 +3,7 @@ import { PageContainer } from "@/components/layout/page-container";
 import { WorkoutHistory } from "./workout-history";
 import { PrefetchWorkoutHistory } from "./prefetch-workout-history";
 import { getUser } from "@/server/user";
-import { HistoryAppbar } from "./history-appbar";
+import { WorkoutHistoryAppbar } from "./workout-history-appbar";
 import { getWorkoutHistory } from "@/server/workouts/get-workout-history";
 import { Box } from "@mui/material";
 import { Title } from "@/components/title";
@@ -18,11 +18,9 @@ export default async function WorkoutHistoryPage({ params }: Props) {
   const history = await getWorkoutHistory(id);
   return (
     <PageContainer>
-      <HistoryAppbar user={user} id={id} />
+      <WorkoutHistoryAppbar user={user} id={id} workoutName={history.workoutName} />
       <MainContainer sx={{ px: { xs: 1, md: 2 }, py: { md: 3 } }}>
-        <Box sx={{ px: 1 }}>
-          <Title>{history?.workoutName}</Title>
-        </Box>
+        <Title>{history?.workoutName} History</Title>
         <PrefetchWorkoutHistory workoutId={id}>
           <WorkoutHistory />
         </PrefetchWorkoutHistory>

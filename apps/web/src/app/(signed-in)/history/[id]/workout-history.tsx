@@ -34,7 +34,7 @@ export function WorkoutHistory() {
         <EmptyWorkoutHistoryPlaceholder onStartWorkoutClick={startWorkout} />
       ) : (
         historyQuery?.records.map((h) => (
-          <WorkoutSessionHistoryCard key={h.id} date={h.createdAt}>
+          <WorkoutSessionHistoryCard key={h.id} date={h.createdAt} id={h.id}>
             {h.exercises.map((e) => (
               <WorkoutSessionHistoryCardExercise
                 key={e.exerciseId}

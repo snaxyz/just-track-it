@@ -37,8 +37,8 @@ export function Settings() {
   };
 
   return (
-    <Box sx={{ p: 2 }}>
-      <Card variant="outlined">
+    <Box sx={{ pb: 3 }}>
+      {/* <Card variant="outlined">
         <CardContent>
           <Box>
             <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 2 }}>
@@ -48,16 +48,16 @@ export function Settings() {
             <TextField label="Name" value="Brooklyn"></TextField>
           </Box>
         </CardContent>
-      </Card>
+      </Card> */}
 
-      <Card variant="outlined" sx={{ mt: 2 }}>
+      <Card variant="outlined">
         <CardContent>
           <Box>
             <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 2 }}>
               Theme
             </Typography>
             <Typography sx={{ color: "text.secondary", mb: 2 }}>Select your preferred color theme</Typography>
-            <ButtonGroup variant="outlined" fullWidth>
+            <ButtonGroup variant="outlined" fullWidth disableElevation>
               <Button
                 onClick={() => setMode("light")}
                 startIcon={<SunIcon size={16} />}

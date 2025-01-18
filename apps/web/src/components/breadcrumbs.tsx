@@ -21,7 +21,7 @@ export function BreadcrumbItem({ href, children, startContent }: BreadcrumbItemP
         textDecoration: "none",
         color: "text.primary",
         "&:hover": {
-          color: "primary.main",
+          color: "text.secondary",
         },
       }}
     >

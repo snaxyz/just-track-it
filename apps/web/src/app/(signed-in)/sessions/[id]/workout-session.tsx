@@ -376,12 +376,6 @@ export function WorkoutSession() {
           )}
         </Box>
       </Box>
-      <FabContainer>
-        <Fab color="primary" onClick={onOpen} variant="extended">
-          <PlusIcon size={16} />
-          Add exercise
-        </Fab>
-      </FabContainer>
       <NewSetModal
         isOpen={isOpen}
         onClose={onClose}

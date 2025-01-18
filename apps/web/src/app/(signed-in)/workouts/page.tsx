@@ -14,9 +14,7 @@ export default async function WorkoutsPage() {
       <PageContainer>
         <WorkoutsAppbar user={user} />
         <MainContainer sx={{ px: { xs: 1, md: 2 }, py: { md: 3 } }}>
-          <Box sx={{ px: 1 }}>
-            <Title>Workouts</Title>
-          </Box>
+          <Title>Workouts</Title>
           <Workouts />
         </MainContainer>
       </PageContainer>
