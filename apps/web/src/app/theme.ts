@@ -10,8 +10,8 @@ export const theme = createTheme({
     light: {
       palette: {
         background: {
-          default: "#f5f5f5",
-          paper: "#f5f5f5",
+          default: "#D1E9F6",
+          paper: "#D1E9F6",
         },
         primary: indigo,
       },

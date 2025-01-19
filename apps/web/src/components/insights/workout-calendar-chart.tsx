@@ -2,16 +2,16 @@
 
 import { useEffect, useRef } from "react";
 import * as echarts from "echarts";
-import { useTheme } from "next-themes";
+import { useColorScheme, Box } from "@mui/material";
 
 export function WorkoutCalendarChart() {
   const chartRef = useRef<HTMLDivElement>(null);
-  const { theme } = useTheme();
+  const { mode } = useColorScheme();
 
   useEffect(() => {
     if (!chartRef.current) return;
 
-    const chart = echarts.init(chartRef.current, theme, {
+    const chart = echarts.init(chartRef.current, mode, {
       renderer: "canvas",
     });
 
@@ -29,10 +29,9 @@ export function WorkoutCalendarChart() {
     const option = {
       backgroundColor: "transparent",
       title: {
-        // text: "Workout Activity",
         left: "center",
         textStyle: {
-          color: theme === "dark" ? "#A1A1AA" : "#71717A",
+          color: mode === "dark" ? "#A1A1AA" : "#71717A",
         },
       },
       tooltip: {
@@ -59,11 +58,11 @@ export function WorkoutCalendarChart() {
         left: "center",
         bottom: "0%",
         textStyle: {
-          color: theme === "dark" ? "#A1A1AA" : "#71717A",
+          color: mode === "dark" ? "#A1A1AA" : "#71717A",
         },
         inRange: {
           color:
-            theme === "dark"
+            mode === "dark"
               ? ["#18181B", "#065F46", "#059669", "#10B981"] // dark greens
               : ["#F0F9FF", "#7DD3FC", "#38BDF8", "#0EA5E9"], // light blues
         },
@@ -76,14 +75,14 @@ export function WorkoutCalendarChart() {
         range: [data[0][0], data[data.length - 1][0]],
         itemStyle: {
           borderWidth: 0.5,
-          borderColor: theme === "dark" ? "#27272A" : "#E5E7EB",
+          borderColor: mode === "dark" ? "#27272A" : "#E5E7EB",
         },
         yearLabel: { show: false },
         dayLabel: {
-          color: theme === "dark" ? "#A1A1AA" : "#71717A",
+          color: mode === "dark" ? "#A1A1AA" : "#71717A",
         },
         monthLabel: {
-          color: theme === "dark" ? "#A1A1AA" : "#71717A",
+          color: mode === "dark" ? "#A1A1AA" : "#71717A",
         },
       },
       series: {
@@ -105,7 +104,16 @@ export function WorkoutCalendarChart() {
       chart.dispose();
       window.removeEventListener("resize", handleResize);
     };
-  }, [theme]);
+  }, [mode]);
 
-  return <div ref={chartRef} className="w-full h-full min-h-[300px]" />;
+  return (
+    <Box
+      ref={chartRef}
+      sx={{
+        width: "100%",
+        height: "100%",
+        minHeight: 300,
+      }}
+    />
+  );
 }

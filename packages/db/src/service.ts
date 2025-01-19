@@ -18,6 +18,8 @@ import {
   setting,
   chatMessage,
   chat,
+  workoutSessionExercise,
+  workoutExercise,
 } from "./schema";
 
 export class DatabaseService {
@@ -38,9 +40,7 @@ export class DatabaseService {
     this.workout = new WorkoutRepository(drizzleClient);
     this.workoutSession = new WorkoutSessionRepository(drizzleClient);
     this.workoutExercise = new WorkoutExerciseRepository(drizzleClient);
-    this.workoutSessionExercise = new WorkoutSessionExerciseRepository(
-      drizzleClient
-    );
+    this.workoutSessionExercise = new WorkoutSessionExerciseRepository(drizzleClient);
     this.chat = new ChatRepository(drizzleClient);
     this.chatMessage = new ChatMessageRepository(drizzleClient);
   }
@@ -54,9 +54,11 @@ export class DatabaseService {
     // workout_session_exercise and workout_exercise will be deleted automatically due to CASCADE
     await drizzleClient.transaction(async (tx) => {
       // Delete all workout sessions
+      await tx.delete(workoutSessionExercise).where(eq(workoutSessionExercise.userId, userId));
       await tx.delete(workoutSession).where(eq(workoutSession.userId, userId));
 
       // Delete all workouts
+      await tx.delete(workoutExercise).where(eq(workoutExercise.userId, userId));
       await tx.delete(workout).where(eq(workout.userId, userId));
 
       // Delete all exercises

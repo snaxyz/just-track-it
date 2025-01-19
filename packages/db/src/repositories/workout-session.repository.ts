@@ -1,31 +1,19 @@
 import { and, eq, gt, desc } from "drizzle-orm";
 import { BaseRepository } from "./base.repository";
-import {
-  workoutSession,
-  WorkoutSessionModel,
-  WorkoutSessionInsertModel,
-} from "../schema";
-import {
-  QueryResponse,
-  keyToCursor,
-  cursorToKey,
-  QueryOptions,
-} from "../types";
+import { workoutSession, WorkoutSessionModel, WorkoutSessionInsertModel } from "../schema";
+import { QueryResponse, keyToCursor, cursorToKey, QueryOptions } from "../types";
 
 export class WorkoutSessionRepository extends BaseRepository {
-  async create(
-    data: Omit<
-      WorkoutSessionInsertModel,
-      "id" | "startedAt" | "createdAt" | "updatedAt"
-    >
-  ) {
+  async create(data: Omit<WorkoutSessionInsertModel, "id" | "startedAt" | "createdAt" | "updatedAt">) {
+    const timestamp = new Date().toISOString();
     const [result] = await this.db
       .insert(workoutSession)
       .values({
         ...data,
-        startedAt: new Date().toISOString(),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        startedAt: timestamp,
+        createdAt: timestamp,
+        updatedAt: timestamp,
+        completedAt: timestamp,
       })
       .returning();
     return result;
@@ -48,27 +36,20 @@ export class WorkoutSessionRepository extends BaseRepository {
   async count(userId: string, workoutId: string) {
     return await this.db.$count(
       workoutSession,
-      and(
-        eq(workoutSession.userId, userId),
-        eq(workoutSession.workoutId, workoutId)
-      )
+      and(eq(workoutSession.userId, userId), eq(workoutSession.workoutId, workoutId)),
     );
   }
 
   async query(
     userId: string,
-    options: QueryOptions = { limit: 20, order: "asc" }
+    options: QueryOptions = { limit: 20, order: "asc" },
   ): Promise<QueryResponse<WorkoutSessionModel>> {
-    const cursorData = options.nextCursor
-      ? cursorToKey<{ createdAt: string }>(options.nextCursor)
-      : undefined;
+    const cursorData = options.nextCursor ? cursorToKey<{ createdAt: string }>(options.nextCursor) : undefined;
 
     const sessions = await this.db.query.workoutSession.findMany({
       where: and(
         eq(workoutSession.userId, userId),
-        cursorData
-          ? gt(workoutSession.createdAt, cursorData.createdAt)
-          : undefined
+        cursorData ? gt(workoutSession.createdAt, cursorData.createdAt) : undefined,
       ),
       with: {
         workout: true,
@@ -78,10 +59,7 @@ export class WorkoutSessionRepository extends BaseRepository {
           },
         },
       },
-      orderBy:
-        options.order === "asc"
-          ? workoutSession.createdAt
-          : desc(workoutSession.createdAt),
+      orderBy: options.order === "asc" ? workoutSession.createdAt : desc(workoutSession.createdAt),
       limit: options.limit + 1,
     });
 
@@ -95,27 +73,16 @@ export class WorkoutSessionRepository extends BaseRepository {
     };
   }
 
-  async queryByWorkoutId(
-    userId: string,
-    workoutId: string,
-    options: QueryOptions = { limit: 20, order: "asc" }
-  ) {
-    const cursorData = options.nextCursor
-      ? cursorToKey<{ createdAt: string }>(options.nextCursor)
-      : undefined;
+  async queryByWorkoutId(userId: string, workoutId: string, options: QueryOptions = { limit: 20, order: "asc" }) {
+    const cursorData = options.nextCursor ? cursorToKey<{ createdAt: string }>(options.nextCursor) : undefined;
 
     const sessions = await this.db.query.workoutSession.findMany({
       where: and(
         eq(workoutSession.userId, userId),
         eq(workoutSession.workoutId, workoutId),
-        cursorData
-          ? gt(workoutSession.createdAt, cursorData.createdAt)
-          : undefined
+        cursorData ? gt(workoutSession.createdAt, cursorData.createdAt) : undefined,
       ),
-      orderBy:
-        options.order === "asc"
-          ? workoutSession.createdAt
-          : desc(workoutSession.createdAt),
+      orderBy: options.order === "asc" ? workoutSession.createdAt : desc(workoutSession.createdAt),
       limit: options.limit + 1,
       with: {
         workout: true,
@@ -137,11 +104,7 @@ export class WorkoutSessionRepository extends BaseRepository {
     };
   }
 
-  async update(
-    userId: string,
-    id: string,
-    data: Partial<WorkoutSessionInsertModel>
-  ) {
+  async update(userId: string, id: string, data: Partial<WorkoutSessionInsertModel>) {
     const [result] = await this.db
       .update(workoutSession)
       .set({
@@ -154,8 +117,6 @@ export class WorkoutSessionRepository extends BaseRepository {
   }
 
   async delete(userId: string, id: string) {
-    await this.db
-      .delete(workoutSession)
-      .where(and(eq(workoutSession.id, id), eq(workoutSession.userId, userId)));
+    await this.db.delete(workoutSession).where(and(eq(workoutSession.id, id), eq(workoutSession.userId, userId)));
   }
 }

@@ -22,6 +22,13 @@
       "when": 1734747068152,
       "tag": "0002_great_frightful_four",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1737175101354,
+      "tag": "0003_lazy_scream",
+      "breakpoints": true
     }
   ]
 }

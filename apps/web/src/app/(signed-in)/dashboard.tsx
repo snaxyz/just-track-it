@@ -13,13 +13,14 @@ import {
 import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getWorkoutSessions } from "../api/workout-sessions/get-workout-sessions";
 import { EmptySessionsPlaceholder } from "@/components/sessions";
-import { PersonalBest, RecentWorkoutCard } from "@/components/workouts/recent-workout-card";
 import { WorkoutCard } from "@/components/workouts/workout-card/workout-card";
 import { getWorkouts } from "@/app/api/workouts/get-workouts";
 import { EditWorkoutModal, EditWorkoutModalProps } from "@/components/workouts/edit-workout-modal";
 import { useState } from "react";
 import { getExercises } from "../api/exercises/get-exercises";
-import { WorkoutHistoryCard } from "@/components/workouts/workout-history-card";
+import { WorkoutHistoryCard, PersonalBest } from "@/components/workouts/workout-history-card";
+import { EmptyWorkoutsPlaceholder } from "@/components/workouts";
+import { useRouter } from "next/navigation";
 
 function calculateWorkoutStats(exercises: WorkoutSessionExerciseWithRelations[]) {
   if (!exercises?.length) return undefined;
@@ -80,6 +81,7 @@ function calculateWorkoutStats(exercises: WorkoutSessionExerciseWithRelations[])
 
 export function Dashboard() {
   const queryClient = useQueryClient();
+  const router = useRouter();
   const {
     data: workoutSessionsQuery,
     fetchNextPage,
@@ -202,6 +204,9 @@ export function Dashboard() {
           <Typography variant="h6" sx={{ mb: 2 }}>
             Your Workouts
           </Typography>
+          {workoutsQuery?.records.length === 0 && (
+            <EmptyWorkoutsPlaceholder onAddClick={() => router.push("/workouts")} />
+          )}
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {workoutsQuery?.records.map((workout) => (
               <WorkoutCard

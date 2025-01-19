@@ -15,12 +15,13 @@ export type CreateWorkoutInput = Omit<WorkoutInsertModel, "id" | "createdAt" | "
 
 export class WorkoutRepository extends BaseRepository {
   async create(data: CreateWorkoutInput) {
+    const timestamp = new Date().toISOString();
     const [result] = await this.db
       .insert(workout)
       .values({
         ...data,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: timestamp,
+        updatedAt: timestamp,
       })
       .returning();
     return result;
@@ -30,12 +31,13 @@ export class WorkoutRepository extends BaseRepository {
     data: CreateWorkoutInput,
     exerciseIds: string[],
   ): Promise<Omit<WorkoutWithRelations, "sessions">> {
+    const timestamp = new Date().toISOString();
     const [createdWorkout] = await this.db
       .insert(workout)
       .values({
         ...data,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: timestamp,
+        updatedAt: timestamp,
       })
       .returning();
 

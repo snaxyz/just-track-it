@@ -15,16 +15,27 @@ import {
   TextField,
 } from "@mui/material";
 import { useColorScheme } from "@mui/material/styles";
-import { SunIcon, MonitorIcon, MoonIcon, TrashIcon, LogOutIcon } from "lucide-react";
+import { SunIcon, MonitorIcon, MoonIcon, TrashIcon, LogOutIcon, ScaleIcon } from "lucide-react";
 import { useState } from "react";
 import { deleteUserData } from "@/server/settings/delete-user-data";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { SettingModel, WeightUnit } from "@local/db";
+import { getUserSetting } from "@/app/api/setting/[key]/get-setting";
+import { updateUserSetting } from "@/server/settings/update-user-setting";
 
 export function Settings() {
+  const queryClient = useQueryClient();
   const { mode, setMode } = useColorScheme();
   const router = useRouter();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const { data: weightUnitSetting, isLoading } = useQuery<SettingModel>({
+    queryKey: ["setting-weight-unit"],
+    queryFn: () => getUserSetting("weight_unit"),
+  });
+
+  const unit = weightUnitSetting?.value;
 
   if (!mode) {
     return null;
@@ -34,22 +45,19 @@ export function Settings() {
     await deleteUserData();
     setIsDeleteDialogOpen(false);
     router.refresh();
+    queryClient.clear();
+  };
+
+  const handleWeightUnitChange = async (unit: WeightUnit) => {
+    queryClient.setQueryData(["setting-weight-unit"], {
+      ...weightUnitSetting,
+      value: unit,
+    });
+    await updateUserSetting("weight_unit", unit);
   };
 
   return (
     <Box sx={{ pb: 3 }}>
-      {/* <Card variant="outlined">
-        <CardContent>
-          <Box>
-            <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 2 }}>
-              AI Assistant
-            </Typography>
-            <Typography sx={{ color: "text.secondary", mb: 2 }}>Choose a name for your assistant</Typography>
-            <TextField label="Name" value="Brooklyn"></TextField>
-          </Box>
-        </CardContent>
-      </Card> */}
-
       <Card variant="outlined">
         <CardContent>
           <Box>
@@ -78,6 +86,35 @@ export function Settings() {
                 color={mode === "dark" ? "primary" : "inherit"}
               >
                 Dark
+              </Button>
+            </ButtonGroup>
+          </Box>
+        </CardContent>
+      </Card>
+
+      <Card variant="outlined" sx={{ mt: 2 }}>
+        <CardContent>
+          <Box>
+            <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 2 }}>
+              Weight Unit
+            </Typography>
+            <Typography sx={{ color: "text.secondary", mb: 2 }}>Choose your preferred weight unit</Typography>
+            <ButtonGroup variant="outlined" fullWidth disableElevation>
+              <Button
+                onClick={() => handleWeightUnitChange("kg")}
+                startIcon={<ScaleIcon size={16} />}
+                color={unit === "kg" ? "primary" : "inherit"}
+                disabled={isLoading}
+              >
+                Kilograms
+              </Button>
+              <Button
+                onClick={() => handleWeightUnitChange("lbs")}
+                startIcon={<ScaleIcon size={16} />}
+                color={unit === "lbs" ? "primary" : "inherit"}
+                disabled={isLoading}
+              >
+                Pounds
               </Button>
             </ButtonGroup>
           </Box>

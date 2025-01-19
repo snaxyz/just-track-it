@@ -1,14 +1,15 @@
 "use client";
 
-import { Box, Button, Card, CardContent, Skeleton, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, CardHeader, Skeleton, Typography } from "@mui/material";
 import { createWorkoutAndSessionAndRedirect } from "@/server/workouts";
 import { startWorkoutSessionAndRedirect } from "@/server/workout-sessions/start-workout";
 import { QueryResponse, WorkoutSessionWithRelations, WorkoutSessionExerciseWithRelations } from "@local/db";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { EmptySessionsPlaceholder } from "@/components/sessions";
-import { PersonalBest, RecentWorkoutCard } from "@/components/workouts/recent-workout-card";
 import { getWorkoutSessionHistory } from "@/app/api/workout-sessions/get-workout-sessions";
-import { WorkoutHistoryCard } from "@/components/workouts/workout-history-card";
+import { WorkoutHistoryCard, PersonalBest } from "@/components/workouts/workout-history-card";
+import { CalendarIcon } from "lucide-react";
+import { WorkoutCalendarChart } from "@/components/insights";
 
 function calculateWorkoutStats(exercises: WorkoutSessionExerciseWithRelations[]) {
   if (!exercises?.length) return undefined;
@@ -93,9 +94,14 @@ export function History() {
   return (
     <Box sx={{ pb: 3 }}>
       <Box component="section" sx={{ mb: 6 }}>
-        <Typography variant="h6" sx={{ mb: 2 }}>
-          History
-        </Typography>
+        <Card variant="outlined">
+          <CardHeader avatar={<CalendarIcon size={16} />} title="Activity" />
+          <CardContent>
+            <WorkoutCalendarChart />
+          </CardContent>
+        </Card>
+      </Box>
+      <Box component="section" sx={{ mb: 6 }}>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {workoutSessionsQuery?.pages[0]?.records.length === 0 && (
             <EmptySessionsPlaceholder onAddClick={handleStartTraining} />

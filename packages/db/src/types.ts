@@ -1,4 +1,4 @@
-export { CreateWorkoutInput, CreateExerciseInput } from "./repositories";
+export { CreateWorkoutInput, CreateExerciseInput, SettingKey } from "./repositories";
 
 export type QueryResponse<T> = {
   cursor: string;
