@@ -1,28 +1,17 @@
 import { Button } from "@mui/material";
-import { DumbbellIcon, MessageSquarePlusIcon, PlusIcon } from "lucide-react";
+import { DumbbellIcon, PlusIcon } from "lucide-react";
 import { EmptyPlaceholderCard } from "../cards";
 
 interface Props {
   onAddClick: () => void;
-  onAskAIClick?: () => void;
 }
 
-export function EmptyWorkoutsPlaceholder({ onAddClick, onAskAIClick }: Props) {
+export function EmptyWorkoutsPlaceholder({ onAddClick }: Props) {
   return (
     <EmptyPlaceholderCard Icon={DumbbellIcon} title="No workouts" message="Create your first workout to get started">
       <Button variant="contained" startIcon={<PlusIcon size={16} />} color="primary" onClick={onAddClick}>
         Create workout
       </Button>
-      {onAskAIClick && (
-        <Button
-          variant="outlined"
-          startIcon={<MessageSquarePlusIcon size={16} />}
-          color="primary"
-          onClick={onAskAIClick}
-        >
-          Ask AI for workout
-        </Button>
-      )}
     </EmptyPlaceholderCard>
   );
 }

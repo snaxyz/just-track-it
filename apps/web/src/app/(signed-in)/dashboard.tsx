@@ -21,6 +21,8 @@ import { getExercises } from "../api/exercises/get-exercises";
 import { WorkoutHistoryCard, PersonalBest } from "@/components/workouts/workout-history-card";
 import { EmptyWorkoutsPlaceholder } from "@/components/workouts";
 import { useRouter } from "next/navigation";
+import { StartWorkoutModal } from "@/components/workouts/start-workout-modal";
+import { ActivityIcon, TrendingUpIcon, SparklesIcon } from "lucide-react";
 
 function calculateWorkoutStats(exercises: WorkoutSessionExerciseWithRelations[]) {
   if (!exercises?.length) return undefined;
@@ -82,6 +84,7 @@ function calculateWorkoutStats(exercises: WorkoutSessionExerciseWithRelations[])
 export function Dashboard() {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const [isStartWorkoutModalOpen, setIsStartWorkoutModalOpen] = useState(false);
   const {
     data: workoutSessionsQuery,
     fetchNextPage,
@@ -110,7 +113,11 @@ export function Dashboard() {
   };
 
   const handleStartTraining = () => {
-    createWorkoutAndSessionAndRedirect();
+    setIsStartWorkoutModalOpen(true);
+  };
+
+  const handleCloseStartWorkoutModal = () => {
+    setIsStartWorkoutModalOpen(false);
   };
 
   const [selectedWorkout, setSelectedWorkout] =
@@ -149,20 +156,98 @@ export function Dashboard() {
     onCloseEditWorkout();
   };
 
+  const hasRecentWorkouts = Boolean(workoutSessionsQuery?.pages[0]?.records.length);
   const showLoadingSessions = isFetchingNextPage || isLoadingSessions;
 
   return (
     <>
       <Box sx={{ pb: 3 }}>
+        {/* Start Workout Section - Only show if there are recent workouts */}
+        {hasRecentWorkouts && (
+          <Box component="section" sx={{ mb: 6 }}>
+            <Card
+              variant="outlined"
+              sx={{
+                position: "relative",
+                overflow: "hidden",
+                cursor: "pointer",
+                "&:hover": {
+                  borderColor: "primary.main",
+                  "& .hover-content": {
+                    opacity: 1,
+                  },
+                },
+              }}
+              onClick={handleStartTraining}
+            >
+              <CardContent sx={{ p: 3 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
+                  <ActivityIcon size={24} />
+                  <Typography variant="h6" sx={{ fontWeight: "medium" }}>
+                    Start New Workout
+                  </Typography>
+                </Box>
+
+                <Box sx={{ display: "flex", gap: 3, mb: 2 }}>
+                  <Box>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                      Last workout
+                    </Typography>
+                    <Typography variant="body1">
+                      {workoutSessionsQuery?.pages[0]?.records[0]?.workout.name ?? "Unknown"}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                      Streak
+                    </Typography>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                      <TrendingUpIcon size={16} />
+                      <Typography variant="body1">3 days</Typography>
+                    </Box>
+                  </Box>
+                </Box>
+
+                <Box
+                  className="hover-content"
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    color: "secondary.main",
+                    opacity: 0.8,
+                    transition: "opacity 0.2s",
+                  }}
+                >
+                  <SparklesIcon size={16} />
+                  <Typography variant="body2">Choose from blank, existing, or AI-generated workouts</Typography>
+                </Box>
+
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: -50,
+                    right: -50,
+                    width: 200,
+                    height: 200,
+                    background: (theme) =>
+                      `radial-gradient(circle, ${theme.palette.primary.main}10 0%, transparent 70%)`,
+                    borderRadius: "50%",
+                    pointerEvents: "none",
+                  }}
+                />
+              </CardContent>
+            </Card>
+          </Box>
+        )}
+
         {/* Recent Workouts Section */}
         <Box component="section" sx={{ mb: 6 }}>
           <Typography variant="h6" sx={{ mb: 2 }}>
             Recent Workouts
           </Typography>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {workoutSessionsQuery?.pages[0]?.records.length === 0 && (
-              <EmptySessionsPlaceholder onAddClick={handleStartTraining} />
-            )}
+            {!hasRecentWorkouts && <EmptySessionsPlaceholder onAddClick={handleStartTraining} />}
             {workoutSessionsQuery?.pages.map((p) =>
               p.records.map((w) => (
                 <WorkoutHistoryCard
@@ -236,6 +321,7 @@ export function Dashboard() {
         exercises={exercisesQuery?.records ?? []}
         onSave={handleSaveWorkout}
       />
+      <StartWorkoutModal isOpen={isStartWorkoutModalOpen} onClose={handleCloseStartWorkoutModal} />
     </>
   );
 }

@@ -47,7 +47,7 @@ export function ExerciseCategorySelect({ selectedCategories, onCategoriesChange,
       onChange={(_, newValue) => {
         onCategoriesChange(newValue.map((v) => v.id));
       }}
-      renderInput={(params) => <TextField {...params} label="Categories" fullWidth={fullWidth} />}
+      renderInput={(params) => <TextField {...params} label="Target areas" fullWidth={fullWidth} />}
       renderTags={renderTags}
     />
   );

@@ -66,8 +66,6 @@ export function Exercises() {
     await deleteExercise(exerciseId);
   };
 
-  const handleAskAI = () => {};
-
   if (isLoading) return <ExercisesLoading />;
 
   const noExercises = !exercisesQuery || exercisesQuery.records.length === 0;

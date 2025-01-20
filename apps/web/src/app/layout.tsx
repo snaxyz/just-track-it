@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Providers } from "./providers";
-import { inter, roboto } from "./fonts";
+import { roboto } from "./fonts";
 import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
 import "./global.css";
 

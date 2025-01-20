@@ -10,13 +10,12 @@ export function Logo({ sx }: Props) {
     <Typography
       component="span"
       sx={{
-        fontFamily: "Kalam",
-        fontWeight: 500,
-        letterSpacing: "-0.05em",
+        fontFamily: "Permanent Marker",
+        fontWeight: 400,
         ...sx,
       }}
     >
-      Just track it
+      Just Track It
     </Typography>
   );
 }

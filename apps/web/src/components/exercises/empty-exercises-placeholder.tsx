@@ -4,10 +4,9 @@ import { EmptyPlaceholderCard } from "../cards";
 
 interface Props {
   onAddClick: () => void;
-  onAskAIClick?: () => void;
 }
 
-export function EmptyExercisesPlaceholder({ onAddClick, onAskAIClick }: Props) {
+export function EmptyExercisesPlaceholder({ onAddClick }: Props) {
   return (
     <EmptyPlaceholderCard
       Icon={LibrarySquareIcon}
@@ -17,16 +16,6 @@ export function EmptyExercisesPlaceholder({ onAddClick, onAskAIClick }: Props) {
       <Button variant="contained" startIcon={<PlusIcon size={16} />} color="primary" onClick={onAddClick}>
         Create exercise
       </Button>
-      {onAskAIClick && (
-        <Button
-          variant="outlined"
-          startIcon={<MessageSquarePlusIcon size={16} />}
-          color="primary"
-          onClick={onAskAIClick}
-        >
-          Ask AI for exercise
-        </Button>
-      )}
     </EmptyPlaceholderCard>
   );
 }

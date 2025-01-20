@@ -12,10 +12,11 @@ import {
   DialogContent,
   DialogActions,
   Divider,
-  TextField,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { useColorScheme } from "@mui/material/styles";
-import { SunIcon, MonitorIcon, MoonIcon, TrashIcon, LogOutIcon, ScaleIcon } from "lucide-react";
+import { SunIcon, MonitorIcon, MoonIcon, TrashIcon, LogOutIcon, ScaleIcon, RefreshCwIcon } from "lucide-react";
 import { useState } from "react";
 import { deleteUserData } from "@/server/settings/delete-user-data";
 import { useRouter } from "next/navigation";
@@ -24,12 +25,23 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { SettingModel, WeightUnit } from "@local/db";
 import { getUserSetting } from "@/app/api/setting/[key]/get-setting";
 import { updateUserSetting } from "@/server/settings/update-user-setting";
+import { resetSampleData } from "@/server/settings/reset-sample-data";
 
 export function Settings() {
   const queryClient = useQueryClient();
   const { mode, setMode } = useColorScheme();
   const router = useRouter();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [snackbar, setSnackbar] = useState<{
+    open: boolean;
+    message: string;
+    severity: "success" | "error";
+  }>({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+
   const { data: weightUnitSetting, isLoading } = useQuery<SettingModel>({
     queryKey: ["setting-weight-unit"],
     queryFn: () => getUserSetting("weight_unit"),
@@ -41,11 +53,28 @@ export function Settings() {
     return null;
   }
 
+  const handleCloseSnackbar = () => {
+    setSnackbar((prev) => ({ ...prev, open: false }));
+  };
+
   const handleDeleteData = async () => {
-    await deleteUserData();
-    setIsDeleteDialogOpen(false);
-    router.refresh();
-    queryClient.clear();
+    try {
+      await deleteUserData();
+      setIsDeleteDialogOpen(false);
+      router.refresh();
+      queryClient.clear();
+      setSnackbar({
+        open: true,
+        message: "All data has been deleted successfully",
+        severity: "success",
+      });
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: "Failed to delete data. Please try again.",
+        severity: "error",
+      });
+    }
   };
 
   const handleWeightUnitChange = async (unit: WeightUnit) => {
@@ -54,6 +83,25 @@ export function Settings() {
       value: unit,
     });
     await updateUserSetting("weight_unit", unit);
+  };
+
+  const handleResetSampleData = async () => {
+    try {
+      await resetSampleData();
+      router.refresh();
+      queryClient.clear();
+      setSnackbar({
+        open: true,
+        message: "Sample data has been reset successfully",
+        severity: "success",
+      });
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: "Failed to reset sample data. Please try again.",
+        severity: "error",
+      });
+    }
   };
 
   return (
@@ -140,14 +188,24 @@ export function Settings() {
               Advanced
             </Typography>
             <Typography sx={{ color: "text.secondary", mb: 2 }}>Danger zone: These actions cannot be undone</Typography>
-            <Button
-              variant="outlined"
-              color="error"
-              startIcon={<TrashIcon size={16} />}
-              onClick={() => setIsDeleteDialogOpen(true)}
-            >
-              Delete all data
-            </Button>
+            <Box sx={{ display: "flex", gap: 2, flexDirection: "column" }}>
+              <Button
+                variant="outlined"
+                color="warning"
+                startIcon={<RefreshCwIcon size={16} />}
+                onClick={handleResetSampleData}
+              >
+                Reset sample data
+              </Button>
+              <Button
+                variant="outlined"
+                color="error"
+                startIcon={<TrashIcon size={16} />}
+                onClick={() => setIsDeleteDialogOpen(true)}
+              >
+                Delete all data
+              </Button>
+            </Box>
           </Box>
         </CardContent>
       </Card>
@@ -167,6 +225,17 @@ export function Settings() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: "100%" }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
