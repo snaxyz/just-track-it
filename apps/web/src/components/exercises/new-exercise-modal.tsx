@@ -1,23 +1,28 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 import { PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { ExerciseCategorySelect } from "./exercise-category-select";
+import { ExerciseTargetAreasSelect } from "./exercise-target-areas-select";
+import { ExerciseTrackingSelect, TrackingOption } from "./exercise-tracking-select";
 
 export interface NewExerciseModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (name: string, categories: string[]) => void;
+  onAdd: (name: string, targetAreas: string[], tracking: TrackingOption[], description?: string) => void;
   error?: string;
 }
 
 export function NewExerciseModal({ isOpen, onClose, onAdd, error }: NewExerciseModalProps) {
   const [name, setName] = useState("");
-  const [categories, setCategories] = useState<string[]>([]);
+  const [description, setDescription] = useState("");
+  const [targetAreas, setTargetAreas] = useState<string[]>([]);
+  const [tracking, setTracking] = useState<TrackingOption[]>(["sets", "reps"]); // Default tracking options
 
   useEffect(() => {
     if (!isOpen) {
       setName("");
-      setCategories([]);
+      setDescription("");
+      setTargetAreas([]);
+      setTracking(["sets", "reps"]);
     }
   }, [isOpen]);
 
@@ -34,7 +39,17 @@ export function NewExerciseModal({ isOpen, onClose, onAdd, error }: NewExerciseM
             error={Boolean(error)}
             helperText={error}
           />
-          <ExerciseCategorySelect selectedCategories={categories} onCategoriesChange={setCategories} fullWidth />
+          <TextField
+            fullWidth
+            label="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            multiline
+            rows={2}
+            placeholder="Add notes about form, equipment, or other details"
+          />
+          <ExerciseTargetAreasSelect selectedTargetAreas={targetAreas} onTargetAreasChange={setTargetAreas} fullWidth />
+          <ExerciseTrackingSelect selectedOptions={tracking} onOptionsChange={setTracking} fullWidth />
         </Box>
       </DialogContent>
       <DialogActions sx={{ p: 2 }}>
@@ -43,7 +58,7 @@ export function NewExerciseModal({ isOpen, onClose, onAdd, error }: NewExerciseM
           color="primary"
           startIcon={<PlusIcon size={16} />}
           disabled={!name}
-          onClick={() => onAdd(name, categories)}
+          onClick={() => onAdd(name, targetAreas, tracking, description || undefined)}
         >
           Add exercise
         </Button>

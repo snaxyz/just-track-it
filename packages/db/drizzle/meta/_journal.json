@@ -29,6 +29,27 @@
       "when": 1737175101354,
       "tag": "0003_lazy_scream",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1737602281812,
+      "tag": "0004_round_freak",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1737645880399,
+      "tag": "0005_simple_komodo",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1737645938063,
+      "tag": "0006_optimal_vulcan",
+      "breakpoints": true
     }
   ]
 }

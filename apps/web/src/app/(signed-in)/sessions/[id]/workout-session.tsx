@@ -21,6 +21,7 @@ import {
   WorkoutSessionWithRelations,
   WorkoutSessionExerciseWithRelations,
   WorkoutSet,
+  SettingModel,
 } from "@local/db";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getWorkoutSession } from "@/app/api/workout-sessions/[id]/get-workout-session";
@@ -32,6 +33,7 @@ import { DateTime } from "@/components/date-time";
 import { EnhancedWorkoutSession } from "@/server/types";
 import { updateWorkoutSessionExercises } from "@/server/workout-sessions/update-workout-session-exercises";
 import { WorkoutSessionLoading } from "./workout-session-loading";
+import { getUserSetting } from "@/app/api/setting/[key]/get-setting";
 
 interface SetStats {
   reps: number;
@@ -65,6 +67,24 @@ function getLastExerciseSetStats(
   return defaultStats;
 }
 
+function lbsToKg(weight: number): number {
+  return weight * 0.45359237;
+}
+
+function kgToLbs(weight: number): number {
+  return weight * 2.20462262185;
+}
+
+function normalizeWeight(weight: number, displayUnit: WeightUnit) {
+  if (displayUnit === "kg") return weight;
+  return lbsToKg(weight);
+}
+
+function denormalizeWeight(weight: number, displayUnit: WeightUnit) {
+  if (displayUnit === "kg") return weight;
+  return kgToLbs(weight);
+}
+
 export function WorkoutSession() {
   const { id } = useParams<{ id: string }>();
 
@@ -77,7 +97,13 @@ export function WorkoutSession() {
     queryKey: ["exercises"],
     queryFn: () => getExercises(),
   });
-  const isLoading = isWorkoutLoading || isExercisesLoading;
+  const { data: weightUnitSetting, isLoading: weightUnitLoading } = useQuery<SettingModel>({
+    queryKey: ["setting-weight-unit"],
+    queryFn: () => getUserSetting("weight_unit"),
+  });
+
+  const unit = weightUnitSetting?.value as WeightUnit;
+  const isLoading = isWorkoutLoading || isExercisesLoading || weightUnitLoading;
 
   const [isOpen, setIsOpen] = useState(false);
   const onOpen = () => setIsOpen(true);
@@ -88,6 +114,7 @@ export function WorkoutSession() {
   const [set, setSet] = useState("1");
   const [reps, setReps] = useState("8");
   const [weight, setWeight] = useState("40");
+  const [duration, setDuration] = useState("0");
 
   const workoutExercises = workoutSession?.exercises ?? [];
 
@@ -96,14 +123,22 @@ export function WorkoutSession() {
     if (exercise) {
       setSet((exercise.sets.length + 1).toString());
       const lastSet = exercise.sets[exercise.sets.length - 1];
-      if (lastSet && lastSet.reps) {
-        setReps(lastSet.reps.toString());
-      }
-      const weight = exercise.sets[exercise.sets.length - 1].weight;
-      if (weight) {
-        setWeight(weight.toString());
-      } else {
-        setWeight("");
+      if (lastSet) {
+        if (lastSet.reps) {
+          setReps(lastSet.reps.toString());
+        }
+        if (lastSet.weight) {
+          // Convert from kg to lbs if needed
+          const displayWeight = denormalizeWeight(lastSet.weight, unit);
+          setWeight(displayWeight.toString());
+        } else {
+          setWeight("");
+        }
+        if (lastSet.duration) {
+          setDuration(lastSet.duration.toString());
+        } else {
+          setDuration("0");
+        }
       }
       setCustomExercise(exercise.exercise.name);
     }
@@ -129,16 +164,23 @@ export function WorkoutSession() {
         } else {
           setWeight("");
         }
+        if (lastSet?.duration) {
+          setDuration(lastSet.duration.toString());
+        } else {
+          setDuration("0");
+        }
       } else {
         const lastStats = getLastExerciseSetStats(workoutSession?.lastSession, found.id);
         setSet("1");
         setReps(lastStats.reps.toString());
         setWeight(lastStats.weight.toString());
+        setDuration("0");
       }
     } else {
       setSet("1");
       setReps(defaultStats.reps.toString());
       setWeight(defaultStats.weight.toString());
+      setDuration("0");
     }
   };
 
@@ -155,7 +197,11 @@ export function WorkoutSession() {
       if (matchedExercise) {
         exercise = matchedExercise;
       } else {
-        exercise = await createExercise(input.customExercise.trim(), []);
+        exercise = await createExercise(
+          input.customExercise.trim(),
+          input.targetAreas ?? [],
+          input.tracking ?? ["sets", "reps"], // Default tracking options if none provided
+        );
         setLastUpdatedExercise(exercise.id);
         queryClient.setQueryData<QueryResponse<ExerciseModel>>(["exercises"], {
           ...(exercisesQuery ?? { cursor: "" }),
@@ -166,6 +212,8 @@ export function WorkoutSession() {
     }
     if (!workoutSession || !exercise) return;
     const inputWeight = input.weight ? input.weight : null;
+    const inputDuration = input.duration ? parseInt(input.duration) : null;
+
     let updatedWorkoutExercises: Pick<WorkoutSessionExerciseWithRelations, "exerciseId" | "sets" | "exercise">[];
     if (input.set === "1" && !workoutExercises.find((e) => e.exerciseId === exercise.id)) {
       updatedWorkoutExercises = [
@@ -176,8 +224,9 @@ export function WorkoutSession() {
           sets: [
             {
               reps: parseInt(input.reps),
-              weight: inputWeight ? parseFloat(inputWeight) : undefined,
+              weight: inputWeight ? normalizeWeight(parseFloat(inputWeight), unit) : undefined,
               unit: input.unit,
+              duration: inputDuration ?? undefined,
             },
           ],
         },
@@ -192,8 +241,9 @@ export function WorkoutSession() {
               ...e.sets,
               {
                 reps: parseInt(input.reps),
-                weight: inputWeight ? parseFloat(inputWeight) : undefined,
+                weight: inputWeight ? normalizeWeight(parseFloat(inputWeight), unit) : undefined,
                 unit: input.unit,
+                duration: inputDuration ?? undefined,
               },
             ],
           };
@@ -289,7 +339,9 @@ export function WorkoutSession() {
     setSet("1");
     const lastStats = getLastExerciseSetStats(workoutSession?.lastSession, exerciseId);
     setReps(lastStats.reps.toString());
-    setWeight(lastStats.weight.toString());
+    // Convert from kg to lbs if needed
+    const displayWeight = denormalizeWeight(lastStats.weight, unit);
+    setWeight(displayWeight.toString());
     onOpen();
   };
 
@@ -314,21 +366,27 @@ export function WorkoutSession() {
             sx={{ mb: 3 }}
             exerciseName={e.exercise.name}
             exerciseId={e.exerciseId}
+            exercise={e.exercise}
             showUpdateAnimation={e.exerciseId === lastUpdatedExercise}
             onAnimationComplete={onAnimationComplete}
             sets={e.sets}
             onDelete={handleDeleteExercise}
             onDeleteSet={handleDeleteExerciseSet}
             onUpdateSet={handleUpdateExerciseSet}
+            unit={unit}
           >
             {e.sets.length > 0 ? (
               <LastWorkoutExerciseSet
                 exerciseId={e.exerciseId}
+                exercise={e.exercise}
                 set={e.sets.length}
                 reps={e.sets[e.sets.length - 1].reps}
-                weight={e.sets[e.sets.length - 1].weight}
-                unit={e.sets[e.sets.length - 1].unit}
-                onPress={handleWorkoutExerciseClick}
+                weight={
+                  e.sets[e.sets.length - 1].weight ? denormalizeWeight(e.sets[e.sets.length - 1].weight!, unit) : null
+                }
+                unit={unit}
+                duration={e.sets[e.sets.length - 1].duration}
+                onClick={handleWorkoutExerciseClick}
               />
             ) : (
               <Box sx={{ p: 2 }}>
@@ -386,12 +444,14 @@ export function WorkoutSession() {
         set={set}
         reps={reps}
         weight={weight}
+        unit={unit as WeightUnit}
+        duration={duration}
         onSelectedExerciseChange={handleSelectExercise}
         onCustomExerciseChange={handleCustomExerciseChange}
         onSetChange={setSet}
         onRepsChange={setReps}
         onWeightChange={setWeight}
-        unit="lbs"
+        onDurationChange={setDuration}
       />
     </>
   );

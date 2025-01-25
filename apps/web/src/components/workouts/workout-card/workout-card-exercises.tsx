@@ -17,8 +17,8 @@ export function WorkoutCardExercises({ exercises }: Props) {
     );
   }
 
-  // Get unique categories across all exercises
-  const categories = [...new Set(exercises.flatMap((e) => e.exercise.categories))];
+  // Get unique target areas across all exercises
+  const targetAreas = [...new Set(exercises.flatMap((e) => e.exercise.targetAreas))];
 
   return (
     <Stack spacing={2}>
@@ -53,20 +53,14 @@ export function WorkoutCardExercises({ exercises }: Props) {
         </List>
       </Box>
 
-      {categories.length > 0 && (
+      {targetAreas.length > 0 && (
         <Box>
           <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: "block" }}>
             Target Areas
           </Typography>
           <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap" }}>
-            {categories.map((category) => (
-              <Chip
-                key={category}
-                label={category}
-                size="small"
-                variant="outlined"
-                sx={{ textTransform: "capitalize" }}
-              />
+            {targetAreas.map((area) => (
+              <Chip key={area} label={area} size="small" variant="outlined" sx={{ textTransform: "capitalize" }} />
             ))}
           </Box>
         </Box>

@@ -1,6 +1,5 @@
 import { Autocomplete, TextField } from "@mui/material";
 import { WeightUnit } from "@local/db";
-import { ChevronDownIcon } from "lucide-react";
 
 interface Props {
   weight: string;

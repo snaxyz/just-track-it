@@ -47,7 +47,7 @@ export class ExerciseRepository extends BaseRepository {
         eq(exercise.userId, userId),
         cursorData ? gt(exercise.name, cursorData.name) : undefined,
         searchTerm
-          ? or(ilike(exercise.name, `%${searchTerm}%`), sql`${exercise.categories}::text ilike ${`%${searchTerm}%`}`)
+          ? or(ilike(exercise.name, `%${searchTerm}%`), sql`${exercise.targetAreas}::text ilike ${`%${searchTerm}%`}`)
           : undefined,
       ),
       orderBy: options.order === "asc" ? exercise.name : desc(exercise.name),

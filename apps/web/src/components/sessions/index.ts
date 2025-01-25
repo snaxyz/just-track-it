@@ -1,4 +1,4 @@
-export * from "./common";
+export * from "../common";
 export * from "./empty-session-exercises-placeholder";
 export * from "./new-set-modal";
 export * from "./workout-session-exercise-card";

@@ -15,17 +15,19 @@ import { PencilIcon, TimerIcon, WeightIcon, RepeatIcon, TrendingUpIcon, HistoryI
 import { EditExerciseModal } from "./edit-exercise-modal";
 import { SxProps, Theme } from "@mui/material/styles";
 import { useState } from "react";
+import { TrackingOption } from "./exercise-tracking-select";
+import { WeightDisplay } from "@/components/common/weight-display";
 
 interface Props {
   sx?: SxProps<Theme>;
   id: string;
   name: string;
-  categories: string[];
+  targetAreas: string[];
   description?: string | null;
-  hasReps?: boolean;
-  hasWeight?: boolean;
-  hasSets?: boolean;
-  hasDuration?: boolean;
+  trackReps?: boolean;
+  trackWeight?: boolean;
+  trackSets?: boolean;
+  trackDuration?: boolean;
   lastUsed?: string; // ISO date string
   personalBest?: {
     weight?: number;
@@ -33,7 +35,7 @@ interface Props {
     date: string;
   };
   totalSessions?: number;
-  onUpdate: (id: string, name: string, categories: string[]) => void;
+  onUpdate: (id: string, name: string, targetAreas: string[], tracking: TrackingOption[], description?: string) => void;
   onDelete: (id: string) => void;
   onClick?: () => void;
 }
@@ -42,12 +44,12 @@ export function ExerciseCard({
   sx,
   id,
   name,
-  categories,
+  targetAreas,
   description,
-  hasReps,
-  hasWeight,
-  hasSets,
-  hasDuration,
+  trackReps,
+  trackWeight,
+  trackSets,
+  trackDuration,
   lastUsed,
   personalBest,
   totalSessions,
@@ -57,8 +59,13 @@ export function ExerciseCard({
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleSave = (updatedName: string, updatedCategories: string[]) => {
-    onUpdate(id, updatedName, updatedCategories);
+  const handleSave = (
+    updatedName: string,
+    updatedTargetAreas: string[],
+    updatedTracking: TrackingOption[],
+    updatedDescription?: string,
+  ) => {
+    onUpdate(id, updatedName, updatedTargetAreas, updatedTracking, updatedDescription);
     setIsOpen(false);
   };
 
@@ -68,6 +75,14 @@ export function ExerciseCard({
   };
 
   const CardWrapper: React.ComponentType<any> = onClick ? CardActionArea : Box;
+
+  // Convert boolean tracking flags to TrackingOption array
+  const tracking: TrackingOption[] = [
+    ...(trackSets ? ["sets" as const] : []),
+    ...(trackReps ? ["reps" as const] : []),
+    ...(trackWeight ? ["weight" as const] : []),
+    ...(trackDuration ? ["duration" as const] : []),
+  ];
 
   return (
     <>
@@ -103,17 +118,22 @@ export function ExerciseCard({
 
               {/* Exercise Properties */}
               <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-                {hasReps && (
+                {trackSets && (
+                  <Tooltip title="Tracks sets">
+                    <Chip icon={<TrendingUpIcon size={14} />} label="Sets" size="small" variant="filled" />
+                  </Tooltip>
+                )}
+                {trackReps && (
                   <Tooltip title="Tracks repetitions">
                     <Chip icon={<RepeatIcon size={14} />} label="Reps" size="small" variant="filled" />
                   </Tooltip>
                 )}
-                {hasWeight && (
+                {trackWeight && (
                   <Tooltip title="Tracks weight">
                     <Chip icon={<WeightIcon size={14} />} label="Weight" size="small" variant="filled" />
                   </Tooltip>
                 )}
-                {hasDuration && (
+                {trackDuration && (
                   <Tooltip title="Tracks duration">
                     <Chip icon={<TimerIcon size={14} />} label="Duration" size="small" variant="filled" />
                   </Tooltip>
@@ -129,7 +149,7 @@ export function ExerciseCard({
                   <Stack direction="row" spacing={1} alignItems="center">
                     <TrendingUpIcon size={14} />
                     <Typography variant="body2">
-                      {personalBest.weight && `${personalBest.weight}kg `}
+                      {personalBest.weight && <WeightDisplay weight={personalBest.weight} />}{" "}
                       {personalBest.reps && `${personalBest.reps} reps `}
                       <Typography component="span" variant="caption" color="text.secondary">
                         on {new Date(personalBest.date).toLocaleDateString()}
@@ -150,13 +170,13 @@ export function ExerciseCard({
               )}
 
               {/* Categories */}
-              {categories.length > 0 && (
+              {targetAreas.length > 0 && (
                 <Box>
                   <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: "block" }}>
                     Target Areas
                   </Typography>
                   <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap" }}>
-                    {categories.map((category) => (
+                    {targetAreas.map((category) => (
                       <Chip
                         key={category}
                         label={category}
@@ -177,7 +197,9 @@ export function ExerciseCard({
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         name={name}
-        categories={categories}
+        targetAreas={targetAreas}
+        tracking={tracking}
+        description={description}
         onSave={handleSave}
         onDelete={handleDelete}
       />

@@ -21,7 +21,7 @@ export function WorkoutCard({ sx, id, name, description, children, onStartWorkou
         title={name}
         action={
           <Box sx={{ display: "flex", gap: 1 }}>
-            <Link href={`/workouts/${id}/history`}>
+            <Link href={`/history/${id}`}>
               <IconButton size="small">
                 <HistoryIcon size={16} />
               </IconButton>

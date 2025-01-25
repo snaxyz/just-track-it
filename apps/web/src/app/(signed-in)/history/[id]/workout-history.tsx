@@ -40,7 +40,9 @@ export function WorkoutHistory() {
                 key={e.exerciseId}
                 sx={{ mb: 2 }}
                 exerciseName={e.exercise.name}
-                {...e}
+                exerciseId={e.exerciseId}
+                exercise={e.exercise}
+                sets={e.sets}
               />
             ))}
           </WorkoutSessionHistoryCard>

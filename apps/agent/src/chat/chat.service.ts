@@ -1,3 +1,4 @@
+import { nanoid } from "nanoid";
 import { Injectable } from "@nestjs/common";
 import { StreamChatMessageDto } from "./dto/stream-chat-message.dto";
 import { AgentService } from "../agent/agent.service";
@@ -24,7 +25,6 @@ export class ChatService {
 
     const stream = await this.agentService.streamChat({ message, chatHistory, userId });
     const responseChunks: string[] = [];
-    let sequence = 0;
 
     for await (const chunk of stream) {
       const content = chunk.message.content.toString();
@@ -35,11 +35,13 @@ export class ChatService {
         chatId,
         messageId: "",
         content,
-        sequence: sequence++,
       });
     }
 
-    const { id } = await db.chatMessage.create({
+    const id = nanoid();
+
+    await db.chatMessage.create({
+      id,
       userId,
       chatId,
       role: "ai",
@@ -51,7 +53,6 @@ export class ChatService {
       chatId,
       messageId: id,
       content: "",
-      sequence: sequence++,
       finishReason: "stop",
     });
   }

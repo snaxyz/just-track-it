@@ -1,11 +1,11 @@
 import { Autocomplete, AutocompleteRenderGetTagProps, Chip, TextField } from "@mui/material";
 
-export interface Category {
+export interface TargetArea {
   id: string;
   name: string;
 }
 
-const defaultCategories = [
+const defaultTargetAreas = [
   "Upper",
   "Lower",
   "Push",
@@ -25,27 +25,27 @@ const defaultCategories = [
 ].map((c) => ({ id: c, name: c }));
 
 interface Props {
-  selectedCategories: string[];
-  onCategoriesChange: (categories: string[]) => void;
+  selectedTargetAreas: string[];
+  onTargetAreasChange: (targetAreas: string[]) => void;
   fullWidth?: boolean;
 }
 
-function renderTags(value: Category[], getTagProps: AutocompleteRenderGetTagProps) {
+function renderTags(value: TargetArea[], getTagProps: AutocompleteRenderGetTagProps) {
   return value.map((option, index) => {
     const { key, ...props } = getTagProps({ index });
     return <Chip key={key} label={option.name} {...props} />;
   });
 }
 
-export function ExerciseCategorySelect({ selectedCategories, onCategoriesChange, fullWidth }: Props) {
+export function ExerciseTargetAreasSelect({ selectedTargetAreas, onTargetAreasChange, fullWidth }: Props) {
   return (
     <Autocomplete
       multiple
-      options={defaultCategories}
+      options={defaultTargetAreas}
       getOptionLabel={(option) => option.name}
-      value={defaultCategories.filter((cat) => selectedCategories.includes(cat.id))}
+      value={defaultTargetAreas.filter((cat) => selectedTargetAreas.includes(cat.id))}
       onChange={(_, newValue) => {
-        onCategoriesChange(newValue.map((v) => v.id));
+        onTargetAreasChange(newValue.map((v) => v.id));
       }}
       renderInput={(params) => <TextField {...params} label="Target areas" fullWidth={fullWidth} />}
       renderTags={renderTags}

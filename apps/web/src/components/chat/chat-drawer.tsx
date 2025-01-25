@@ -29,7 +29,7 @@ export function ChatDrawer() {
       }}
     >
       <ChatDrawerToolbar onClose={toggleDrawer} />
-      <Chat />
+      <Chat shouldScrollToBottom={isOpen} />
     </Drawer>
   );
 }

@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { DateTime } from "../date-time";
+import { WeightDisplay } from "@/components/common/weight-display";
 
 export interface PersonalBest {
   type: "volume" | "weight" | "reps";
@@ -54,7 +55,15 @@ export function WorkoutHistoryCard({ workoutId, name, completedAt, onStartWorkou
               size="small"
               variant="outlined"
               icon={<TrophyIcon size={14} />}
-              label={`${stats.personalBest.value}${stats.personalBest.type === "weight" ? "kg" : ""} ${stats.personalBest.exercise}`}
+              label={
+                stats.personalBest.type === "weight" ? (
+                  <>
+                    <WeightDisplay weight={stats.personalBest.value} /> {stats.personalBest.exercise}
+                  </>
+                ) : (
+                  `${stats.personalBest.value} ${stats.personalBest.exercise}`
+                )
+              }
               sx={{ mt: 1 }}
             />
           )
@@ -93,7 +102,7 @@ export function WorkoutHistoryCard({ workoutId, name, completedAt, onStartWorkou
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1, color: "text.secondary" }}>
                     <TrendingUpIcon size={16} />
                     <Box component="span" sx={{ typography: "body2" }}>
-                      {stats.totalVolume}kg
+                      <WeightDisplay weight={stats.totalVolume} />
                     </Box>
                   </Box>
                 </Tooltip>

@@ -3,19 +3,26 @@
 import slugify from "slugify";
 import { db } from "@local/db";
 import { getUserId } from "../user";
+import { TrackingOption } from "@/components/exercises/exercise-tracking-select";
 
-export async function createExercise(name: string, categories: string[]) {
+export async function createExercise(
+  name: string,
+  targetAreas: string[],
+  tracking: TrackingOption[],
+  description?: string,
+) {
   const userId = await getUserId();
+
   return await db.exercise.create({
     userId,
     name,
     slug: slugify(name),
-    categories,
-    description: null,
+    targetAreas,
+    description: description ?? "",
     keywords: [],
-    hasSets: true,
-    hasReps: true,
-    hasWeight: true,
-    hasDuration: false,
+    trackSets: true,
+    trackReps: tracking.includes("reps"),
+    trackWeight: tracking.includes("weight"),
+    trackDuration: tracking.includes("duration"),
   });
 }

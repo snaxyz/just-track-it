@@ -2,7 +2,7 @@ import { and, eq } from "drizzle-orm";
 import { BaseRepository } from "./base.repository";
 import { setting } from "../schema";
 
-export type SettingKey = "sidebar_collapsed" | "initial_setup_completed" | "weight_unit";
+export type SettingKey = "chat_collapsed" | "initial_setup_completed" | "weight_unit";
 
 export class SettingRepository extends BaseRepository {
   async get(userId: string, key: SettingKey) {

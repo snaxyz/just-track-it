@@ -4,7 +4,7 @@ import { chat } from "./chat";
 export type ChatMessageRole = "user" | "ai" | "system";
 
 export const chatMessage = pgTable("chat_message", {
-  id: uuid("id").primaryKey().defaultRandom(),
+  id: text("id").primaryKey(),
   userId: text("user_id").notNull(),
   chatId: uuid("chat_id")
     .notNull()

@@ -1,0 +1,1 @@
+ALTER TABLE "exercise" RENAME COLUMN "categories" TO "targetAreas";

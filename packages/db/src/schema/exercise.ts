@@ -1,12 +1,4 @@
-import {
-  boolean,
-  index,
-  pgTable,
-  text,
-  timestamp,
-  uuid,
-  uniqueIndex,
-} from "drizzle-orm/pg-core";
+import { boolean, index, pgTable, text, timestamp, uuid, uniqueIndex } from "drizzle-orm/pg-core";
 
 export const exercise = pgTable(
   "exercise",
@@ -17,21 +9,17 @@ export const exercise = pgTable(
     slug: text("slug").notNull(),
     description: text("description"),
     keywords: text("keywords").array().$type<string[]>().notNull().default([]),
-    categories: text("categories")
-      .array()
-      .$type<string[]>()
-      .notNull()
-      .default([]),
+    targetAreas: text("targetAreas").array().$type<string[]>().notNull().default([]),
     createdAt: timestamp("created_at", {
       mode: "string",
     }).notNull(),
     updatedAt: timestamp("updated_at", {
       mode: "string",
     }).notNull(),
-    hasSets: boolean("has_sets").notNull().default(true),
-    hasReps: boolean("has_reps").notNull().default(true),
-    hasWeight: boolean("has_weight").notNull().default(true),
-    hasDuration: boolean("has_duration").notNull().default(false),
+    trackSets: boolean("track_sets").notNull().default(true),
+    trackReps: boolean("track_reps").notNull().default(true),
+    trackWeight: boolean("track_weight").notNull().default(true),
+    trackDuration: boolean("track_duration").notNull().default(false),
   },
   (table) => [
     // Index for querying by userId + createdAt (for cursor pagination)
@@ -44,7 +32,7 @@ export const exercise = pgTable(
     index("exercise_keywords_idx").on(table.userId, table.keywords),
     // Unique constraint for name + userId combination
     uniqueIndex("exercise_name_user_id_idx").on(table.userId, table.name),
-  ]
+  ],
 );
 
 export type ExerciseModel = typeof exercise.$inferSelect;

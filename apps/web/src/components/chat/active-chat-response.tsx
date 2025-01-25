@@ -8,6 +8,7 @@ import { useUserId } from "@/lib/hooks/use-user";
 import { Box } from "@mui/material";
 import { getSocketClient } from "@/lib/socket";
 import { Socket } from "socket.io-client";
+import { ChatMessageThinking } from "./chat-message-thinking";
 
 interface ChatMessageEvent {
   content: string;
@@ -19,9 +20,11 @@ interface ChatMessageEvent {
 interface Props {
   id: string;
   scrollToBottom: (force?: boolean, instant?: boolean) => void;
+  isThinking?: boolean;
+  onHasMessageContent?: () => void;
 }
 
-export default function ActiveChatResponse({ id, scrollToBottom }: Props) {
+export default function ActiveChatResponse({ id, scrollToBottom, isThinking, onHasMessageContent }: Props) {
   const userId = useUserId();
   const queryClient = useQueryClient();
   const [streamedMessage, setStreamedMessage] = useState("");
@@ -44,14 +47,16 @@ export default function ActiveChatResponse({ id, scrollToBottom }: Props) {
 
         const handleChatMessage = (data: ChatMessageEvent) => {
           const msgChunk = data.content || "";
-
+          if (onHasMessageContent) {
+            onHasMessageContent();
+          }
+          scrollToBottom(true);
           if (data.finishReason === "stop") {
             const queryKey = ["chat-messages", id];
             const cache = queryClient.getQueryData<QueryResponse<ChatMessageModel>>(queryKey);
             if (!streamedMessageRef.current) return;
 
             const records = [
-              ...(cache?.records ?? []),
               {
                 id: data.messageId,
                 userId: data.userId,
@@ -59,6 +64,7 @@ export default function ActiveChatResponse({ id, scrollToBottom }: Props) {
                 content: streamedMessageRef.current,
                 chatId: id,
               },
+              ...(cache?.records ?? []),
             ];
             const queryData = { records };
             queryClient.setQueryData(queryKey, queryData);
@@ -67,7 +73,7 @@ export default function ActiveChatResponse({ id, scrollToBottom }: Props) {
           } else {
             setStreamedMessage((msg) => msg + msgChunk);
             streamedMessageRef.current += msgChunk;
-            scrollToBottom();
+            scrollToBottom(true);
           }
         };
 
@@ -96,6 +102,14 @@ export default function ActiveChatResponse({ id, scrollToBottom }: Props) {
     role: "ai",
     content: streamedMessage,
   };
+
+  if (isThinking) {
+    return (
+      <Box sx={{ px: 1 }}>
+        <ChatMessageThinking />
+      </Box>
+    );
+  }
 
   return (
     streamedMessage && (

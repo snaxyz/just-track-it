@@ -14,7 +14,7 @@ async function getExercises({ userId, search }: { userId: string; search?: strin
     ? exercises.records.filter(
         (ex) =>
           ex.name.toLowerCase().includes(search.toLowerCase()) ||
-          ex.categories?.some((cat) => cat.toLowerCase().includes(search.toLowerCase())),
+          ex.targetAreas?.some((cat) => cat.toLowerCase().includes(search.toLowerCase())),
       )
     : exercises.records;
 
@@ -22,11 +22,11 @@ async function getExercises({ userId, search }: { userId: string; search?: strin
     exercises: filteredExercises.map((ex) => ({
       id: ex.id,
       name: ex.name,
-      categories: ex.categories,
-      hasSets: ex.hasSets,
-      hasReps: ex.hasReps,
-      hasWeight: ex.hasWeight,
-      hasDuration: ex.hasDuration,
+      targetAreas: ex.targetAreas,
+      trackSets: ex.trackSets,
+      trackReps: ex.trackReps,
+      trackWeight: ex.trackWeight,
+      trackDuration: ex.trackDuration,
     })),
     total: filteredExercises.length,
   });

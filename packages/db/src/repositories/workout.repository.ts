@@ -11,7 +11,7 @@ import {
 } from "../schema";
 import { QueryResponse, keyToCursor, cursorToKey, QueryOptions } from "../types";
 
-export type CreateWorkoutInput = Omit<WorkoutInsertModel, "id" | "createdAt" | "updatedAt">;
+export type CreateWorkoutInput = Omit<WorkoutModel, "id" | "createdAt" | "updatedAt">;
 
 export class WorkoutRepository extends BaseRepository {
   async create(data: CreateWorkoutInput) {

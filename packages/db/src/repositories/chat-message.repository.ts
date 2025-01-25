@@ -4,7 +4,7 @@ import { BaseRepository } from "./base.repository";
 import { QueryResponse, keyToCursor, cursorToKey, QueryOptions } from "../types";
 
 export class ChatMessageRepository extends BaseRepository {
-  async create(data: Omit<ChatMessageInsertModel, "id" | "createdAt" | "updatedAt">): Promise<ChatMessageModel> {
+  async create(data: Omit<ChatMessageInsertModel, "createdAt" | "updatedAt">): Promise<ChatMessageModel> {
     const [result] = await this.db.insert(chatMessage).values(data).returning();
     return result;
   }

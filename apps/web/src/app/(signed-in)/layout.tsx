@@ -4,6 +4,7 @@ import { TopAppbarContainer } from "@/components/layout/top-appbar-container";
 import { MobileAppbar } from "@/components/layout/mobile-appbar";
 import { Box } from "@mui/material";
 import { ChatDrawer } from "@/components/chat/chat-drawer";
+import { PrefetchGlobalData } from "./prefetch-global-data";
 
 interface Props {
   children: React.ReactNode;
@@ -32,8 +33,10 @@ export default async function Layout({ children }: Props) {
       >
         <MobileAppbar user={user} />
       </TopAppbarContainer>
-      {children}
-      <ChatDrawer />
+      <PrefetchGlobalData>
+        {children}
+        <ChatDrawer />
+      </PrefetchGlobalData>
     </Box>
   );
 }

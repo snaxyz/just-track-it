@@ -2,13 +2,14 @@ import { Box, Button, Card, CardContent, Divider, IconButton, SxProps, Theme } f
 import { EditIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { EditWorkoutSessionExerciseModal } from "./edit-workout-session-exercise-modal";
-import { WorkoutSessionExerciseModel, WorkoutSet } from "@local/db";
+import { WorkoutSessionExerciseModel, WorkoutSet, ExerciseModel, WeightUnit } from "@local/db";
 import { AnimatedCard } from "./animated-card";
 
 interface Props {
   sx?: SxProps<Theme>;
   exerciseName: string;
   exerciseId: string;
+  exercise: ExerciseModel;
   children: React.ReactNode;
   showUpdateAnimation?: boolean;
   onAnimationComplete: () => void;
@@ -16,12 +17,14 @@ interface Props {
   onDelete: (exerciseId: string) => void;
   onUpdateSet: (exerciseId: string, set: number, updates: Partial<WorkoutSet>) => void;
   onDeleteSet: (exerciseId: string, set: number) => void;
+  unit: WeightUnit;
 }
 
 export function WorkoutSessionExerciseCard({
   sx,
   exerciseId,
   exerciseName,
+  exercise,
   sets,
   children,
   showUpdateAnimation,
@@ -29,6 +32,7 @@ export function WorkoutSessionExerciseCard({
   onDelete,
   onUpdateSet,
   onDeleteSet,
+  unit,
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -96,10 +100,12 @@ export function WorkoutSessionExerciseCard({
         onClose={() => setIsOpen(false)}
         id={exerciseId}
         name={exerciseName}
+        exercise={exercise}
         sets={sets}
         onDeleteExercise={handleDeleteExercise}
         onUpdateSet={handleUpdateSet}
         onDeleteSet={handleDeleteSet}
+        unit={unit}
       />
     </>
   );

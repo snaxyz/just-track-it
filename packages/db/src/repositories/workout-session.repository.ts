@@ -4,7 +4,7 @@ import { workoutSession, WorkoutSessionModel, WorkoutSessionInsertModel } from "
 import { QueryResponse, keyToCursor, cursorToKey, QueryOptions } from "../types";
 
 export class WorkoutSessionRepository extends BaseRepository {
-  async create(data: Omit<WorkoutSessionInsertModel, "id" | "startedAt" | "createdAt" | "updatedAt">) {
+  async create(data: Omit<WorkoutSessionInsertModel, "id" | "startedAt" | "createdAt" | "updatedAt" | "completedAt">) {
     const timestamp = new Date().toISOString();
     const [result] = await this.db
       .insert(workoutSession)

@@ -21,7 +21,7 @@ export function MobileChatDrawer({ isOpen, onClose }: Props) {
       }}
     >
       <ChatDrawerToolbar onClose={onClose} />
-      <Chat />
+      <Chat shouldScrollToBottom={isOpen} />
     </Drawer>
   );
 }

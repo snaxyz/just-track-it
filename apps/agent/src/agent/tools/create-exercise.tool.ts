@@ -5,7 +5,7 @@ import slugify from "slugify";
 
 type CreateExercise = Omit<CreateExerciseInput, "slug">;
 
-const categories = [
+const targetAreas = [
   "Upper",
   "Lower",
   "Push",
@@ -39,13 +39,13 @@ export const createExerciseTool = FunctionTool.from(createExercise, {
   parameters: z.object({
     userId: z.string().describe("User ID who owns this exercise"),
     name: z.string().describe("Exercise name"),
-    categories: z
+    targetAreas: z
       .array(z.string())
-      .describe(`Categories this exercise falls under. Can be one of [${categories.join(",")}]`)
+      .describe(`Target areas this exercise falls targets. Can be one of [${targetAreas.join(",")}]`)
       .optional(),
-    hasSets: z.boolean().describe("If this exercise tracks sets").optional(),
-    hasReps: z.boolean().describe("If this exercise tracks reps").optional(),
-    hasWeight: z.boolean().describe("If this exercise tracks weight").optional(),
-    hasDuration: z.boolean().describe("If this exercise tracks duration").optional(),
+    trackSets: z.boolean().describe("If this exercise tracks sets").optional(),
+    trackReps: z.boolean().describe("If this exercise tracks reps").optional(),
+    trackWeight: z.boolean().describe("If this exercise tracks weight").optional(),
+    trackDuration: z.boolean().describe("If this exercise tracks duration").optional(),
   }),
 });

@@ -1,5 +1,6 @@
 "use client";
 
+import { nanoid } from "nanoid";
 import { Box, Typography } from "@mui/material";
 import { ChatInput } from "./chat-input";
 import { ChatMessages } from "./chat-messages";
@@ -15,7 +16,11 @@ import { getChatMessages } from "@/app/api/chat/[id]/messages/get-chat-messages"
 
 const CHAT_ID = "deadbeef-0000-4000-a000-000000000000";
 
-export function Chat() {
+interface Props {
+  shouldScrollToBottom?: boolean;
+}
+
+export function Chat({ shouldScrollToBottom }: Props) {
   const userId = useUserId();
   const [message, setMessage] = useState("");
   const queryClient = useQueryClient();
@@ -26,7 +31,7 @@ export function Chat() {
     queryFn: () => getChatMessages(CHAT_ID),
   });
 
-  const scrollToBottom = (force = false, instant = false) => {
+  const scrollToBottom = (instant = false) => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({
         behavior: instant ? "instant" : "smooth",
@@ -36,38 +41,48 @@ export function Chat() {
   };
 
   useEffect(() => {
-    scrollToBottom(true, true);
-  }, []);
+    if (shouldScrollToBottom) {
+      scrollToBottom(true);
+    }
+  }, [shouldScrollToBottom]);
+
+  const [isThinking, setIsThinking] = useState(false);
 
   const handleSubmit = async (value: string) => {
     setMessage("");
+    setIsThinking(true);
     const startStreamAgentRequest = async () => {
       const chatId = await createOrGetChat(CHAT_ID);
-      const { id } = await createUserChatMessage(chatId, value);
-      const queryKey = ["chat-messages", CHAT_ID];
+      const id = nanoid();
+      const queryKey = ["chat-messages", chatId];
       const cache = queryClient.getQueryData<QueryResponse<ChatMessageModel>>(queryKey);
 
       const records = [
-        ...(cache?.records ?? []),
         {
           id,
-          userId: userId,
+          userId,
           role: "user",
           content: value,
-          chatId: CHAT_ID,
+          chatId,
         },
+        ...(cache?.records ?? []),
       ];
       const queryData = { records };
       queryClient.setQueryData(queryKey, queryData);
 
       streamAgentRequest({
         userId,
-        chatId: CHAT_ID,
+        chatId,
         message: value,
       });
+
+      await createUserChatMessage(chatId, value, id);
     };
     startStreamAgentRequest();
+    scrollToBottom(true);
   };
+
+  const messages = [...(messagesQuery?.records ?? [])].reverse();
 
   return (
     <Box sx={{ height: "100%", display: "flex", flexDirection: "column", overflow: "auto" }}>
@@ -80,8 +95,13 @@ export function Chat() {
             Ask me about workouts, exercises, or fitness advice. I'm here to help!
           </Typography>
         </Box>
-        <ChatMessages messages={messagesQuery?.records ?? []} />
-        <ActiveChatResponse id={CHAT_ID} scrollToBottom={scrollToBottom} />
+        <ChatMessages messages={messages} />
+        <ActiveChatResponse
+          id={CHAT_ID}
+          scrollToBottom={scrollToBottom}
+          isThinking={isThinking}
+          onHasMessageContent={() => setIsThinking(false)}
+        />
         <div ref={messagesEndRef} />
       </Box>
       <Box
