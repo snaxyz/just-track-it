@@ -7,7 +7,7 @@ import slugify from "slugify";
 export async function createWorkout(
   name: string,
   description: string,
-  exercises: { id: string; name: string; isDraft?: boolean }[]
+  exercises: { id: string; name: string; isDraft?: boolean }[],
 ): Promise<Omit<WorkoutWithRelations, "sessions">> {
   const userId = await getUserId();
 
@@ -18,17 +18,17 @@ export async function createWorkout(
           userId,
           name: e.name,
           slug: slugify(e.name),
-          categories: [],
+          targetAreas: [],
           description: "",
           keywords: [],
-          hasDuration: false,
-          hasReps: true,
-          hasWeight: true,
-          hasSets: true,
+          trackDuration: false,
+          trackReps: true,
+          trackWeight: true,
+          trackSets: true,
         });
       }
       return e;
-    })
+    }),
   );
 
   return await db.workout.createWithExercises(
@@ -38,6 +38,6 @@ export async function createWorkout(
       slug: slugify(name),
       description,
     },
-    exercisesToAdd.map((e) => e.id)
+    exercisesToAdd.map((e) => e.id),
   );
 }
