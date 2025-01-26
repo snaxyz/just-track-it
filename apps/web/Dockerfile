@@ -15,7 +15,7 @@ RUN yarn install --frozen-lockfile
 # Copy source files and configs
 COPY packages/db ./packages/db
 COPY apps/web ./apps/web
-COPY tsconfig*.json ./ || true  # Make tsconfig copy optional
+COPY apps/web/tsconfig*.json ./
 
 # Build using Turborepo
 RUN yarn turbo build --filter=web...
