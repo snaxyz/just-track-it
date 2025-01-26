@@ -12,10 +12,10 @@ COPY apps/agent/package.json ./apps/agent/
 # Install dependencies
 RUN yarn install --frozen-lockfile
 
-# Copy source files
+# Copy source files and configs
 COPY packages/db ./packages/db
 COPY apps/agent ./apps/agent
-COPY tsconfig.json ./
+COPY tsconfig*.json ./ || true  # Make tsconfig copy optional
 
 # Build using Turborepo
 RUN yarn turbo build --filter=agent...
