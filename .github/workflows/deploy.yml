@@ -1,0 +1,89 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/web/**"
+      - "apps/agent/**"
+      - "packages/db/**"
+      - "infrastructure/**"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push Web image
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: web
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f apps/web/Dockerfile .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          echo "WEB_IMAGE=$REGISTRY/$REPOSITORY:$IMAGE_TAG" >> $GITHUB_ENV
+
+      - name: Build and push Agent image
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: agent
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f apps/agent/Dockerfile .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          echo "AGENT_IMAGE=$REGISTRY/$REPOSITORY:$IMAGE_TAG" >> $GITHUB_ENV
+
+      - name: Update GitHub Variables
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          gh variable set WEB_CONTAINER_IMAGE --body "${{ env.WEB_IMAGE }}"
+          gh variable set AGENT_CONTAINER_IMAGE --body "${{ env.AGENT_IMAGE }}"
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.0"
+
+      - name: Terraform Init
+        working-directory: ./infrastructure
+        run: terraform init
+
+      - name: Terraform Format
+        working-directory: ./infrastructure
+        run: terraform fmt -check
+
+      - name: Terraform Plan
+        working-directory: ./infrastructure
+        env:
+          TF_VAR_web_container_image: ${{ env.WEB_IMAGE }}
+          TF_VAR_agent_container_image: ${{ env.AGENT_IMAGE }}
+        run: terraform plan -input=false
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'
+        working-directory: ./infrastructure
+        env:
+          TF_VAR_web_container_image: ${{ env.WEB_IMAGE }}
+          TF_VAR_agent_container_image: ${{ env.AGENT_IMAGE }}
+        run: terraform apply -auto-approve -input=false
