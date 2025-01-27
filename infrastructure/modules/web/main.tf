@@ -63,10 +63,6 @@ resource "aws_lb_target_group" "blue" {
   health_check {
     path = "/"
   }
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 # Then create listener
@@ -78,10 +74,6 @@ resource "aws_lb_listener" "http" {
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.blue.arn
-  }
-
-  lifecycle {
-    create_before_destroy = true
   }
 }
 
