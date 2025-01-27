@@ -43,6 +43,49 @@ resource "aws_ecs_task_definition" "web" {
   ])
 }
 
+# Add ALB configuration first
+resource "aws_lb" "main" {
+  name               = "${var.app_name}-${var.environment}"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.alb.id]
+  subnets           = var.subnet_ids
+}
+
+# Then create target groups
+resource "aws_lb_target_group" "blue" {
+  name        = "${var.app_name}-${var.environment}-blue"
+  port        = var.container_port
+  protocol    = "HTTP"
+  vpc_id      = var.vpc_id
+  target_type = "ip"
+
+  health_check {
+    path = "/"
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+# Then create listener
+resource "aws_lb_listener" "http" {
+  load_balancer_arn = aws_lb.main.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.blue.arn
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+# Finally create ECS service with explicit dependency
 resource "aws_ecs_service" "web" {
   name            = "${var.app_name}-${var.environment}"
   cluster         = var.ecs_cluster_id
@@ -64,6 +107,8 @@ resource "aws_ecs_service" "web" {
     container_name   = var.app_name
     container_port   = var.container_port
   }
+
+  depends_on = [aws_lb_listener.http]
 }
 
 resource "aws_security_group" "web" {
@@ -86,31 +131,6 @@ resource "aws_security_group" "web" {
   }
 }
 
-# Add ALB configuration
-resource "aws_lb" "main" {
-  name               = "${var.app_name}-${var.environment}"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.alb.id]
-  subnets           = var.subnet_ids
-}
-
-resource "aws_lb_listener" "http" {
-  load_balancer_arn = aws_lb.main.arn
-  port              = "80"
-  protocol          = "HTTP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.blue.arn
-  }
-
-  # Wait for new target group before destroying old one
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
 # ALB Security Group
 resource "aws_security_group" "alb" {
   name        = "${var.app_name}-${var.environment}-alb"
@@ -129,23 +149,6 @@ resource "aws_security_group" "alb" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
-# Create blue/green target groups
-resource "aws_lb_target_group" "blue" {
-  name        = "${var.app_name}-${var.environment}-blue"
-  port        = var.container_port
-  protocol    = "HTTP"
-  vpc_id      = var.vpc_id
-  target_type = "ip"
-
-  health_check {
-    path = "/"
-  }
-
-  lifecycle {
-    create_before_destroy = true
   }
 }
 
