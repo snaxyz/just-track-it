@@ -129,6 +129,7 @@ jobs:
   deploy-web:
     needs: [build-web, deploy]
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' # Only deploy on main branch
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -136,10 +137,22 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: us-west-2
 
+      - name: Create new task definition
+        run: |
+          TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition web-production --query 'taskDefinition' --output json)
+          NEW_TASK_DEF=$(echo $TASK_DEFINITION | jq --arg IMAGE "${{ needs.build-web.outputs.image }}" '.containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)')
+          aws ecs register-task-definition --cli-input-json "$NEW_TASK_DEF"
+
       - name: Create CodeDeploy Deployment
         run: |
+          TASK_DEF_ARN=$(aws ecs describe-task-definition --task-definition web-production --query 'taskDefinition.taskDefinitionArn' --output text)
           aws deploy create-deployment \
             --application-name web-production \
             --deployment-group-name web-production \
-            --revision '{"revisionType":"AppSpecContent","appSpecContent":{"content":"{\"version\":1,\"Resources\":[{\"TargetService\":{\"Type\":\"AWS::ECS::Service\",\"Properties\":{\"TaskDefinition\":\"'${{ needs.build-web.outputs.image }}'\",\"LoadBalancerInfo\":{\"ContainerName\":\"web\",\"ContainerPort\":3000}}}}]}"}}' \
+            --revision "{
+              \"revisionType\": \"AppSpecContent\",
+              \"appSpecContent\": {
+                \"content\": \"{\\\"version\\\":1,\\\"Resources\\\":[{\\\"TargetService\\\":{\\\"Type\\\":\\\"AWS::ECS::Service\\\",\\\"Properties\\\":{\\\"TaskDefinition\\\":\\\"${TASK_DEF_ARN}\\\",\\\"LoadBalancerInfo\\\":{\\\"ContainerName\\\":\\\"web\\\",\\\"ContainerPort\\\":3000}}}}]}\"
+              }
+            }" \
             --description "Deployment from GitHub Actions"
