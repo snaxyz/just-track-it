@@ -53,8 +53,8 @@ resource "aws_lb" "main" {
 }
 
 # Then create target groups
-resource "aws_lb_target_group" "blue" {
-  name        = "${var.app_name}-${var.environment}-blue"
+resource "aws_lb_target_group" "web" {
+  name        = "${var.app_name}-${var.environment}"
   port        = var.container_port
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
@@ -73,7 +73,7 @@ resource "aws_lb_listener" "http" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.blue.arn
+    target_group_arn = aws_lb_target_group.web.arn
   }
 }
 
@@ -85,17 +85,18 @@ resource "aws_ecs_service" "web" {
   desired_count   = 1
   launch_type     = "FARGATE"
 
+  # Enable rolling updates
+  deployment_maximum_percent         = 200
+  deployment_minimum_healthy_percent = 100
+  health_check_grace_period_seconds = 60
+
   network_configuration {
     subnets         = var.subnet_ids
     security_groups = [aws_security_group.web.id]
   }
 
-  deployment_controller {
-    type = "CODE_DEPLOY"
-  }
-
   load_balancer {
-    target_group_arn = aws_lb_target_group.blue.arn
+    target_group_arn = aws_lb_target_group.web.arn
     container_name   = var.app_name
     container_port   = var.container_port
   }
@@ -142,89 +143,4 @@ resource "aws_security_group" "alb" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-}
-
-resource "aws_lb_target_group" "green" {
-  name        = "${var.app_name}-${var.environment}-green"
-  port        = var.container_port
-  protocol    = "HTTP"
-  vpc_id      = var.vpc_id
-  target_type = "ip"
-
-  health_check {
-    path = "/"
-  }
-}
-
-# Add CodeDeploy resources
-resource "aws_codedeploy_app" "web" {
-  compute_platform = "ECS"
-  name            = "${var.app_name}-${var.environment}"
-}
-
-resource "aws_codedeploy_deployment_group" "web" {
-  app_name               = aws_codedeploy_app.web.name
-  deployment_group_name  = "${var.app_name}-${var.environment}"
-  service_role_arn      = aws_iam_role.codedeploy.arn
-  deployment_config_name = "CodeDeployDefault.ECSAllAtOnce"
-
-  deployment_style {
-    deployment_option = "WITH_TRAFFIC_CONTROL"
-    deployment_type   = "BLUE_GREEN"
-  }
-
-  blue_green_deployment_config {
-    deployment_ready_option {
-      action_on_timeout = "CONTINUE_DEPLOYMENT"
-    }
-
-    terminate_blue_instances_on_deployment_success {
-      action                           = "TERMINATE"
-      termination_wait_time_in_minutes = 5
-    }
-  }
-
-  load_balancer_info {
-    target_group_pair_info {
-      prod_traffic_route {
-        listener_arns = [aws_lb_listener.http.arn]
-      }
-
-      target_group {
-        name = aws_lb_target_group.blue.name
-      }
-
-      target_group {
-        name = aws_lb_target_group.green.name
-      }
-    }
-  }
-
-  ecs_service {
-    cluster_name = var.ecs_cluster_name
-    service_name = aws_ecs_service.web.name
-  }
-}
-
-# IAM role for CodeDeploy
-resource "aws_iam_role" "codedeploy" {
-  name = "${var.app_name}-${var.environment}-codedeploy"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "codedeploy.amazonaws.com"
-        }
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "codedeploy" {
-  role       = aws_iam_role.codedeploy.name
-  policy_arn = "arn:aws:iam::aws:policy/AWSCodeDeployRoleForECS"
 }
