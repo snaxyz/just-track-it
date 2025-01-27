@@ -104,6 +104,11 @@ resource "aws_lb_listener" "http" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.blue.arn
   }
+
+  # Wait for new target group before destroying old one
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # ALB Security Group
@@ -137,6 +142,10 @@ resource "aws_lb_target_group" "blue" {
 
   health_check {
     path = "/"
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
