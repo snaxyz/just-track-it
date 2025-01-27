@@ -1,30 +1,22 @@
 output "alb_dns_name" {
-  description = "The DNS name of the Application Load Balancer"
-  value       = aws_lb.main.dns_name
+  description = "The DNS name of the load balancer"
+  value       = module.web.alb_dns_name
 }
 
 output "web_service_url" {
-  description = "URL of the web application"
-  value       = "https://${aws_lb.main.dns_name}"
-}
-
-output "ecr_repository_urls" {
-  description = "URLs of the ECR repositories"
-  value = {
-    web   = aws_ecr_repository.web.repository_url
-    agent = aws_ecr_repository.agent.repository_url
-  }
+  description = "The URL of the web service"
+  value       = "https://${module.web.alb_dns_name}"
 }
 
 output "ecs_cluster_name" {
-  description = "Name of the ECS cluster"
-  value       = aws_ecs_cluster.main.name
+  description = "The name of the ECS cluster"
+  value       = module.ecs.cluster_name
 }
 
 output "ecs_services" {
-  description = "Names of the ECS services"
+  description = "The names of the ECS services"
   value = {
-    web   = aws_ecs_service.web.name
-    agent = aws_ecs_service.agent.name
+    web   = module.web.service_name
+    agent = module.agent.service_name
   }
 }

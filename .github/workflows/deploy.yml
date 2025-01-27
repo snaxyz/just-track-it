@@ -125,3 +125,21 @@ jobs:
           TF_VAR_web_container_image: ${{ needs.build-web.outputs.image }}
           TF_VAR_agent_container_image: ${{ needs.build-agent.outputs.image }}
         run: terraform apply -auto-approve -input=false
+
+  deploy-web:
+    needs: [build-web, deploy]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-west-2
+
+      - name: Create CodeDeploy Deployment
+        run: |
+          aws deploy create-deployment \
+            --application-name web-production \
+            --deployment-group-name web-production \
+            --revision '{"revisionType":"AppSpecContent","appSpecContent":{"content":"{\"version\":1,\"Resources\":[{\"TargetService\":{\"Type\":\"AWS::ECS::Service\",\"Properties\":{\"TaskDefinition\":\"'${{ needs.build-web.outputs.image }}'\",\"LoadBalancerInfo\":{\"ContainerName\":\"web\",\"ContainerPort\":3000}}}}]}"}}' \
+            --description "Deployment from GitHub Actions"
