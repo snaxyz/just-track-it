@@ -33,3 +33,8 @@ variable "cpu" {
 variable "memory" {
   type = number
 }
+
+variable "ecs_cluster_name" {
+  type        = string
+  description = "Name of the ECS cluster"
+}

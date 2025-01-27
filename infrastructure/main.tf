@@ -38,15 +38,16 @@ module "ecs" {
 module "web" {
   source = "./modules/web"
 
-  app_name        = "web"
-  environment     = var.environment
-  vpc_id          = module.vpc.vpc_id
-  subnet_ids      = module.vpc.private_subnet_ids
-  ecs_cluster_id  = module.ecs.cluster_id
-  container_image = var.web_container_image
-  container_port  = 3000
-  cpu             = 256
-  memory          = 512
+  app_name         = "web"
+  environment      = var.environment
+  vpc_id           = module.vpc.vpc_id
+  subnet_ids       = module.vpc.private_subnet_ids
+  ecs_cluster_id   = module.ecs.cluster_id
+  ecs_cluster_name = module.ecs.cluster_name
+  container_image  = var.web_container_image
+  container_port   = 3000
+  cpu              = 256
+  memory           = 512
 }
 
 # Agent Service (NestJS)
