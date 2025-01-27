@@ -26,8 +26,10 @@ variable "availability_zones" {
 
 variable "web_container_image" {
   description = "Web app container image"
+  default = "339972433915.dkr.ecr.us-west-2.amazonaws.com/web"
 }
 
 variable "agent_container_image" {
   description = "Agent service container image"
+  default = "339972433915.dkr.ecr.us-west-2.amazonaws.com/agent"
 }

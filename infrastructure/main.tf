@@ -5,6 +5,12 @@ terraform {
       version = "~> 5.0"
     }
   }
+
+  backend "s3" {
+    bucket = "snalabs-cicd"
+    key    = "just-track-it.tfstate"
+    region = "us-west-2"
+  }
 }
 
 provider "aws" {
