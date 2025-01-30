@@ -95,7 +95,9 @@ resource "aws_apigatewayv2_stage" "default" {
 resource "aws_apigatewayv2_integration" "agent_integration" {
   api_id           = aws_apigatewayv2_api.agent_api.id
   integration_type = "HTTP_PROXY"
-  integration_uri  = aws_ecs_service.agent.network_configuration[0].subnets[0] # Use the first subnet as the integration URI
+  integration_uri  = "http://${one(aws_ecs_service.agent.network_configuration[0].subnets)}:${var.container_port}"
+  connection_type  = "VPC_LINK"
+  connection_id    = aws_apigatewayv2_vpc_link.agent_vpc_link.id
   payload_format_version = "1.0"
 }
 
@@ -103,4 +105,11 @@ resource "aws_apigatewayv2_route" "agent_route" {
   api_id    = aws_apigatewayv2_api.agent_api.id
   route_key = "ANY /{proxy+}"
   target    = "integrations/${aws_apigatewayv2_integration.agent_integration.id}"
+}
+
+resource "aws_apigatewayv2_vpc_link" "agent_vpc_link" {
+  name = "${var.app_name}-${var.environment}-vpc-link"
+
+  subnet_ids = var.subnet_ids
+  security_group_ids = [aws_security_group.agent.id]
 }

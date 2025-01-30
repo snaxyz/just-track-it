@@ -6,7 +6,6 @@ output "ecs_cluster_name" {
 output "ecs_services" {
   description = "The names of the ECS services"
   value = {
-    web   = module.web.service_name
     agent = module.agent.service_name
   }
 }
