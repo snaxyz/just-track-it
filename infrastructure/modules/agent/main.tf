@@ -23,10 +23,10 @@ resource "aws_iam_role_policy_attachment" "execution_role_policy" {
 resource "aws_ecs_task_definition" "agent" {
   family                   = "${var.app_name}-${var.environment}"
   requires_compatibilities = ["FARGATE"]
-  network_mode            = "awsvpc"
-  cpu                     = var.cpu
-  memory                  = var.memory
-  execution_role_arn      = aws_iam_role.execution_role.arn
+  network_mode             = "awsvpc"
+  cpu                      = var.cpu
+  memory                   = var.memory
+  execution_role_arn       = aws_iam_role.execution_role.arn
 
   container_definitions = jsonencode([
     {
@@ -49,6 +49,11 @@ resource "aws_ecs_service" "agent" {
   task_definition = aws_ecs_task_definition.agent.arn
   desired_count   = 1
   launch_type     = "FARGATE"
+
+  capacity_provider_strategy {
+    capacity_provider = "FARGATE_SPOT"
+    weight            = 1
+  }
 
   network_configuration {
     subnets         = var.subnet_ids
@@ -74,4 +79,28 @@ resource "aws_security_group" "agent" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
+
+resource "aws_apigatewayv2_api" "agent_api" {
+  name          = "${var.app_name}-${var.environment}-api"
+  protocol_type = "HTTP"
+}
+
+resource "aws_apigatewayv2_stage" "default" {
+  api_id      = aws_apigatewayv2_api.agent_api.id
+  name        = "$default"
+  auto_deploy = true
+}
+
+resource "aws_apigatewayv2_integration" "agent_integration" {
+  api_id           = aws_apigatewayv2_api.agent_api.id
+  integration_type = "HTTP_PROXY"
+  integration_uri  = aws_ecs_service.agent.network_configuration[0].subnets[0] # Use the first subnet as the integration URI
+  payload_format_version = "1.0"
+}
+
+resource "aws_apigatewayv2_route" "agent_route" {
+  api_id    = aws_apigatewayv2_api.agent_api.id
+  route_key = "ANY /{proxy+}"
+  target    = "integrations/${aws_apigatewayv2_integration.agent_integration.id}"
 }

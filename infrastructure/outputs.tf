@@ -1,13 +1,3 @@
-output "alb_dns_name" {
-  description = "The DNS name of the load balancer"
-  value       = module.web.alb_dns_name
-}
-
-output "web_service_url" {
-  description = "The URL of the web service"
-  value       = "https://${module.web.alb_dns_name}"
-}
-
 output "ecs_cluster_name" {
   description = "The name of the ECS cluster"
   value       = module.ecs.cluster_name
@@ -19,4 +9,9 @@ output "ecs_services" {
     web   = module.web.service_name
     agent = module.agent.service_name
   }
+}
+
+output "agent_api_gateway_url" {
+  description = "The URL of the API Gateway for the agent service"
+  value       = module.agent.api_gateway_url
 }
