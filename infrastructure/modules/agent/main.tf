@@ -122,7 +122,7 @@ resource "aws_lb_listener" "agent" {
 }
 
 resource "aws_ecs_task_definition" "dummy" {
-  family                   = "${var.app_name}-${var.environment}-dummy"
+  family                   = "${var.app_name}-${var.environment}"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = "256"
