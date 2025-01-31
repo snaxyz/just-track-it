@@ -95,7 +95,7 @@ resource "aws_apigatewayv2_stage" "default" {
 resource "aws_apigatewayv2_integration" "agent_integration" {
   api_id           = aws_apigatewayv2_api.agent_api.id
   integration_type = "HTTP_PROXY"
-  integration_uri  = "http://${one(aws_ecs_service.agent.network_configuration[0].subnets)}:${var.container_port}"
+  integration_uri  = "http://${aws_lb.agent.dns_name}:${var.container_port}"
   connection_type  = "VPC_LINK"
   connection_id    = aws_apigatewayv2_vpc_link.agent_vpc_link.id
   payload_format_version = "1.0"
@@ -112,4 +112,34 @@ resource "aws_apigatewayv2_vpc_link" "agent_vpc_link" {
 
   subnet_ids = var.subnet_ids
   security_group_ids = [aws_security_group.agent.id]
+}
+
+resource "aws_lb" "agent" {
+  name               = "${var.app_name}-${var.environment}-nlb"
+  internal           = false
+  load_balancer_type = "network"
+  security_groups    = [aws_security_group.agent.id]
+  subnets            = var.subnet_ids
+}
+
+resource "aws_lb_target_group" "agent" {
+  name     = "${var.app_name}-${var.environment}-tg"
+  port     = var.container_port
+  protocol = "TCP"
+  vpc_id   = var.vpc_id
+
+  health_check {
+    protocol = "TCP"
+  }
+}
+
+resource "aws_lb_listener" "agent" {
+  load_balancer_arn = aws_lb.agent.arn
+  port              = var.container_port
+  protocol          = "TCP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.agent.arn
+  }
 }
