@@ -20,35 +20,11 @@ resource "aws_iam_role_policy_attachment" "execution_role_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-resource "aws_ecs_task_definition" "agent" {
-  family                   = "${var.app_name}-${var.environment}"
-  requires_compatibilities = ["FARGATE"]
-  network_mode             = "awsvpc"
-  cpu                      = var.cpu
-  memory                   = var.memory
-  execution_role_arn       = aws_iam_role.execution_role.arn
-
-  container_definitions = jsonencode([
-    {
-      name      = var.app_name
-      image     = var.container_image
-      essential = true
-      portMappings = [
-        {
-          containerPort = var.container_port
-          protocol      = "tcp"
-        }
-      ]
-    }
-  ])
-}
-
 resource "aws_ecs_service" "agent" {
   name            = "${var.app_name}-${var.environment}"
   cluster         = var.ecs_cluster_id
-  task_definition = aws_ecs_task_definition.agent.arn
+  task_definition = aws_ecs_task_definition.dummy.arn
   desired_count   = 1
-  launch_type     = "FARGATE"
 
   capacity_provider_strategy {
     capacity_provider = "FARGATE_SPOT"
@@ -95,7 +71,8 @@ resource "aws_apigatewayv2_stage" "default" {
 resource "aws_apigatewayv2_integration" "agent_integration" {
   api_id           = aws_apigatewayv2_api.agent_api.id
   integration_type = "HTTP_PROXY"
-  integration_uri  = "http://${aws_lb.agent.dns_name}:${var.container_port}"
+  integration_uri  = aws_lb_listener.agent.arn
+  integration_method = "ANY"
   connection_type  = "VPC_LINK"
   connection_id    = aws_apigatewayv2_vpc_link.agent_vpc_link.id
   payload_format_version = "1.0"
@@ -142,4 +119,28 @@ resource "aws_lb_listener" "agent" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.agent.arn
   }
+}
+
+resource "aws_ecs_task_definition" "dummy" {
+  family                   = "${var.app_name}-${var.environment}-dummy"
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+  cpu                      = "256"
+  memory                   = "512"
+  execution_role_arn       = aws_iam_role.execution_role.arn
+
+  container_definitions = jsonencode([
+    {
+      name      = "dummy-container"
+      image     = "amazonlinux:2"  # Use a lightweight image
+      essential = true
+      command   = ["sleep", "3600"]  # Sleep for an hour
+      portMappings = [
+        {
+          containerPort = var.container_port
+          protocol      = "tcp"
+        }
+      ]
+    }
+  ])
 }
