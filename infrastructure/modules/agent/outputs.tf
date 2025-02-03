@@ -1,8 +1,19 @@
 output "service_name" {
-  value = aws_ecs_service.agent.name
+  description = "The ECS service name"
+  value       = aws_ecs_service.agent.name
 }
 
-output "api_gateway_url" {
-  description = "The URL of the API Gateway for the agent service"
-  value       = aws_apigatewayv2_api.agent_api.api_endpoint
+output "service_arn" {
+  description = "The ARN of the ECS service"
+  value       = aws_ecs_service.agent.arn
+}
+
+output "task_definition_arn" {
+  description = "The ARN of the dummy task definition"
+  value       = aws_ecs_task_definition.dummy.arn
+}
+
+output "execution_role_arn" {
+  description = "The ARN of the IAM role for ECS task execution"
+  value       = aws_iam_role.execution_role.arn
 }

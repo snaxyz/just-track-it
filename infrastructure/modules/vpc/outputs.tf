@@ -9,3 +9,8 @@ output "private_subnet_ids" {
 output "public_subnet_ids" {
   value = aws_subnet.public[*].id
 }
+
+output "ecs_service_security_group_id" {
+  description = "Security group ID for ECS services"
+  value       = aws_security_group.ecs_service.id
+}

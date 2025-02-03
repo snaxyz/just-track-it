@@ -9,8 +9,3 @@ output "ecs_services" {
     agent = module.agent.service_name
   }
 }
-
-output "agent_api_gateway_url" {
-  description = "The URL of the API Gateway for the agent service"
-  value       = module.agent.api_gateway_url
-}

@@ -33,3 +33,8 @@ variable "agent_container_image" {
   description = "Agent service container image"
   default     = "339972433915.dkr.ecr.us-west-2.amazonaws.com/agent"
 }
+
+variable "ecs_execution_role_arn" {
+  description = "Common ECS execution role"
+  default     = "arn:aws:iam::339972433915:role/snalabs-common-prod-execution-role"
+}
