@@ -2,5 +2,7 @@ locals {
   region   = "us-west-2"
   app_name = "just-track-it"
 
-  tags = {}
+  tags = {
+    App = local.app_name
+  }
 }

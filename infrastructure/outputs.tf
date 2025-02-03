@@ -1,6 +1,6 @@
 output "ecs_cluster_name" {
   description = "The name of the ECS cluster"
-  value       = module.ecs.cluster_name
+  value       = module.ecs.cluster_id
 }
 
 output "ecs_services" {

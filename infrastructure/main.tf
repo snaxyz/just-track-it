@@ -2,7 +2,7 @@ module "ecs" {
   source       = "./modules/ecs"
   cluster_name = local.app_name
   environment  = var.environment
-  tags         = locals.tags
+  tags         = local.tags
 }
 
 module "vpc" {
@@ -10,7 +10,7 @@ module "vpc" {
   vpc_cidr           = var.vpc_cidr
   availability_zones = var.availability_zones
   environment        = var.environment
-  tags               = locals.tags
+  tags               = local.tags
 }
 
 module "pre_deploy" {
@@ -28,7 +28,7 @@ module "agent" {
   cpu                = 256
   memory             = 512
   aws_region         = var.aws_region
-  tags               = locals.tags
+  tags               = local.tags
   execution_role_arn = var.ecs_execution_role_arn
   security_group_ids = [module.vpc.ecs_service_security_group_id]
 }

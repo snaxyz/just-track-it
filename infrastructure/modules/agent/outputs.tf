@@ -5,15 +5,10 @@ output "service_name" {
 
 output "service_arn" {
   description = "The ARN of the ECS service"
-  value       = aws_ecs_service.agent.arn
+  value       = aws_ecs_service.agent.id
 }
 
 output "task_definition_arn" {
-  description = "The ARN of the dummy task definition"
-  value       = aws_ecs_task_definition.dummy.arn
-}
-
-output "execution_role_arn" {
-  description = "The ARN of the IAM role for ECS task execution"
-  value       = aws_iam_role.execution_role.arn
+  description = "The ARN of the task definition"
+  value       = aws_ecs_task_definition.agent.arn
 }
