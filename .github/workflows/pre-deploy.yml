@@ -30,11 +30,11 @@ jobs:
           terraform_version: "1.7.0"
 
       - name: Terraform Init
-        working-directory: ./infrastructure/modules/pre-deploy
+        working-directory: ./infrastructure
         run: terraform init
 
       - name: Terraform Apply
-        working-directory: ./infrastructure/modules/pre-deploy
+        working-directory: ./infrastructure
         run: terraform apply -target=module.pre_deploy -auto-approve
 
   build-and-push-agent:
