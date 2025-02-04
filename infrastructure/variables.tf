@@ -36,5 +36,5 @@ variable "agent_container_image" {
 
 variable "ecs_execution_role_arn" {
   description = "Common ECS execution role"
-  default     = "arn:aws:iam::339972433915:role/snalabs-common-prod-execution-role"
+  default     = "arn:aws:iam::339972433915:role/SnaLabs-Common-Github-Execution-Role"
 }
