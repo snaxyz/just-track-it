@@ -27,6 +27,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: image-info
+          path: image-info.txt
 
       - name: Read image info
         id: read_image_info
