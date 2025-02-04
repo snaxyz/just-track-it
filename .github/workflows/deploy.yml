@@ -51,6 +51,16 @@ jobs:
         working-directory: ./infrastructure
         run: echo "AGENT_ECR_URL=$(terraform output -raw agent_ecr_repository_url)" >> $GITHUB_ENV
 
+      - name: Get ECS Cluster Name
+        id: ecs_cluster_name
+        working-directory: ./infrastructure
+        run: echo "ECS_CLUSTER_NAME=$(terraform output -raw ecs_cluster_name)" >> $GITHUB_ENV
+
+      - name: Get ECS Agent Service Name
+        id: ecs_agent_service
+        working-directory: ./infrastructure
+        run: echo "ECS_AGENT_SERVICE=$(terraform output -raw ecs_agent_service)" >> $GITHUB_ENV
+
   update-ecs:
     name: Update ECS Service
     needs: deploy
@@ -74,4 +84,4 @@ jobs:
 
       - name: Update ECS Service
         run: |
-          aws ecs update-service --cluster just-track-it-production --service agent-production --force-new-deployment
+          aws ecs update-service --cluster ${{ env.ECS_CLUSTER_NAME }} --service ${{ env.ECS_AGENT_SERVICE }} --force-new-deployment

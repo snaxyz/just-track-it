@@ -3,7 +3,7 @@ output "ecs_cluster_name" {
   value       = module.ecs.cluster_id
 }
 
-output "ecs_services" {
+output "ecs_agent_service" {
   description = "The names of the ECS services"
   value = {
     agent = module.agent.service_name
