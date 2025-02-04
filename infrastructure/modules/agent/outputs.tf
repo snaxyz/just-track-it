@@ -9,6 +9,6 @@ output "service_arn" {
 }
 
 output "task_definition_arn" {
-  description = "The ARN of the task definition"
+  description = "The ARN of the ECS task definition"
   value       = aws_ecs_task_definition.agent.arn
 }

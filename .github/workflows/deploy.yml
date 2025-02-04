@@ -17,6 +17,7 @@ jobs:
     outputs:
       ecs_cluster_name: ${{ steps.get_ecs_cluster_name.outputs.ecs_cluster_name }}
       ecs_agent_service: ${{ steps.get_ecs_agent_service.outputs.ecs_agent_service }}
+      agent_ecs_task_definition_arn: ${{ steps.get_agent_ecs_task_definition_arn.outputs.agent_ecs_task_definition_arn }}
 
     steps:
       - name: Checkout repository
@@ -65,6 +66,11 @@ jobs:
         working-directory: ./infrastructure
         run: echo "::set-output name=ecs_agent_service::$(terraform output -raw ecs_agent_service)"
 
+      - name: Get Agent ECS Task Definition ARN
+        id: get_agent_ecs_task_definition_arn
+        working-directory: ./infrastructure
+        run: echo "::set-output name=agent_ecs_task_definition_arn::$(terraform output -raw agent_ecs_task_definition_arn)"
+
   update-ecs:
     name: Update ECS Service
     needs: deploy
@@ -81,11 +87,12 @@ jobs:
           aws-region: us-west-2
 
       - name: Register ECS Task Definition
+        id: register_task
         run: |
-          TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition agent-production || echo '{}')
+          TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition ${{ needs.deploy.outputs.agent_ecs_task_definition_arn }} || echo '{}')
           NEW_TASK_DEF=$(echo $TASK_DEFINITION | jq --arg IMAGE "${{ env.AGENT_ECR_URL }}:${{ github.sha }}" '.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)')
           aws ecs register-task-definition --cli-input-json "$NEW_TASK_DEF"
 
       - name: Update ECS Service
         run: |
-          aws ecs update-service --cluster ${{ needs.deploy.outputs.ecs_cluster_name }} --service ${{ needs.deploy.outputs.ecs_agent_service }} --force-new-deployment
+          aws ecs update-service --cluster ${{ needs.deploy.outputs.ecs_cluster_name }} --service ${{ needs.deploy.outputs.ecs_agent_service }} --task-definition ${{ needs.deploy.outputs.agent_ecs_task_definition_arn }} --force-new-deployment

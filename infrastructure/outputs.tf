@@ -8,6 +8,11 @@ output "ecs_agent_service" {
   value       = module.agent.service_name
 }
 
+output "agent_ecs_task_definition_arn" {
+  description = "The ARN of the ECS task definition"
+  value       = module.agent.task_definition_arn
+}
+
 output "agent_ecr_repository_url" {
   description = "The URL of the ECR repository for the agent"
   value       = module.pre_deploy.agent_ecr_repository_url
