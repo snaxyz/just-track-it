@@ -41,14 +41,14 @@ jobs:
       - name: Terraform Plan
         working-directory: ./infrastructure
         env:
-          TF_VAR_agent_container_image: ${{ needs.build-agent.outputs.image }}
+          TF_VAR_agent_container_image: ${{ needs.build-and-push-agent.outputs.agent_ecr_url }}:${{ github.sha }}
         run: terraform plan -input=false
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         working-directory: ./infrastructure
         env:
-          TF_VAR_agent_container_image: ${{ needs.build-agent.outputs.image }}
+          TF_VAR_agent_container_image: ${{ needs.build-and-push-agent.outputs.agent_ecr_url }}:${{ github.sha }}
         run: terraform apply -auto-approve -input=false
 
       - name: Get Agent ECR Repository URL
@@ -90,7 +90,7 @@ jobs:
         id: register_task
         run: |
           TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition ${{ needs.deploy.outputs.agent_ecs_task_definition_arn }} || echo '{}')
-          NEW_TASK_DEF=$(echo $TASK_DEFINITION | jq --arg IMAGE "${{ env.AGENT_ECR_URL }}:${{ github.sha }}" '.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)')
+          NEW_TASK_DEF=$(echo $TASK_DEFINITION | jq --arg IMAGE "${{ needs.build-and-push-agent.outputs.agent_ecr_url }}:${{ github.sha }}" '.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)')
           aws ecs register-task-definition --cli-input-json "$NEW_TASK_DEF"
 
       - name: Update ECS Service

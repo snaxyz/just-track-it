@@ -14,6 +14,9 @@ jobs:
       id-token: write
       contents: read
 
+    outputs:
+      agent_ecr_url: ${{ steps.get_agent_ecr_url.outputs.agent_ecr_url }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -36,6 +39,11 @@ jobs:
       - name: Terraform Apply
         working-directory: ./infrastructure
         run: terraform apply -target=module.pre_deploy -auto-approve
+
+      - name: Get Agent ECR Repository URL
+        id: get_agent_ecr_url
+        working-directory: ./infrastructure
+        run: echo "::set-output name=agent_ecr_url::$(terraform output -raw agent_ecr_repository_url)"
 
   build-and-push-agent:
     name: Build and Push Agent Image
@@ -62,10 +70,10 @@ jobs:
       - name: Build and push Agent image
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: just-track-it-agent
+          REPOSITORY: ${{ needs.pre-deploy.outputs.agent_ecr_url }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f apps/agent/Dockerfile .
-          docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-          docker push $REGISTRY/$REPOSITORY:latest
+          docker build -t $REPOSITORY:$IMAGE_TAG -f apps/agent/Dockerfile .
+          docker tag $REPOSITORY:$IMAGE_TAG $REPOSITORY:latest
+          docker push $REPOSITORY:$IMAGE_TAG
+          docker push $REPOSITORY:latest
