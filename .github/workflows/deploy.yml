@@ -46,6 +46,11 @@ jobs:
           TF_VAR_agent_container_image: ${{ needs.build-agent.outputs.image }}
         run: terraform apply -auto-approve -input=false
 
+      - name: Get Agent ECR Repository URL
+        id: agent_ecr_url
+        working-directory: ./infrastructure
+        run: echo "AGENT_ECR_URL=$(terraform output -raw agent_ecr_repository_url)" >> $GITHUB_ENV
+
   update-ecs:
     name: Update ECS Service
     needs: deploy
@@ -64,7 +69,7 @@ jobs:
       - name: Register ECS Task Definition
         run: |
           TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition agent-production || echo '{}')
-          NEW_TASK_DEF=$(echo $TASK_DEFINITION | jq --arg IMAGE "${{ secrets.ECR_REGISTRY }}/agent:${{ github.sha }}" '.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)')
+          NEW_TASK_DEF=$(echo $TASK_DEFINITION | jq --arg IMAGE "${{ env.AGENT_ECR_URL }}:${{ github.sha }}" '.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)')
           aws ecs register-task-definition --cli-input-json "$NEW_TASK_DEF"
 
       - name: Update ECS Service

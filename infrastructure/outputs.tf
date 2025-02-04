@@ -9,3 +9,13 @@ output "ecs_services" {
     agent = module.agent.service_name
   }
 }
+
+output "agent_ecr_repository_url" {
+  description = "The URL of the ECR repository for the agent"
+  value       = module.pre_deploy.agent_ecr_repository_url
+}
+
+output "web_ecr_repository_url" {
+  description = "The URL of the ECR repository for the web"
+  value       = module.pre_deploy.web_ecr_repository_url
+}
