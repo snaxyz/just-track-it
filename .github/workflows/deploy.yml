@@ -23,6 +23,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Download image info artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: image-info
+
+      - name: Read image info
+        id: read_image_info
+        run: |
+          IMAGE_URL=$(cat image-info.txt)
+          echo "IMAGE_URL=$IMAGE_URL" >> $GITHUB_ENV
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -41,35 +52,30 @@ jobs:
       - name: Terraform Plan
         working-directory: ./infrastructure
         env:
-          TF_VAR_agent_container_image: ${{ needs.build-and-push-agent.outputs.agent_ecr_url }}:${{ github.sha }}
+          TF_VAR_agent_container_image: $IMAGE_URL
         run: terraform plan -input=false
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         working-directory: ./infrastructure
         env:
-          TF_VAR_agent_container_image: ${{ needs.build-and-push-agent.outputs.agent_ecr_url }}:${{ github.sha }}
+          TF_VAR_agent_container_image: $IMAGE_URL
         run: terraform apply -auto-approve -input=false
-
-      - name: Get Agent ECR Repository URL
-        id: agent_ecr_url
-        working-directory: ./infrastructure
-        run: echo "AGENT_ECR_URL=$(terraform output -raw agent_ecr_repository_url)" >> $GITHUB_ENV
 
       - name: Get ECS Cluster Name
         id: get_ecs_cluster_name
         working-directory: ./infrastructure
-        run: echo "::set-output name=ecs_cluster_name::$(terraform output -raw ecs_cluster_name)"
+        run: echo "ecs_cluster_name=$(terraform output -raw ecs_cluster_name)" >> $GITHUB_OUTPUT
 
       - name: Get ECS Agent Service Name
         id: get_ecs_agent_service
         working-directory: ./infrastructure
-        run: echo "::set-output name=ecs_agent_service::$(terraform output -raw ecs_agent_service)"
+        run: echo "ecs_agent_service=$(terraform output -raw ecs_agent_service)" >> $GITHUB_OUTPUT
 
       - name: Get Agent ECS Task Definition ARN
         id: get_agent_ecs_task_definition_arn
         working-directory: ./infrastructure
-        run: echo "::set-output name=agent_ecs_task_definition_arn::$(terraform output -raw agent_ecs_task_definition_arn)"
+        run: echo "agent_ecs_task_definition_arn=$(terraform output -raw agent_ecs_task_definition_arn)" >> $GITHUB_OUTPUT
 
   update-ecs:
     name: Update ECS Service
@@ -90,7 +96,7 @@ jobs:
         id: register_task
         run: |
           TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition ${{ needs.deploy.outputs.agent_ecs_task_definition_arn }} || echo '{}')
-          NEW_TASK_DEF=$(echo $TASK_DEFINITION | jq --arg IMAGE "${{ needs.build-and-push-agent.outputs.agent_ecr_url }}:${{ github.sha }}" '.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)')
+          NEW_TASK_DEF=$(echo $TASK_DEFINITION | jq --arg IMAGE "$IMAGE_URL" '.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)')
           aws ecs register-task-definition --cli-input-json "$NEW_TASK_DEF"
 
       - name: Update ECS Service

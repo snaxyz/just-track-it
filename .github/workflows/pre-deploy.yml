@@ -43,7 +43,7 @@ jobs:
       - name: Get Agent ECR Repository URL
         id: get_agent_ecr_url
         working-directory: ./infrastructure
-        run: echo "::set-output name=agent_ecr_url::$(terraform output -raw agent_ecr_repository_url)"
+        run: echo "agent_ecr_url=$(terraform output -raw agent_ecr_repository_url)" >> $GITHUB_OUTPUT
 
   build-and-push-agent:
     name: Build and Push Agent Image
@@ -77,3 +77,12 @@ jobs:
           docker tag $REPOSITORY:$IMAGE_TAG $REPOSITORY:latest
           docker push $REPOSITORY:$IMAGE_TAG
           docker push $REPOSITORY:latest
+
+      - name: Create image info file
+        run: echo "IMAGE_URL=${{ needs.pre-deploy.outputs.agent_ecr_url }}:${{ github.sha }}" > image-info.txt
+
+      - name: Upload image info artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: image-info
+          path: image-info.txt
