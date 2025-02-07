@@ -3,6 +3,10 @@
   "tasks": {
     "build": {
       "outputs": ["dist/**"]
+    },
+    "build:lambda": {
+      "dependsOn": ["build", "^build"],
+      "outputs": ["lambda/**", "lambda.zip"]
     }
   }
 }

@@ -1,3 +1,4 @@
+# This Dockerfile is for when deploying as an ECS task
 FROM node:20-alpine AS builder
 
 WORKDIR /app
@@ -36,4 +37,4 @@ RUN yarn install --production --frozen-lockfile
 
 EXPOSE 8080
 
-CMD ["yarn", "workspace", "agent", "start:prod"]
+CMD ["yarn", "workspace", "agent", "start"]

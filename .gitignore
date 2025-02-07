@@ -39,3 +39,7 @@ yarn-error.log*
 volume
 .terraform
 .terraform.lock.hcl
+
+# lambda builds
+lambda
+lambda.zip
