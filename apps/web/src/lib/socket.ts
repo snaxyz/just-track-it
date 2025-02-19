@@ -1,53 +1,59 @@
-import { io, Socket } from "socket.io-client";
+let socket: WebSocket | null = null;
+let reconnectAttempts = 0;
+const MAX_RECONNECT_ATTEMPTS = 5;
+const RECONNECT_DELAY = 1000;
 
-let socket: Socket | null = null;
+async function getSocketToken(): Promise<{ url: string; token: string }> {
+  const response = await fetch("/api/socket");
+  if (!response.ok) {
+    throw new Error("Failed to get socket token");
+  }
+  const data = await response.json();
+  return data;
+}
 
-export async function getSocketClient() {
-  if (!socket) {
-    // Get authenticated socket URL
-    const response = await fetch("/api/socket");
-    if (!response.ok) {
-      throw new Error("Failed to get socket credentials");
+export async function getWebSocket(): Promise<WebSocket> {
+  if (!socket || socket.readyState === WebSocket.CLOSED) {
+    const { url, token } = await getSocketToken();
+
+    if (!url || !token) {
+      throw new Error("WebSocket URL or token is not defined");
     }
 
-    const { url } = await response.json();
+    socket = new WebSocket(`${url}?token=${token}`);
 
-    socket = io(url, {
-      withCredentials: true,
-      autoConnect: true,
-      reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 1000,
-    });
+    socket.onopen = () => {
+      console.log("Connected to WebSocket");
+      reconnectAttempts = 0;
+    };
 
-    socket.on("connect_error", async (error) => {
-      console.error("Socket connection error:", error);
-      // If we get a token error, try to get a new token
-      if (error.message.includes("No socket token found")) {
-        try {
-          await fetch("/api/socket"); // This will set a new cookie
-          socket?.connect(); // Try to reconnect with new token
-        } catch (e) {
-          console.error("Failed to refresh socket token:", e);
-          socket = null;
-        }
-      } else {
-        socket = null;
+    socket.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        console.log("Message from server:", data);
+        // Handle different message types here
+      } catch (error) {
+        console.error("Error parsing WebSocket message:", error);
       }
-    });
+    };
 
-    socket.on("disconnect", async (reason) => {
-      console.log("Socket disconnected:", reason);
-      if (reason === "io server disconnect") {
-        try {
-          await fetch("/api/socket"); // Get new token
-          socket?.connect(); // Try to reconnect with new token
-        } catch (e) {
-          console.error("Failed to refresh socket token:", e);
-          socket = null;
-        }
+    socket.onclose = (event) => {
+      console.log("WebSocket connection closed:", event.code, event.reason);
+      socket = null;
+
+      // Attempt to reconnect unless explicitly closed
+      if (event.code !== 1000 && reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+        reconnectAttempts++;
+        setTimeout(async () => {
+          console.log(`Reconnecting... Attempt ${reconnectAttempts}`);
+          await getWebSocket();
+        }, RECONNECT_DELAY * reconnectAttempts);
       }
-    });
+    };
+
+    socket.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
   }
 
   return socket;

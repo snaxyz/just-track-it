@@ -1,5 +1,9 @@
 "use server";
 
+import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
+
+const sqs = new SQSClient({ region: process.env.AWS_REGION || "us-west-2" });
+
 export async function streamAgentRequest({
   userId,
   chatId,
@@ -9,27 +13,24 @@ export async function streamAgentRequest({
   chatId: string;
   message: string;
 }) {
-  const endpoint = process.env.AGENT_ENDPOINT;
+  const queueUrl = process.env.AGENT_SQS_URL;
 
-  if (!endpoint) {
-    throw new Error("AGENT_ENDPOINT is not defined");
+  if (!queueUrl) {
+    throw new Error("AGENT_SQS_URL is not defined");
   }
 
-  const response = await fetch(`${endpoint}/chat/stream`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      userId,
-      chatId,
-      message,
+  const command = new SendMessageCommand({
+    QueueUrl: queueUrl,
+    MessageBody: JSON.stringify({
+      type: "chat:message",
+      payload: {
+        userId,
+        chatId,
+        message,
+      },
     }),
   });
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
+  await sqs.send(command);
   return true;
 }

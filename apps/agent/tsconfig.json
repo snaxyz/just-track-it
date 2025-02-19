@@ -18,6 +18,9 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "lib": ["DOM.AsyncIterable"],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   }
 }

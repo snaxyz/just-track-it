@@ -6,8 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import type { ChatMessageModel, QueryResponse } from "@local/db";
 import { useUserId } from "@/lib/hooks/use-user";
 import { Box } from "@mui/material";
-import { getSocketClient } from "@/lib/socket";
-import { Socket } from "socket.io-client";
+import { getWebSocket } from "@/lib/socket";
 import { ChatMessageThinking } from "./chat-message-thinking";
 
 interface ChatMessageEvent {
@@ -28,8 +27,9 @@ export default function ActiveChatResponse({ id, scrollToBottom, isThinking, onH
   const userId = useUserId();
   const queryClient = useQueryClient();
   const [streamedMessage, setStreamedMessage] = useState("");
+  // this ref is required to update apollo cache correctly
   const streamedMessageRef = useRef("");
-  const socketRef = useRef<Socket | null>(null);
+  const socketRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -38,14 +38,18 @@ export default function ActiveChatResponse({ id, scrollToBottom, isThinking, onH
 
     const initSocket = async () => {
       try {
-        const socket = await getSocketClient();
+        const socket = await getWebSocket();
         if (!mounted) return;
 
         socketRef.current = socket;
         console.log("Connecting to chat:", id);
-        socket.emit("join", `chat:${id}`);
 
-        const handleChatMessage = (data: ChatMessageEvent) => {
+        // socket.onopen = () => {
+        //   socket.send(JSON.stringify({ action: "join", room: `chat:${id}` }));
+        // };
+
+        socket.onmessage = (event) => {
+          const { data }: { data: ChatMessageEvent } = JSON.parse(event.data);
           const msgChunk = data.content || "";
           if (onHasMessageContent) {
             onHasMessageContent();
@@ -54,14 +58,13 @@ export default function ActiveChatResponse({ id, scrollToBottom, isThinking, onH
           if (data.finishReason === "stop") {
             const queryKey = ["chat-messages", id];
             const cache = queryClient.getQueryData<QueryResponse<ChatMessageModel>>(queryKey);
-            if (!streamedMessageRef.current) return;
 
             const records = [
               {
                 id: data.messageId,
                 userId: data.userId,
                 role: "ai",
-                content: streamedMessageRef.current,
+                content: streamedMessageRef.current ?? "",
                 chatId: id,
               },
               ...(cache?.records ?? []),
@@ -77,7 +80,14 @@ export default function ActiveChatResponse({ id, scrollToBottom, isThinking, onH
           }
         };
 
-        socket.on("chat:message", handleChatMessage);
+        socket.onerror = (error) => {
+          console.error("WebSocket error:", error);
+        };
+
+        socket.onclose = () => {
+          console.log("WebSocket connection closed");
+        };
+
         console.log("Subscribed to chat:message events");
       } catch (error) {
         console.error("Failed to initialize socket:", error);
@@ -89,8 +99,7 @@ export default function ActiveChatResponse({ id, scrollToBottom, isThinking, onH
     return () => {
       mounted = false;
       if (socketRef.current) {
-        socketRef.current.off("chat:message");
-        socketRef.current.emit("leave", `chat:${id}`);
+        socketRef.current.close();
       }
     };
   }, [id]);

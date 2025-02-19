@@ -1,40 +1,37 @@
 import { nanoid } from "nanoid";
-import { Injectable } from "@nestjs/common";
-import { StreamChatMessageDto } from "./dto/stream-chat-message.dto";
-import { AgentService } from "../agent/agent.service";
+import { AgentService } from "@/agent/agent.service";
 import { db } from "@local/db";
-import { MessageType } from "llamaindex";
-import { EventsGateway } from "../events/events.gateway";
+import { EventsGateway } from "@/events/events.gateway";
+import { StreamChatMessageInput } from "./types";
 
-@Injectable()
 export class ChatService {
   constructor(
     private readonly agentService: AgentService,
     private readonly eventsGateway: EventsGateway,
   ) {}
 
-  async streamMessage(input: StreamChatMessageDto) {
+  async streamMessage(input: StreamChatMessageInput) {
     const { userId, chatId, message } = input;
     const chatMessages = await db.chatMessage.query(userId, chatId, { order: "desc", limit: 20 });
     const chatHistory = chatMessages.records
       .map((c) => ({
         content: c.content,
-        role: c.role as MessageType,
+        role: c.role as "user" | "assistant" | "system",
       }))
       .reverse();
 
-    const stream = await this.agentService.streamChat({ message, chatHistory, userId });
+    const connections = await this.eventsGateway.getConnections(userId);
+    const stream = await this.agentService.stream({ message, chatHistory, userId });
     const responseChunks: string[] = [];
 
     for await (const chunk of stream) {
-      const content = chunk.message.content.toString();
-      responseChunks.push(content);
+      responseChunks.push(chunk);
 
-      this.eventsGateway.emitChatMessage(chatId, {
+      await this.eventsGateway.emitChatMessage(connections, {
         userId,
         chatId,
         messageId: "",
-        content,
+        content: chunk,
       });
     }
 
@@ -44,11 +41,11 @@ export class ChatService {
       id,
       userId,
       chatId,
-      role: "ai",
+      role: "assistant",
       content: responseChunks.join(""),
     });
 
-    this.eventsGateway.emitChatMessage(chatId, {
+    await this.eventsGateway.emitChatMessage(connections, {
       userId,
       chatId,
       messageId: id,

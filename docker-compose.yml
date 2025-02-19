@@ -32,24 +32,35 @@ services:
     depends_on:
       - postgres
 
-  localstack:
-    container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
-    image: localstack/localstack:3.5.0
-    ports:
-      - "127.0.0.1:4566:4566"
-      - "127.0.0.1:4510-4559:4510-4559"
-    environment:
-      # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
-      - DEBUG=${DEBUG:-0}
-    volumes:
-      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
-      - "/var/run/docker.sock:/var/run/docker.sock"
+  dynamodb:
+    image: amazon/dynamodb-local
+    container_name: just-track-it-dynamodb
     networks:
       - workout
+    ports:
+      - "8000:8000"
+    command: "-jar DynamoDBLocal.jar -sharedDb"
+    volumes:
+      - dynamodb_data:/home/dynamodblocal/data
+
+  dynamodb-admin:
+    image: aaronshaf/dynamodb-admin
+    networks:
+      - workout
+    ports:
+      - "8001:8001"
+    environment:
+      DYNAMO_ENDPOINT: http://dynamodb:8000
+      AWS_REGION: local
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: local
+    depends_on:
+      - dynamodb
 
 volumes:
   postgres_data:
   pgadmin_data:
+  dynamodb_data:
 
 networks:
   workout:

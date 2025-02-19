@@ -1,17 +1,16 @@
-import { Injectable } from "@nestjs/common";
-import { db } from "@local/db";
-import { AgentService } from "src/agent/agent.service";
-import { EventsGateway } from "../events/events.gateway";
+import { AgentService } from "@/agent/agent.service";
+import { EventsGateway } from "@/events/events.gateway";
+import { GenerateWorkoutInput } from "./types";
 
-@Injectable()
 export class GenerateService {
   constructor(
     private readonly agentService: AgentService,
     private readonly eventsGateway: EventsGateway,
   ) {}
 
-  async generateWorkout(generateId: string, userId: string, message: string) {
-    const stream = await this.agentService.streamChat({
+  async generateWorkout(input: GenerateWorkoutInput) {
+    const { message, userId, generateId } = input;
+    const stream = await this.agentService.stream({
       message: `Generate a workout plan based on this request: ${message}.`,
       chatHistory: [],
       userId,
@@ -20,9 +19,8 @@ export class GenerateService {
     const responseChunks: string[] = [];
 
     for await (const chunk of stream) {
-      const content = chunk.message.content.toString();
-      responseChunks.push(content);
-      this.eventsGateway.emitGenerateWorkoutMessage(generateId, { content });
+      responseChunks.push(chunk);
+      this.eventsGateway.emitGenerateWorkoutMessage(generateId, { content: chunk });
     }
     this.eventsGateway.emitGenerateWorkoutMessage(generateId, { content: "", finishReason: "stop" });
   }

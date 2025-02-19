@@ -1,8 +1,6 @@
 import { db } from "@local/db";
-import { FunctionTool } from "llamaindex";
-import { z } from "zod";
 
-async function getExercises({ userId, search }: { userId: string; search?: string }) {
+export async function getExercises({ userId, search }: { userId: string; search?: string }) {
   // Get all exercises for the user
   const exercises = await db.exercise.query(userId, {
     limit: 100,
@@ -31,13 +29,3 @@ async function getExercises({ userId, search }: { userId: string; search?: strin
     total: filteredExercises.length,
   });
 }
-
-export const getExercisesTool = FunctionTool.from(getExercises, {
-  name: "getExercises",
-  description:
-    "Use this function to get a list of exercises for a user. You can optionally filter by name or category.",
-  parameters: z.object({
-    userId: z.string().describe("User ID to get exercises for"),
-    search: z.string().optional().describe("Optional search term to filter exercises by name or category"),
-  }),
-});
