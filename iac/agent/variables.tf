@@ -25,3 +25,9 @@ variable "database_url" {
   type        = string
   sensitive   = true
 }
+
+variable "enable_logging" {
+  description = "Enable CloudWatch logging for API Gateway and Lambda"
+  type        = bool
+  default     = false
+}

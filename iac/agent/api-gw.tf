@@ -7,6 +7,7 @@ resource "aws_apigatewayv2_api" "websocket" {
 
 # CloudWatch Log Group
 resource "aws_cloudwatch_log_group" "websocket" {
+  count             = var.enable_logging ? 1 : 0
   name              = "/aws/apigateway/${local.name}"
   retention_in_days = 14
 }
@@ -24,18 +25,21 @@ resource "aws_apigatewayv2_stage" "websocket" {
     throttling_rate_limit    = 50
   }
 
-  access_log_settings {
-    destination_arn = aws_cloudwatch_log_group.websocket.arn
-    format = jsonencode({
-      requestId        = "$context.requestId"
-      ip               = "$context.identity.sourceIp"
-      requestTime      = "$context.requestTime"
-      routeKey         = "$context.routeKey"
-      status           = "$context.status"
-      connectionId     = "$context.connectionId"
-      errorMessage     = "$context.error.message"
-      integrationError = "$context.integration.error"
-    })
+  dynamic "access_log_settings" {
+    for_each = var.enable_logging ? [1] : []
+    content {
+      destination_arn = aws_cloudwatch_log_group.websocket[0].arn
+      format = jsonencode({
+        requestId        = "$context.requestId"
+        ip               = "$context.identity.sourceIp"
+        requestTime      = "$context.requestTime"
+        routeKey         = "$context.routeKey"
+        status           = "$context.status"
+        connectionId     = "$context.connectionId"
+        errorMessage     = "$context.error.message"
+        integrationError = "$context.integration.error"
+      })
+    }
   }
 }
 

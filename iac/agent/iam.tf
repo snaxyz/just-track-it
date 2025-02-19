@@ -18,6 +18,7 @@ resource "aws_iam_role" "lambda_role" {
 
 # Lambda basic execution policy
 resource "aws_iam_role_policy_attachment" "lambda_basic" {
+  count      = var.enable_logging ? 1 : 0
   role       = aws_iam_role.lambda_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
@@ -99,8 +100,9 @@ resource "aws_iam_role" "apigateway_cloudwatch" {
 }
 
 resource "aws_iam_role_policy" "apigateway_cloudwatch" {
-  name = "${local.name}-apigateway-logs"
-  role = aws_iam_role.apigateway_cloudwatch.id
+  count = var.enable_logging ? 1 : 0
+  name  = "${local.name}-apigateway-logs"
+  role  = aws_iam_role.apigateway_cloudwatch.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -116,7 +118,7 @@ resource "aws_iam_role_policy" "apigateway_cloudwatch" {
           "logs:GetLogEvents",
           "logs:FilterLogEvents"
         ]
-        Resource = "${aws_cloudwatch_log_group.websocket.arn}:*"
+        Resource = "${aws_cloudwatch_log_group.websocket[0].arn}:*"
       }
     ]
   })
